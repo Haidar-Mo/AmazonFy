@@ -17,12 +17,12 @@ class ShopOrder extends Model
         'address',
         'total_price',
         'customer_note',
-        'status'        //- waiting_for_paying, preparing, delivering, returned, canceled
+        'status'        //- checking, reviewing, delivering, canceled
     ];
 
 
     public function shop()
     {
-        return  $this->belongsTo(Shop::class);
+        return $this->belongsTo(Shop::class);
     }
 }

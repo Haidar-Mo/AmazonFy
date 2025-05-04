@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('phone_number');
             $table->string('address');
             $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['waiting_for_paying', 'preparing', 'delivering', 'returned', 'canceled']);
+            $table->enum('status', ['checking', 'reviewing', 'delivering', 'canceled']);
             $table->string('customer_note');
             $table->timestamps();
         });
