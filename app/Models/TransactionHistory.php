@@ -21,4 +21,9 @@ class TransactionHistory extends Model
     {
         return $this->belongsTo(Wallet::class);
     }
+
+    public function transactionable()
+    {
+        $this->morphTo();
+    }
 }

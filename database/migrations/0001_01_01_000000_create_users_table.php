@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,8 +16,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone_number');  // Consider using string for phone numbers
             $table->string('password');
-            $table->string('verify_code');
-            $table->date('verified_at');
+            $table->string('verify_code')->nullable();
+            $table->date('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
