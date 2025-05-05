@@ -14,7 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('wallet_id')->constrained('wallets')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
-            $table->uuidMorphs('transactionable');
+            $table->string('transactionable_type', 50);  // Shorter column name
+            $table->uuid('transactionable_id');          // Shorter column name
+            $table->index(
+                ['transactionable_type', 'transactionable_id'],
+                'trans_hist_transactionable_index'  // Custom short index name
+            );
             $table->timestamps();
         });
     }
