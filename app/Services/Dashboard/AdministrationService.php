@@ -13,18 +13,33 @@ use Spatie\Permission\Models\Role;
 class AdministrationService
 {
 
-    public function store(FormRequest $formRequest)
+    public function store(FormRequest $request)
     {
-        $user = User::create($formRequest->only(['name', 'email', 'phone_number', 'password']));
+        $request->validated();
+        $user = User::create($request->only(['name', 'email', 'phone_number', 'password']));
         $user->markEmailAsVerified();
         $user->assignRole(Role::where('name', 'supervisor')->first());
         $permissions = [];
-        $permissionIds = $formRequest->input('permissions', []);
+        $permissionIds = $request->input('permissions', []);
         $permissions = Permission::whereIn('id', $permissionIds)->get();
         $user->givePermissionTo($permissions);
-        $user->load(['roles', 'permissions']);
         $user->append(['role_name', 'permissions_names']);
         $user->makeHidden(['roles', 'permissions']);
         return $user;
+    }
+
+    public function update(User $supervisor, FormRequest $request)
+    {
+        $request->validated();
+        $supervisor->update($request->only(['name', 'email', 'phone_number', 'password']));
+        $permissions = [];
+        $permissionIds = $request->input('permissions', []);
+        $permissions = Permission::whereIn('id', $permissionIds)->get();
+        if ($permissions->count() > 0)
+            $supervisor->syncPermissions($permissions);
+        $supervisor->append(['role_name', 'permissions_names']);
+        $supervisor->makeHidden(['roles', 'permissions']);
+        return $supervisor;
+
     }
 }

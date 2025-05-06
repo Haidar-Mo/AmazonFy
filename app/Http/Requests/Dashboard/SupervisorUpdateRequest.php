@@ -4,7 +4,7 @@ namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdminCreateRequest extends FormRequest
+class SupervisorUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class AdminCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-            'permissions' => 'required|array',
+            'name' => 'sometimes|string',
+            'email' => 'sometimes|email',
+            'password' => 'sometimes|min:8',
+            'permissions' => 'sometimes|array',
             'permissions*' => 'exists:permissions,id'
         ];
     }

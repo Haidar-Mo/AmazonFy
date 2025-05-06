@@ -18,13 +18,19 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
 
-        $user = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'phone_number' => '123456789',
-            'password' => bcrypt('AdminPassword')
-        ]);
-        $user->assignRole(Role::where('name', 'supervisor')->first());
-        $user->givePermissionTo(Permission::where('guard_name', 'api')->get());
+        \App\Models\Product::factory()->count(10)->create();
+        \App\Models\ShopOrder::factory()->count(5)->create();
+        \App\Models\OrderItem::factory()->count(25)->create();
+
+        /*
+                $user = User::factory()->create([
+                    'name' => 'Admin',
+                    'email' => 'admin@admin.com',
+                    'phone_number' => '123456789',
+                    'password' => bcrypt('AdminPassword')
+                ]);
+                $user->assignRole(Role::where('name', 'supervisor')->first());
+                $user->givePermissionTo(Permission::where('guard_name', 'api')->get());
+            */
     }
 }
