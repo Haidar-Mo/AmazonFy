@@ -3,6 +3,16 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\{
+    QueryException,
+    Eloquent\ModelNotFoundException,
+    UniqueConstraintViolationException,
+};
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,5 +31,57 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (Throwable $e, $request) {
+
+            // Return JSON responses for API routes
+            if ($request->is('api/*')) {
+
+                if ($e instanceof ValidationException) {
+                    return response()->json([
+                        'message' => 'Validation error',
+                        'errors' => $e->errors(),
+                    ], 422);
+                }
+
+
+                if ($e instanceof ModelNotFoundException) {
+                    return response()->json([
+                        'message' => explode('\\', $e->getModel())[2] . ' Not Found.',
+                    ], 404);
+                }
+
+                if ($e instanceof AuthorizationException) {
+                    return response()->json([
+                        'message' => 'This action is unauthorized.',
+                    ], 403);
+                }
+
+                if ($e instanceof UniqueConstraintViolationException) {
+                    return response()->json([
+                        'message' => 'This record is already exists.',
+                    ], 400);
+                }
+
+                /*if ($e instanceof QueryException) {
+                    return response()->json([
+                        'message' => 'Unknown sql error.',
+                    ], 400);
+                }*/
+
+                if ($e instanceof RouteNotFoundException) {
+                    return response()->json([
+                        'message' => 'unauthenticated',
+                    ], 401);
+                }
+
+                if ($e instanceof JobTimeoutException) {
+                    // Log the job timeout exception
+                    Log::error('JobTimeoutException: ' . $e->getMessage());
+                    // Return an appropriate response (e.g., 504 Gateway Timeout)
+                    return response()->json([
+                        'message' => 'Something went wrong, please try again later.'
+                    ], 504);
+                }
+            }
+        });
     })->create();
