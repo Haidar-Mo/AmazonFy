@@ -10,5 +10,6 @@ Route::prefix('orders')
 
         Route::get('index', [OrderController::class, 'index']);
         Route::get('show/{id}', [OrderController::class, 'show']);
+        Route::delete('delete/{id}', [OrderController::class, 'destroy']);
 
     });

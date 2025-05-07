@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('shop_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->constrained('shops')->cascadeOnDelete();
-            $table->foreignId('region_id')->constrained('regions')->cascadeOnDelete();
+            $table->foreignId('shop_id')->nullable()->constrained('shops')->nullOnDelete();
+            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
             $table->string('name');
             $table->string('phone_number');
             $table->string('address');

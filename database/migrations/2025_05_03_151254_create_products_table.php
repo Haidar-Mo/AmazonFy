@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('type');
             $table->decimal('wholesale_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
-            $table->boolean('is_available');
+            $table->boolean('is_available')->default(true);
             $table->timestamps();
         });
     }
