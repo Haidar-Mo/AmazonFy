@@ -35,5 +35,11 @@ class OrderController extends Controller
 
     public function destroy(string $id)
     {
+        try {
+            ShopOrder::findOrFail($id)->delete();
+            return $this->showMessage('تم حذف الطلب بنجاح', 200);
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء حذف الطلب');
+        }
     }
 }

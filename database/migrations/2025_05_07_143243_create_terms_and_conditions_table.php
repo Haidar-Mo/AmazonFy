@@ -10,11 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('terms_and_conditions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_order_id')->nullable()->constrained('shop_orders')->nullOnDelete();
-            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
-            $table->integer('count')->default(1);
+            $table->text('content')->default('Welcome To AmazonFy');
             $table->timestamps();
         });
     }
@@ -24,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('terms_and_conditions');
     }
 };
