@@ -13,6 +13,6 @@ Route::prefix('v1/')->group(function () {
 
     Route::prefix('merchants')->group(function () {
         include __DIR__ . '/V1/Merchant/Auth.php';
-
+        include __DIR__ . '/V1/Merchant/App.php';
     });
 });

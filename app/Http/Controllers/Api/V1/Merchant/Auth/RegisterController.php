@@ -49,6 +49,8 @@ class RegisterController extends Controller
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
                 'user' => $user,
+                'access_token' => $accessToken->plainTextToken,
+                'refresh_token' => $refreshToken->plainTextToken,
             ], 201);
         });
     }

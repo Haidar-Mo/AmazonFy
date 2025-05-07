@@ -14,7 +14,12 @@ use App\Enums\TokenAbility;
 Route::prefix('auth/')->group(function () {
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('login', [LoginController::class, 'login']);
-    Route::get('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('logout', [LoginController::class, 'logout'])
+        ->middleware([
+            'auth:sanctum',
+            'ability:' . TokenAbility::ACCESS_API->value,
+            'type.merchant'
+        ]);
 
     Route::get('/email/verify/{id}/{hash}', [RegisterController::class, 'verifyEmail'])
         ->middleware(['signed'])
