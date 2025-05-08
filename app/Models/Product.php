@@ -14,6 +14,7 @@ class Product extends Model
         'title',
         'details',
         'type',
+        'image',
         'wholesale_price',
         'selling_price',
         'is_available',
@@ -26,6 +27,6 @@ class Product extends Model
 
     public function item()
     {
-        return  $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class);
     }
 }

@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Product;
-use App\Models\ShopOrder;
+use App\Models\Shop;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\OrderItem>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ShopProduct>
  */
-class ItemFactory extends Factory
+class ShopProductFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,7 +19,7 @@ class ItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'shop_order_id' => ShopOrder::inRandomOrder()->first()->id,
+            'shop_id' => Shop::inRandomOrder()->first()->id,
             'product_id' => Product::inRandomOrder()->first()->id
         ];
     }

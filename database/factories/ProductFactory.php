@@ -20,9 +20,10 @@ class ProductFactory extends Factory
             'title' => $this->faker->words(3, true),
             'details' => $this->faker->paragraphs(3, true),
             'type' => $this->faker->randomElement(['Electronics', 'Clothing', 'Food', 'Furniture', 'Other']),
+            'image' => 'product/image.jpg',
             'wholesale_price' => $this->faker->randomFloat(2, 10, 500),
             'selling_price' => $this->faker->randomFloat(2, 15, 750),
-            'is_available' => $this->faker->boolean(80),         
+            'is_available' => $this->faker->boolean(80),
         ];
     }
 }
