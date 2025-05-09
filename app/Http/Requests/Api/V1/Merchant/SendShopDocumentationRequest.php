@@ -11,7 +11,7 @@ class SendShopDocumentationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class SendShopDocumentationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string'],
+            'phone_number' => ['required', 'string'],
+            'identity_number' => ['required', 'string'],
+            'logo' => ['required', 'image'],
+            'identity_front_face' => ['required', 'image'],
+            'identity_back_face' => ['required', 'image'],
+            'type' => ['required'],
+            'address' => ['required', 'string'],
+
         ];
     }
 }
