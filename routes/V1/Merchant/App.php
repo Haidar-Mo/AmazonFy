@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
-use App\Http\Controllers\Api\V1\Merchant\ShopDocumentationsController;
+use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 
 
 Route::middleware([
@@ -11,20 +11,12 @@ Route::middleware([
 ])
     ->group(function () {
 
-        Route::post('send-documentation-request', [ShopDocumentationsController::class, 'sendShopDocumentationRequest']);
+        Route::apiResource('shops',ShopsController::class);
 
     });
 
-    /**
-     * TO DO LIST:
-     *
-     * code verification notification
-     *
-     * put the expiration time in a config or .env file
-     *
-     * modify the email verification flow
-     *
-     * QUESTIONS:
-     *
-     * the type column in shop table?? is it same as tasneef?
-     */
+/**
+ * TO DO LIST:
+ *
+ * put the expiration time in a config or .env file
+ */

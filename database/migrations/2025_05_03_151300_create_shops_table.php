@@ -13,13 +13,13 @@ return new class extends Migration {
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('shop_type_id')->nullable()->constrained('shop_types','id')->nullOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->string('phone_number');
             $table->string('identity_number');
             $table->string('logo');
             $table->string('identity_front_face');
             $table->string('identity_back_face');
-            $table->string('type');
             $table->string('address');
             $table->enum('status', ['pending', 'rejected', 'active', 'inactive']);
             $table->timestamps();

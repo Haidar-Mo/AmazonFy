@@ -8,6 +8,7 @@ class Code extends Model
 {
     protected $fillable = [
         'user_id',
+        'verification_code',
         'expired_at'
     ];
 

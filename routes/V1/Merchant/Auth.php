@@ -21,9 +21,9 @@ Route::prefix('auth/')->group(function () {
             'type.merchant'
         ]);
 
-    Route::get('/email/verify/{id}/{hash}', [RegisterController::class, 'verifyEmail'])
-        ->middleware(['signed'])
-        ->name('verification.verify');
+    Route::post('email/verify/{id}', [RegisterController::class, 'verifyEmail']);
+
+    Route::get('email/verify/{id}/resend',[RegisterController::class, 'resendVerificationCode']);
 
     Route::get('refresh-token', [LoginController::class, 'refreshToken'])
         ->middleware([
