@@ -3,32 +3,79 @@
 namespace App\Services;
 
 use App\Models\Code;
+use App\Models\User;
+use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
+use DB;
+use Illuminate\Http\JsonResponse;
+use Notification;
 
 class CodeService{
-    protected function getOrCreateVerificationCode($user_id)
+    public function getOrCreateVerificationCode($user_id)
     {
         $currentCode = Code::where('user_id', $user_id)
-                           ->first();
+            ->first();
 
-        if ($currentCode && $currentCode->expired_at > now()) {
-            return $currentCode->verification_code;
+        if ($currentCode && $currentCode->created_at > now()->subMinutes(60)) {
+            return $currentCode;
         }
 
         $verificationCode = mt_rand(100000, 999999);
-
-        Code::create([
+        $code = Code::create([
             'user_id' => $user_id,
             'verification_code' => $verificationCode,
-            'expires_at' => Carbon::now()->addMinutes(30),
+            'expired_at' => Carbon::now()->addMinutes(30),
         ]);
 
-        return $verificationCode;
+        return $code;
     }
 
-    public function isExpired($code)
+    public function isCodeExpired($code)
     {
-        return $code->expires_at < Carbon::now();
+        return $code->expired_at < Carbon::now();
+    }
+
+    public function verifyCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $request_code = $request->verification_code;
+            $original_code = $this->getOrCreateVerificationCode($request->route('id'));
+
+            if (!($request_code && ($request_code == $original_code->verification_code))) {
+                return response()->json(['message' => 'Invalid verification Code'], 403);
+            }
+
+            $user = User::findOrFail($request->route('id'));
+
+            if ($user->hasVerifiedEmail()) {
+                return response()->json(['message' => 'Email already verified'], 400);
+            }
+
+            if ($this->isCodeExpired($original_code)) {
+                $original_code->delete();
+                return response()->json(['message' => 'Code has expired'], 400);
+            }
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+            $original_code->delete();
+            return response()->json(['message' => 'Code has been confirmed']);
+        });
+    }
+
+    public function resendCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $user = User::findOrFail($request->route('id'));
+            $user->verificationCode?->delete();
+            $verification_code = $this->getOrCreateVerificationCode($user->id);
+
+            DB::afterCommit(function () use ($user, $verification_code) {
+                Notification::send($user, new VerificationCodeNotification($user, $verification_code));
+            });
+
+            return response()->json(['message' => 'Verification Code sent, Check your email.']);
+        });
+
     }
 
 }

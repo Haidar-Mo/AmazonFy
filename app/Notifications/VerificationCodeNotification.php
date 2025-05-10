@@ -11,19 +11,12 @@ class VerificationCodeNotification extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
+
+    public function __construct(public $user,public $verificationCode)
     {
-        //
+
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
@@ -35,16 +28,14 @@ class VerificationCodeNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->mailer('smtp')
+            ->subject('Verification Code')
+            ->greeting('Hello ' . $this->user->first_name )
+            ->line('Here is your verification code: ' . $this->verificationCode)
+            ->line('Please use this code to complete your operation.');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
+
     public function toArray(object $notifiable): array
     {
         return [

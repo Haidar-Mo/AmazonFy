@@ -18,11 +18,10 @@ Route::middleware([
     /**
      * TO DO LIST:
      *
-     * code verification notification
+     *
      *
      * put the expiration time in a config or .env file
      *
-     * modify the email verification flow
      *
      * QUESTIONS:
      *
