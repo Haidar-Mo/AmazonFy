@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Dashboard\ShopTypesController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -12,6 +13,8 @@ Route::prefix('v1/')->group(function () {
         include __DIR__ . "/V1/Dashboard/notification.php";
         include __DIR__ . "/V1/Dashboard/terms_and_conditions.php";
         include __DIR__ . "/V1/Dashboard/storehouse.php";
+
+        Route::apiResource('shopTypes', ShopTypesController::class);
     });
 
 

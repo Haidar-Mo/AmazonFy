@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ShopType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,7 +26,7 @@ class ShopFactory extends Factory
             'logo' => '',
             'identity_front_face' => '',
             'identity_back_face' => '',
-            'type' => 'default_type',
+            'shop_type_id' => ShopType::factory()->create()->id,
             'address' => $this->faker->address,
             'status' => 'pending',
         ];

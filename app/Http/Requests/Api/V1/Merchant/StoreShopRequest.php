@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1\Merchant;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SendShopDocumentationRequest extends FormRequest
+class StoreShopRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +30,6 @@ class SendShopDocumentationRequest extends FormRequest
             'identity_back_face' => ['required', 'image'],
             'type' => ['required'],
             'address' => ['required', 'string'],
-
         ];
     }
 }
