@@ -11,7 +11,7 @@ Route::middleware([
 ])
     ->group(function () {
 
-        Route::apiResource('shops',ShopsController::class);
+        Route::resource('shops',ShopsController::class);
 
     });
 
