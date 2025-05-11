@@ -13,6 +13,7 @@ use Illuminate\Database\{
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -53,6 +54,10 @@ return Application::configure(basePath: dirname(__DIR__))
                     ], 404);
                 }
 
+                if ($e instanceof NotFoundHttpException) {
+                    return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
+                }
+
                 if ($e instanceof AuthorizationException) {
                     return response()->json([
                         'message' => 'This action is unauthorized.',
@@ -85,6 +90,8 @@ return Application::configure(basePath: dirname(__DIR__))
                         'message' => 'Something went wrong, please try again later.'
                     ], 504);
                 }
+
+                // return response()->json(get_class($e));
             }
         });
     })->create();
