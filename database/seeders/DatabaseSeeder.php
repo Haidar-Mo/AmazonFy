@@ -22,9 +22,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Syria'
         ]);
 
-        \App\Models\Product::factory()->count(10)->create();
+        \App\Models\Product::factory()->count(100)->create();
         \App\Models\Shop::factory()->count(10)->create();
-        \App\Models\ShopOrder::factory()->count(5)->create();
+        \App\Models\ShopProduct::factory()->count(500)->create();
+      \App\Models\ShopOrder::factory()->count(5)->create();
         // \App\Models\OrderItem::factory()->count(25)->create();
 
         /*

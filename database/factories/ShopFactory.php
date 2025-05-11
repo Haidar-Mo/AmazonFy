@@ -19,16 +19,17 @@ class ShopFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create()->id,
-            'name' => $this->faker->word(),
+
+            'user_id' => User::factory(),
+            'name' => $this->faker->name,
             'phone_number' => $this->faker->phoneNumber(),
-            'identity_number' => $this->faker->randomNumber(),
-            'logo' => '',
-            'identity_front_face' => '',
-            'identity_back_face' => '',
+            'identity_number' => $this->faker->randomNumber(9),
+            'logo' => 'logo/image.jpg',
+            'identity_front_face' => 'identity/image.jpg',
+            'identity_back_face' => 'identity/image.jpg',
             'shop_type_id' => ShopType::factory()->create()->id,
-            'address' => $this->faker->address,
-            'status' => 'pending',
+            'address' => $this->faker->address(),
+            'status' => $this->faker->randomElement(['pending', 'rejected', 'active', 'inactive']),
         ];
     }
 }

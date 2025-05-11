@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('title');
             $table->text('details');
             $table->string('type');
+            $table->string('image');
             $table->decimal('wholesale_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->boolean('is_available')->default(true);
