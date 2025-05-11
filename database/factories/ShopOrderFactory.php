@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
+use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,32 +19,34 @@ class ShopOrderFactory extends Factory
      */
     public function definition(): array
     {
+        $wholesalePrice = $this->faker->randomFloat(2, 10, 1000);
+        $count = $this->faker->numberBetween(1, 5);
+
         return [
             'shop_id' => Shop::inRandomOrder()->first()->id,
-            'region_id' => 1,
-            'name' => $this->faker->name,
-            'phone_number' => $this->faker->phoneNumber,
-            'address' => $this->faker->address,
-            'total_price' => $this->faker->randomFloat(2, 10, 1000),
+            'client_id' => Client::inRandomOrder()->first()->id,
+            'product_id' => Product::inRandomOrder()->first()->id,
+            'wholesale_price' => $this->faker->randomFloat(2, 10, 1000),
+            'selling_price' => $wholesalePrice,
+            'count' => $count,
+            'total_price' => $wholesalePrice * $count,
             'status' => $this->faker->randomElement(['checking', 'reviewing', 'delivering', 'canceled']),
             'customer_note' => $this->faker->sentence,
         ];
     }
 
-    /*  public function checking(): static
-      {
-          return $this->state(fn(array $attributes) => [
-              'status' => 'checking',
-          ]);
-      }
+    public function checking(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'checking',
+        ]);
+    }
 
-      public function delivering(): static
-      {
-          return $this->state(fn(array $attributes) => [
-              'status' => 'delivering',
-          ]);
-      }*/
+    public function delivering(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'delivering',
+        ]);
+    }
 
-    // Usage:
-    //$deliveringOrder = \App\Models\Order::factory()->delivering()->create();
 }

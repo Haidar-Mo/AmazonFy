@@ -13,13 +13,14 @@ return new class extends Migration {
         Schema::create('shop_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shop_id')->nullable()->constrained('shops')->nullOnDelete();
-            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
-            $table->string('name');
-            $table->string('phone_number');
-            $table->string('address');
+            $table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
+            $table->decimal('wholesale_price', 10, 2);
+            $table->decimal('selling_price', 10, 2);
+            $table->integer('count');
             $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['checking', 'reviewing', 'delivering', 'canceled']);
             $table->string('customer_note');
+            $table->enum('status', ['checking', 'reviewing', 'delivering', 'canceled']);
             $table->timestamps();
         });
     }
