@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Region;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -18,12 +18,15 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
 
+        Region::create([
+            'name' => 'Syria'
+        ]);
 
         \App\Models\Product::factory()->count(100)->create();
         \App\Models\Shop::factory()->count(10)->create();
         \App\Models\ShopProduct::factory()->count(500)->create();
-        \App\Models\ShopOrder::factory()->count(5)->create();
-        \App\Models\OrderItem::factory()->count(25)->create();
+      \App\Models\ShopOrder::factory()->count(5)->create();
+        // \App\Models\OrderItem::factory()->count(25)->create();
 
         /*
                 $user = User::factory()->create([

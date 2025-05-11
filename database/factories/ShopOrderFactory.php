@@ -19,6 +19,7 @@ class ShopOrderFactory extends Factory
     {
         return [
             'shop_id' => Shop::inRandomOrder()->first()->id,
+            'region_id' => 1,
             'name' => $this->faker->name,
             'phone_number' => $this->faker->phoneNumber,
             'address' => $this->faker->address,

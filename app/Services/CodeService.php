@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Code;
+use App\Models\User;
+use App\Notifications\VerificationCodeNotification;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\JsonResponse;
+use Notification;
+
+class CodeService{
+    public function getOrCreateVerificationCode($user_id)
+    {
+        $currentCode = Code::where('user_id', $user_id)
+            ->first();
+
+        if ($currentCode && $currentCode->created_at > now()->subMinutes(60)) {
+            return $currentCode;
+        }
+
+        $verificationCode = mt_rand(100000, 999999);
+        $code = Code::create([
+            'user_id' => $user_id,
+            'verification_code' => $verificationCode,
+            'expired_at' => Carbon::now()->addMinutes(30),
+        ]);
+
+        return $code;
+    }
+
+    public function isCodeExpired($code)
+    {
+        return $code->expired_at < Carbon::now();
+    }
+
+    public function verifyCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $request_code = $request->verification_code;
+            $original_code = $this->getOrCreateVerificationCode($request->route('id'));
+
+            if (!($request_code && ($request_code == $original_code->verification_code))) {
+                return response()->json(['message' => 'Invalid verification Code'], 403);
+            }
+
+            $user = User::findOrFail($request->route('id'));
+
+            if ($user->hasVerifiedEmail()) {
+                return response()->json(['message' => 'Email already verified'], 400);
+            }
+
+            if ($this->isCodeExpired($original_code)) {
+                $original_code->delete();
+                return response()->json(['message' => 'Code has expired'], 400);
+            }
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+            $original_code->delete();
+            return response()->json(['message' => 'Code has been confirmed']);
+        });
+    }
+
+    public function resendCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $user = User::findOrFail($request->route('id'));
+            $user->verificationCode?->delete();
+            $verification_code = $this->getOrCreateVerificationCode($user->id);
+
+            DB::afterCommit(function () use ($user, $verification_code) {
+                Notification::send($user, new VerificationCodeNotification($user, $verification_code));
+            });
+
+            return response()->json(['message' => 'Verification Code sent, Check your email.']);
+        });
+
+    }
+
+}

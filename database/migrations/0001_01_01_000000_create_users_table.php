@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->string('email');
             $table->string('phone_number');  // Consider using string for phone numbers
             $table->string('password');
-            $table->string('verify_code')->nullable();
             $table->date('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

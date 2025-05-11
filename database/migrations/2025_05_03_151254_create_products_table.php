@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->decimal('selling_price', 10, 2);
             $table->boolean('is_available')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
