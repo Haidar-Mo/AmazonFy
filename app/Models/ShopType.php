@@ -14,7 +14,8 @@ class ShopType extends Model
         'name'
     ];
 
-    public function shops() : HasMany {
+    public function shops(): HasMany
+    {
         return $this->hasMany(Shop::class);
     }
 }

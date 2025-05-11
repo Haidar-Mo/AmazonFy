@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -41,5 +42,12 @@ class UserFactory extends Factory
         return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function asMerchant()
+    {
+        return $this->afterCreating(function ($model) {
+            $model->assignRole(Role::where('name', 'merchant')->first());
+        });
     }
 }

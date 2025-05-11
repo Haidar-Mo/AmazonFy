@@ -12,11 +12,20 @@ class OrderController extends Controller
 
     use ResponseTrait;
 
-
     public function show(string $id)
     {
         try {
-            $order = ShopOrder::with(['shop', 'items.product'])->findOrFail($id);
+            $order = ShopOrder::with(['shop'])->findOrFail($id)
+                ->append([
+                    'shop_name',
+                    'merchant_name',
+                    'client_name',
+                    'client_email',
+                    'client_phone_number',
+                    'client_address',
+                    'client_region',
+                    'created_from'
+                ]);
             return $this->showResponse($order, 'تم عرض تفاصيل الطلب بنجاح');
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء عرض تفاصيل الطلب');
@@ -26,7 +35,16 @@ class OrderController extends Controller
     public function index()
     {
         try {
-            $orders = ShopOrder::all()->append(['shop_name']);
+            $orders = ShopOrder::with(['shop'])->get()->append([
+                'shop_name',
+                'merchant_name',
+                'client_name',
+                'client_email',
+                'client_phone_number',
+                'client_address',
+                'client_region',
+                'created_from',
+            ]);
             return $this->showResponse($orders, 'تم جلب كل الطلبات بنجاح', 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء جلب الطلبات');
