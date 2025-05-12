@@ -41,4 +41,26 @@ class Shop extends Model
     {
         return $this->belongsTo(ShopType::class, 'shop_type_id');
     }
+
+
+
+    //! Accessories
+
+    public function getLogoFullPathAttribute()
+    {
+        return asset($this->logo);
+    }
+    public function getIdentityFrontFaceFullPathAttribute()
+    {
+        return asset($this->identity_front_face);
+    }
+    public function getIdentityBackFaceFullPathAttribute()
+    {
+        return asset($this->identity_back_face);
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return $this->type()->first()->name;
+    }
 }

@@ -69,7 +69,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Wallet::class);
     }
 
-    public function verificationCode() : HasOne {
+    public function verificationCode(): HasOne
+    {
         return $this->hasOne(Code::class);
     }
 
@@ -84,5 +85,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getPermissionsNamesAttribute()
     {
         return $this->getPermissionNames();
+    }
+
+    public function getShopStatusAttribute()
+    {
+        return $this->shop()->first() ? $this->shop()->first()->status : 'غير موثق';
     }
 }
