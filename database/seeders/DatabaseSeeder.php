@@ -4,11 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\ProductType;
 use App\Models\Region;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Shop;
 use App\Models\ShopOrder;
 use App\Models\ShopProduct;
+use App\Models\ShopType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -23,10 +25,18 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
-
-        Region::factory()->count(5)->create();
+        Region::insert([
+            ['parent_id' => null, 'name' => 'Sy'],
+            ['parent_id' => null, 'name' => 'SAK'],
+            ['parent_id' => null, 'name' => 'UAE'],
+            ['parent_id' => null, 'name' => 'EG'],
+            ['parent_id' => null, 'name' => 'AHK'],
+        ]);
+        Region::factory()->count(50)->create();
         Client::factory()->count(10)->create();
+        ProductType::factory()->count(20)->create();
         Product::factory()->count(100)->create();
+        ShopType::factory()->count(10)->create();
         User::factory()->asMerchant()
             ->has(
                 Shop::factory()->has(

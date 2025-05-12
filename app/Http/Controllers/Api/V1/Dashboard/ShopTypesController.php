@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\V1\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\ShopType;
 use App\Traits\ResponseTrait;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ShopTypesController extends Controller
 {
@@ -18,14 +18,6 @@ class ShopTypesController extends Controller
     {
         $types = ShopType::all();
         return $this->showResponse($types);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -57,13 +49,6 @@ class ShopTypesController extends Controller
         return $this->showResponse($shopType);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ShopType $shopType)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

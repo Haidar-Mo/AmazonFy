@@ -27,7 +27,7 @@ class ShopFactory extends Factory
             'logo' => 'logo/image.jpg',
             'identity_front_face' => 'identity/image.jpg',
             'identity_back_face' => 'identity/image.jpg',
-            'shop_type_id' => ShopType::factory()->create()->id,
+            'shop_type_id' => ShopType::inRandomOrder()->first()->id,
             'address' => $this->faker->address(),
             'status' => $this->faker->randomElement(['pending', 'rejected', 'active', 'inactive']),
         ];

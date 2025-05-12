@@ -30,4 +30,21 @@ class Product extends Model
     {
         return $this->hasMany(ShopOrder::class);
     }
+
+    public function type()
+    {
+        return $this->belongsTo(ProductType::class);
+    }
+
+    //! Accessories
+
+    public function getTypeNameAttribute()
+    {
+        return $this->type()->first()->name;
+    }
+    public function getFullPathImageAttribute()
+    {
+        return asset($this->image);
+    }
+
 }

@@ -12,13 +12,13 @@ class Shop extends Model
 
     protected $fillable = [
         'user_id',
+        'shop_type_id',
         'name',
         'phone_number',
         'identity_number',
         'logo',
         'identity_front_face',
         'identity_back_face',
-        'shop_type_id',
         'address',
         'status',       //- pending - rejected - active - inactive
     ];
