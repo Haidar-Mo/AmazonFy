@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 
 
@@ -10,15 +11,15 @@ Route::middleware([
     'type.merchant'
 ])
     ->group(function () {
-
-        Route::resource('shops',ShopsController::class);
-
+        Route::post('shops', [ShopsController::class, 'store']);
+        Route::resource('shops', ShopsController::class)->only(['create', 'show', 'update', 'delete'])->middleware('shop_must_belong_to_user');
+        Route::apiResource('shops/{shop}/products', ProductsController::class)->middleware('shop_must_belong_to_user');
     });
 
 /**
  * TO DO LIST:
  *
- * proceed with prodacts CRUD
+ *
  *
  * put the expiration time in a config or .env file
  *
