@@ -20,8 +20,8 @@ route::prefix('merchants')
             Route::get('index', [ShopController::class, 'index']);
             Route::get('show/{id}', [ShopController::class, 'show']);
             Route::post('create', [ShopController::class, 'store']);
-            Route::post('update/{id}', [ShopController::class, 'create']);
-            Route::delete('delete', [ShopController::class, 'destroy']);
+            Route::post('update/{id}', [ShopController::class, 'update']);
+            Route::delete('delete/{id}', [ShopController::class, 'destroy']);
         });
 
     });
