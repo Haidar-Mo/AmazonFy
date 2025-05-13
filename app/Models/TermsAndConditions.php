@@ -8,7 +8,8 @@ class TermsAndConditions extends Model
 {
 
     protected $fillable = [
-        'content'
+        'arabic_content',
+        'english_content'
     ];
 
 }

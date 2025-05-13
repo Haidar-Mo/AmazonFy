@@ -12,13 +12,13 @@ class Shop extends Model
 
     protected $fillable = [
         'user_id',
+        'shop_type_id',
         'name',
         'phone_number',
         'identity_number',
         'logo',
         'identity_front_face',
         'identity_back_face',
-        'shop_type_id',
         'address',
         'status',       //- pending - rejected - active - inactive
     ];
@@ -40,5 +40,27 @@ class Shop extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(ShopType::class, 'shop_type_id');
+    }
+
+
+
+    //! Accessories
+
+    public function getLogoFullPathAttribute()
+    {
+        return asset($this->logo);
+    }
+    public function getIdentityFrontFaceFullPathAttribute()
+    {
+        return asset($this->identity_front_face);
+    }
+    public function getIdentityBackFaceFullPathAttribute()
+    {
+        return asset($this->identity_back_face);
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return $this->type()->first()->name;
     }
 }

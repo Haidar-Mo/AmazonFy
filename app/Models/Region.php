@@ -10,6 +10,17 @@ class Region extends Model
     use HasFactory;
 
     protected $fillable = [
+        'parent_id',
         'name'
     ];
+
+    public function parent()
+    {
+        return $this->belongsTo(Region::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Region::class, 'parent_id');
+    }
 }
