@@ -11,12 +11,19 @@ Route::middleware([
 ])
     ->group(function () {
 
-        Route::apiResource('shops',ShopsController::class);
+        Route::resource('shops',ShopsController::class);
 
     });
 
 /**
  * TO DO LIST:
  *
+ * proceed with prodacts CRUD
+ *
  * put the expiration time in a config or .env file
+ *
+ *
+ * QUESTIONS:
+ *
+ * the documentation notification when creating a new shop
  */

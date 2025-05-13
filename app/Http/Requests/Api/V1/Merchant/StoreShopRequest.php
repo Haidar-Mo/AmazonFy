@@ -22,13 +22,13 @@ class StoreShopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'phone_number' => ['required', 'string'],
-            'identity_number' => ['required', 'string'],
+            'name' => ['required', 'string','unique:shops,name'],
+            'phone_number' => ['required', 'string','unique:shops,phone_number'],
+            'identity_number' => ['required', 'string','unique:shops,identity_number'],
             'logo' => ['required', 'image'],
             'identity_front_face' => ['required', 'image'],
             'identity_back_face' => ['required', 'image'],
-            'type' => ['required'],
+            'shop_type_id' => ['required','exists:shop_types,id'],
             'address' => ['required', 'string'],
         ];
     }
