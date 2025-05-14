@@ -4,7 +4,7 @@ namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductCreateRequest extends FormRequest
+class MerchantUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +21,12 @@ class ProductCreateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('id');
         return [
-            'title' => 'required|string',
-            'details' => 'required|string',
-            'type' => 'required|string',
-            'wholesale_price' => 'required|decimal:0,99999999',
-            'selling_price' => 'required|decimal:0,99999999',
-            'is_available' => 'boolean',
-            'image'=>'required|image'
+            'name' => 'sometimes|string',
+            'email' => "sometimes|string|unique:users,email,{$userId}",
+            'phone_number' => "sometimes|string|unique:users,phone_number,{$userId}",
+            'password' => 'sometimes|confirmed|min:6'
         ];
     }
 }

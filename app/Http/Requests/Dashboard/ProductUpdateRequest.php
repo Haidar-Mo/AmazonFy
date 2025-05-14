@@ -28,6 +28,7 @@ class ProductUpdateRequest extends FormRequest
             'wholesale_price' => 'sometimes|decimal:0,99999999',
             'selling_price' => 'sometimes|decimal:0,99999999',
             'is_available' => 'sometimes|boolean',
+            'image' => 'sometimes|image'
         ];
     }
 }

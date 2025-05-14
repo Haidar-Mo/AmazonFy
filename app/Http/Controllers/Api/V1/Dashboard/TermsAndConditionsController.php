@@ -14,13 +14,21 @@ class TermsAndConditionsController extends Controller
 
     public function show()
     {
-        return $this->showResponse(TermsAndConditions::firstOrNew(['content' => 'HERE WILL BE THE TERMS AND CONDITIONS']), 'تم عرض الشروط و الأحكام بنجاح');
+        return $this->showResponse(TermsAndConditions::first(), 'تم عرض الشروط و الأحكام بنجاح');
     }
 
     public function update(Request $request)
     {
-        $data = $request->validate(['content' => 'required|string']);
-        TermsAndConditions::firstOrCreate($data);
+        $data = $request->validate([
+            'english_content' => 'sometimes|string',
+            'arabic_content' => 'sometimes|string'
+        ]);
+        $terms = TermsAndConditions::first();
+        if ($terms) {
+            $terms->update($data);
+        } else {
+            TermsAndConditions::create($data);
+        }
         return $this->showResponse(TermsAndConditions::first(), 'تم تعديل الشروط و الأحكام بنجاح');
 
     }

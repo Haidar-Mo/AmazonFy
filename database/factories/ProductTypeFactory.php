@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Region>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductType>
  */
-class RegionFactory extends Factory
+class ProductTypeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,7 @@ class RegionFactory extends Factory
     public function definition(): array
     {
         return [
-            'parent_id' => $this->faker->randomElement(['1', '2', '3', '4', '5']),
-            'name' => $this->faker->city()
+            'name' => $this->faker->unique()->word()
         ];
     }
 }
