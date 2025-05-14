@@ -68,7 +68,8 @@ class ShopsController extends Controller
      */
     public function show(Shop $shop)
     {
-        return $this->showResponse($shop);
+        $data = $shop->withCount('products')->with('products')->where('user_id',Auth::user()->id)->get();
+        return $this->showResponse($data);
     }
 
     /**
