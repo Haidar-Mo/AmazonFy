@@ -4,22 +4,27 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Shop;
+use App\Traits\ResponseTrait;
+use DB;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
+    use ResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Shop $shop)
     {
-        //
+        $products = $shop->products()->get();
+        return $this->showResponse($products);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Shop $shop)
     {
         //
     }
@@ -27,15 +32,20 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Shop $shop)
     {
-        //
+        return DB::transaction(function () use ($request, $shop) {
+            $request->validate(['product_id' => ['required', 'exists:products,id']]);
+            $product = Product::findOrFail($request->product_id);
+            $shop->products()->attach($product);
+            return $this->showMessage('Added successfully');
+        });
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Shop $shop, Product $product)
     {
         //
     }
@@ -43,7 +53,7 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Shop $shop, Product $product)
     {
         //
     }
@@ -51,7 +61,7 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Shop $shop, Product $product)
     {
         //
     }
@@ -59,8 +69,11 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Shop $shop, Product $product)
     {
-        //
+        return DB::transaction(function () use ($shop, $product) {
+            $shop->products()->detach($product);
+            return $this->showMessage('Deleted successfully');
+        });
     }
 }

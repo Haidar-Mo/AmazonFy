@@ -14,12 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('wallet_id')->constrained('wallets')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
-            $table->string('transactionable_type', 50);  // Shorter column name
-            $table->uuid('transactionable_id');          // Shorter column name
-            $table->index(
-                ['transactionable_type', 'transactionable_id'],
-                'trans_hist_transactionable_index'  // Custom short index name
-            );
+            $table->enum('transaction_type', ['charge', 'withdraw']);
+            $table->string('target'); // the wallet address
+            $table->string('charge_network')->default('TRC-20');
+            $table->string('coin_type')->default('USDT');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
