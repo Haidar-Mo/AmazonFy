@@ -13,8 +13,12 @@ class TransactionHistory extends Model
         'id',
         'wallet_id',
         'amount',
-        'transactionable_id',
-        'transactionable_type',
+        'transaction_type',
+        'target',
+        'charge_network',
+        'coin_type',
+        'status',
+        'image',
     ];
 
     public function wallet()

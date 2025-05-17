@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Middleware\MerchantMiddleware;
+use App\Http\Middleware\ShopProductMiddleware;
+use App\Http\Middleware\WalletAddressMiddleware;
+use App\Http\Middleware\WalletMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,6 +16,7 @@ use Illuminate\Database\{
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -30,6 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
 
             'type.merchant' => MerchantMiddleware::class,
+            'shop_must_belong_to_user' => ShopProductMiddleware::class,
+            'wallet_must_belong_to_user' => WalletMiddleware::class,
+            'address_must_belong_to_wallet' => WalletAddressMiddleware::class,
 
         ]);
     })
@@ -51,6 +58,10 @@ return Application::configure(basePath: dirname(__DIR__))
                     return response()->json([
                         'message' => explode('\\', $e->getModel())[2] . ' Not Found.',
                     ], 404);
+                }
+
+                if ($e instanceof NotFoundHttpException) {
+                    return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
                 }
 
                 if ($e instanceof AuthorizationException) {
@@ -85,6 +96,8 @@ return Application::configure(basePath: dirname(__DIR__))
                         'message' => 'Something went wrong, please try again later.'
                     ], 504);
                 }
+
+                // return response()->json(get_class($e));
             }
         });
     })->create();
