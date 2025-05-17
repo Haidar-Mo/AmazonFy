@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\V1\Dashboard\ProductController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
@@ -17,7 +18,8 @@ Route::middleware([
 
         # all these route should be under the merchant role
         Route::resource('shops', ShopsController::class)->only(['create', 'show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
-        Route::apiResource('shops/{shop}/products', ProductsController::class)->middleware('shop_must_belong_to_user');
+        Route::get('products', [ProductController::class, 'index']);
+        Route::apiResource('products', ProductsController::class)->only(['store', 'destroy'])->middleware('shop_must_belong_to_user');
 
 
         Route::middleware('wallet_must_belong_to_user')->group(function () {
@@ -25,7 +27,7 @@ Route::middleware([
             Route::middleware('address_must_belong_to_wallet')->group(function () {
                 Route::post('wallets/{wallet}/charge', [WalletsController::class, 'chargeBalance']);
                 Route::post('wallets/{wallet}/withdraw', [WalletsController::class, 'withdrawBalance']);
-                Route::apiResource('wallets/{wallet}/walletAddresses', WalletAddressesController::class)->only(['store','update','destroy']);
+                Route::apiResource('wallets/{wallet}/walletAddresses', WalletAddressesController::class)->only(['store', 'update', 'destroy']);
             });
         });
     });
