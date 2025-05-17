@@ -19,7 +19,7 @@ Route::middleware([
         # all these route should be under the merchant role
         Route::resource('shops', ShopsController::class)->only(['create', 'show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
         Route::get('products', [ProductController::class, 'index']);
-        Route::apiResource('products', ProductsController::class)->only(['store', 'destroy'])->middleware('shop_must_belong_to_user');
+        Route::apiResource('shops/{shop}/products', ProductsController::class)->only(['store', 'destroy'])->middleware('shop_must_belong_to_user');
 
 
         Route::middleware('wallet_must_belong_to_user')->group(function () {
