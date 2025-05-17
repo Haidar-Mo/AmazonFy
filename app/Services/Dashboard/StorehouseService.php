@@ -20,4 +20,12 @@ class StorehouseService
             return $storehouse->append(['region_name']);
         });
     }
+
+    public function destroy(string $id)
+    {
+        $store = Storehouse::findOrFail($id);
+        DB::transaction(function () use ($store) {
+            $store->delete();
+        });
+    }
 }

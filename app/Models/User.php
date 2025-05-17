@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
-use URL;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -26,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'phone_number',
         'password',
+        'is_blocked',
         'verify_code',
         'verified_at'
     ];
@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $hidden = [
         'password',
+        'is_blocked',
         'remember_token',
     ];
 
@@ -62,7 +63,12 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function chat()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasOne(Chat::class);
+    }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'admin_id');
+
     }
     public function wallet()
     {

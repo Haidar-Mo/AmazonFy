@@ -15,8 +15,6 @@ class MerchantService
 {
     use HasFiles;
 
-
-
     public function store(FormRequest $request)
     {
         $data = $request->validated();
@@ -42,6 +40,25 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         DB::transaction(function () use ($merchant) {
             $merchant->delete();
+        });
+    }
+
+
+    public function blockMerchant(string $id)
+    {
+        $merchant = User::role('merchant', 'api')->findOrFail($id);
+        return DB::transaction(function () use ($merchant) {
+            $merchant->update(['is_blocked' => true]);
+            return $merchant->makeVisible(['is_blocked']);
+        });
+    }
+
+    public function unblockMerchant(string $id)
+    {
+        $merchant = User::role('merchant', 'api')->findOrFail($id);
+        return DB::transaction(function () use ($merchant) {
+            $merchant->update(['is_blocked' => false]);
+            return $merchant->makeVisible(['is_blocked']);
         });
     }
 }

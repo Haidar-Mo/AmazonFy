@@ -22,6 +22,7 @@ class MerchantController extends Controller
         try {
             $merchants = User::role('merchant', 'api')
                 ->get()
+                ->makeVisible(['is_blocked'])
                 ->append(['shop_status']);
             return $this->showResponse($merchants, 'تم جلب كل التجار');
 
@@ -33,9 +34,10 @@ class MerchantController extends Controller
     public function show(string $id)
     {
         try {
-            $merchant = User::with('shop')
+            $merchant = User::with(['shop', 'wallet.addresses'])
                 ->role('merchant', 'api')
                 ->findOrFail($id)
+                ->makeVisible(['is_blocked'])
                 ->append(['shop_status']);
             if ($merchant->shop) {
                 $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
@@ -76,5 +78,27 @@ class MerchantController extends Controller
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ ما أثناء حذف التاجر');
         }
+    }
+
+    public function blockMerchant(string $id)
+    {
+        try {
+            $merchant = $this->service->blockMerchant($id);
+            return $this->showResponse($merchant, 'تم حظر المستخدم بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء حظر المستخدم');
+        }
+
+    }
+
+    public function unblockMerchant(string $id)
+    {
+        try {
+            $merchant = $this->service->unblockMerchant($id);
+            return $this->showResponse($merchant, 'تم فك حظر المستخدم بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء فك حظر المستخدم');
+        }
+
     }
 }
