@@ -20,7 +20,7 @@ class ShopOrder extends Model
         'count',
         'total_price',
         'customer_note',
-        'status'        //- checking, reviewing, delivering, canceled
+        'status'        //- pending, checking, preparing, delivered , canceled
     ];
 
     public function shop()

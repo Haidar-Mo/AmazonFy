@@ -15,6 +15,20 @@ class MerchantService
 {
     use HasFiles;
 
+    public function show(string $id)
+    {
+
+        $merchant = User::with(['shop.products', 'wallet.addresses', 'shop.orders'])
+            ->role('merchant', 'api')
+            ->findOrFail($id)
+            ->makeVisible(['is_blocked'])
+            ->append(['shop_status']);
+        if ($merchant->shop) {
+            $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+        }
+        return $merchant;
+    }
+
     public function store(FormRequest $request)
     {
         $data = $request->validated();
@@ -42,7 +56,6 @@ class MerchantService
             $merchant->delete();
         });
     }
-
 
     public function blockMerchant(string $id)
     {
