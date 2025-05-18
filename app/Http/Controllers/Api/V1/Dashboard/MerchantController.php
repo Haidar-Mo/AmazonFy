@@ -34,14 +34,7 @@ class MerchantController extends Controller
     public function show(string $id)
     {
         try {
-            $merchant = User::with(['shop', 'wallet.addresses'])
-                ->role('merchant', 'api')
-                ->findOrFail($id)
-                ->makeVisible(['is_blocked'])
-                ->append(['shop_status']);
-            if ($merchant->shop) {
-                $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
-            }
+            $merchant = $this->service->show($id);
             return $this->showResponse($merchant, 'تم جلب معلومات التاجر');
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ ما أثناء عرض بيانات التاجر');

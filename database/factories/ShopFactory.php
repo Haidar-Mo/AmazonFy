@@ -21,13 +21,13 @@ class ShopFactory extends Factory
         return [
 
             'user_id' => User::factory(),
+            'shop_type_id' => ShopType::inRandomOrder()->first()->id,
             'name' => $this->faker->name,
             'phone_number' => $this->faker->phoneNumber(),
             'identity_number' => $this->faker->randomNumber(9),
             'logo' => 'logo/image.jpg',
             'identity_front_face' => 'identity/image.jpg',
             'identity_back_face' => 'identity/image.jpg',
-            'shop_type_id' => ShopType::inRandomOrder()->first()->id,
             'address' => $this->faker->address(),
             'status' => $this->faker->randomElement(['pending', 'rejected', 'active', 'inactive']),
         ];

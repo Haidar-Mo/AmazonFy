@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('count');
             $table->decimal('total_price', 10, 2);
             $table->string('customer_note');
-            $table->enum('status', ['checking', 'reviewing', 'delivering', 'canceled']);
+            $table->string('status');
             $table->timestamps();
         });
     }

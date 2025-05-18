@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\ShopOrder;
+use App\Services\Dashboard\OrderService;
 use App\Traits\ResponseTrait;
 
 class OrderController extends Controller
@@ -11,21 +11,14 @@ class OrderController extends Controller
 
     use ResponseTrait;
 
+    public function __construct(public OrderService $service)
+    {
+    }
+
     public function show(string $id)
     {
         try {
-            $order = ShopOrder::with(['shop', 'product'])->findOrFail($id)
-                ->append([
-                    'shop_name',
-                    'merchant_name',
-                    'client_name',
-                    'client_email',
-                    'client_phone_number',
-                    'client_address',
-                    'client_region',
-                    'created_from'
-                ]);
-                $order->product->append('full_path_image');
+            $order = $this->service->show($id);
             return $this->showResponse($order, 'تم عرض تفاصيل الطلب بنجاح');
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء عرض تفاصيل الطلب');
@@ -35,29 +28,38 @@ class OrderController extends Controller
     public function index()
     {
         try {
-            $orders = ShopOrder::with(['shop', 'product'])->get()->append([
-                'shop_name',
-                'merchant_name',
-                'client_name',
-                'client_email',
-                'client_phone_number',
-                'client_address',
-                'client_region',
-                'created_from',
-            ]);
-            $orders->each(function ($order){
-                $order->product->append('full_path_image');
-            });
+            $orders = $this->service->index();
             return $this->showResponse($orders, 'تم جلب كل الطلبات بنجاح', 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء جلب الطلبات');
         }
     }
 
+    public function update(string $id)
+    {
+        try {
+            $order = $this->service->updateStatus($id);
+            return $this->showResponse($order, 'تم تعديل حالة الطلب بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء تعديل حالة الطلب');
+        }
+    }
+
+    public function cancelOrder(string $id)
+    {
+        try {
+            $order = $this->service->cancelOrder($id);
+            return $this->showResponse($order, 'تم إلغاء الطلب بنجاح');
+
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء إلغاء الطلب');
+        }
+    }
+
     public function destroy(string $id)
     {
         try {
-            ShopOrder::findOrFail($id)->delete();
+            $this->service->destroy($id);
             return $this->showMessage('تم حذف الطلب بنجاح', 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء حذف الطلب');

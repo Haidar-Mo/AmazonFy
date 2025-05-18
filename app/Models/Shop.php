@@ -33,7 +33,7 @@ class Shop extends Model
     {
         return $this->hasMany(ShopProduct::class);
     }
-    public function order()
+    public function orders()
     {
         return $this->hasMany(ShopOrder::class);
     }
@@ -45,7 +45,7 @@ class Shop extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'shop_products');
+        return $this->belongsToMany(Product::class, 'shop_products');
     }
 
     //! Accessories
