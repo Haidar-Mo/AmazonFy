@@ -8,7 +8,9 @@ use App\Http\Requests\Api\V1\Merchant\Auth\RegisterRequest;
 use App\Models\{
     User
 };
+use App\Models\Chat;
 use App\Models\Wallet;
+use App\Notifications\PhoneNumberVerificationCodeNotification;
 use App\Notifications\VerificationCodeNotification;
 use App\Services\CodeService;
 use App\Traits\{
@@ -36,15 +38,27 @@ class RegisterController extends Controller
     {
         return DB::transaction(function () use ($request) {
 
-            $user = User::create($request->validated());
+            if ($request->email) {
+                $user = User::create(array_merge($request->validated(), ['phone_number' => '']));
 
-            $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
+                $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
 
-            DB::afterCommit(function () use ($user, $verification_code) {
-                Notification::send($user, new VerificationCodeNotification($user, $verification_code));
-            });
+
+                DB::afterCommit(function () use ($user, $verification_code) {
+                    Notification::send($user, new VerificationCodeNotification($user, $verification_code));
+                });
+            } else {
+                $user = User::create(array_merge($request->validated(), ['email' => '']));
+
+                $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
+
+                $admin = User::findOrFail(4); //! set the proper admin id
+                Notification::send($admin, new PhoneNumberVerificationCodeNotification($user, $verification_code));
+            }
 
             Wallet::create(['user_id' => $user->id]);
+
+            Chat::create(['user_id' => $user->id, 'admin_id' => 4]); //! don't forget to set the proper admin id
 
             //! $user->assignRole('merchant'); assign the merchant role after being documented by the admin
 
@@ -80,6 +94,19 @@ class RegisterController extends Controller
     public function resendVerificationCode(Request $request)
     {
         return $this->codeService->resendCode($request);
+    }
+
+    public function verifyPhoneNumber(Request $request)
+    {
+        $request->validate([
+            'verification_code' => 'required'
+        ]);
+        return $this->codeService->verifyPhoneNumberCode($request);
+    }
+
+    public function resendPhoneNumberVerificationCode(Request $request)
+    {
+        return $this->codeService->resendPhoneNumberCode($request);
     }
 
 
