@@ -25,6 +25,10 @@ Route::prefix('auth/')->group(function () {
 
     Route::get('email/verify/{id}/resend',[RegisterController::class, 'resendVerificationCode']);
 
+    Route::post('phone-number/verify/{id}', [RegisterController::class, 'verifyPhoneNumber']);
+
+    Route::get('phone-number/verify/{id}/resend',[RegisterController::class, 'resendPhoneNumberVerificationCode']);
+
     Route::get('refresh-token', [LoginController::class, 'refreshToken'])
         ->middleware([
             'auth:sanctum',

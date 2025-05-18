@@ -23,8 +23,17 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone_number' => ['unique:users,phone_number'],
+            'phone_number' => [
+                'required_without:email',  // Required when email is not present
+                'prohibits:email',          // Prevent email from being submitted if phone_number exists
+                'unique:users,phone_number'
+            ],
+            'email' => [
+                'required_without:phone_number',  // Required when phone_number is not present
+                'prohibits:phone_number',         // Prevent phone_number from being submitted if email exists
+                'email',
+                'unique:users,email'
+            ],
             'password' => ['required', 'confirmed'],
             'deviceToken' => ['nullable'],
         ];

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Merchant\ChargeBalanceRequest;
 use App\Http\Requests\Api\V1\Merchant\WithdrawBalanceRequest;
+use App\Models\User;
 use App\Models\Wallet;
+use App\Notifications\NewTransactionNotification;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use DB;
 use Illuminate\Http\Request;
+use Notification;
 
 class WalletsController extends Controller
 {
@@ -87,9 +90,9 @@ class WalletsController extends Controller
                 )
             );
 
-            DB::afterCommit(function () {
-                // send the notification here
-            });
+            $admin = User::findOrFail(4); //! set the proper admin id
+            Notification::send($admin, new NewTransactionNotification($request->user()));
+
 
             return $this->showMessage('Operation Successded');
         });
@@ -106,9 +109,10 @@ class WalletsController extends Controller
                     'transaction_type' => 'withdraw',
                 ]
             ));
-            DB::afterCommit(function () {
-                // send the notification here
-            });
+
+            $admin = User::findOrFail(4); //! set the proper admin id
+            Notification::send($admin, new NewTransactionNotification($request->user()));
+
             return $this->showMessage('Operation Successded');
         });
     }
