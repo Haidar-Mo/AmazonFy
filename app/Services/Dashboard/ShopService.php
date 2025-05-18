@@ -15,6 +15,24 @@ class ShopService
 {
     use HasFiles;
 
+    public function index()
+    {
+        return Shop::all();
+
+    }
+
+
+    public function show(string $id)
+    {
+        return Shop::with(['user'])->findOrFail($id)
+            ->append([
+                'logo_full_path',
+                'identity_front_face_full_path',
+                'identity_back_face_full_path',
+            ]);
+
+    }
+
     public function store(FormRequest $request)
     {
         $data = $request->validated();

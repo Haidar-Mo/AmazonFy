@@ -23,7 +23,7 @@ class ShopOrderFactory extends Factory
         $count = $this->faker->numberBetween(1, 5);
 
         return [
-            'shop_id' => Shop::inRandomOrder()->first()->id,
+            'shop_id' => Shop::factory(),
             'client_id' => Client::inRandomOrder()->first()->id,
             'product_id' => Product::inRandomOrder()->first()->id,
             'wholesale_price' => $this->faker->randomFloat(2, 10, 1000),

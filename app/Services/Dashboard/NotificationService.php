@@ -4,9 +4,11 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Notifications\ToMerchantNotification;
+use Hamcrest\Core\IsInstanceOf;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Notification;
+use function PHPUnit\Framework\isInstanceOf;
 
 /**
  * Class NotificationService.
@@ -15,9 +17,10 @@ class NotificationService
 {
 
 
-    public function index()
+    public function indexSended()
     {
-        $notifications = DatabaseNotification::orderBy('created_at', 'asc')
+        $notifications = DatabaseNotification::where('type', ToMerchantNotification::class)
+            ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($notification) {
                 $notifiable = $notification->notifiable;
@@ -25,6 +28,12 @@ class NotificationService
                 return $notification;
             });
         return $notifications->makeHidden(['notifiable']);
+    }
+
+    public function indexReceived()
+    {
+        $user = request()->user();
+        return $user->notifications;
     }
 
     public function show(string $id)
@@ -46,7 +55,6 @@ class NotificationService
         $user = User::findOrFail($id);
         Notification::send($user, new ToMerchantNotification($data['title'], $data['content']));
     }
-
 
     public function destroy(string $id)
     {

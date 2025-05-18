@@ -30,4 +30,16 @@ class TransactionHistory extends Model
     {
         $this->morphTo();
     }
+
+
+    //! Accessories
+
+    public function getUserNameAttribute()
+    {
+        return $this->wallet()->first()->user()->first()->name;
+    }
+    public function getUserPhoneNumberAttribute()
+    {
+        return $this->wallet()->first()->user()->first()->phone_number;
+    }
 }

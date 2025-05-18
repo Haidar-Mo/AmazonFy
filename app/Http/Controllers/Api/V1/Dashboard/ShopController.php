@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Api\V1\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\ShopCreateRequest;
 use App\Http\Requests\Dashboard\ShopUpdateRequest;
-use App\Models\Shop;
 use App\Services\Dashboard\ShopService;
 use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
@@ -21,20 +19,24 @@ class ShopController extends Controller
 
     public function index()
     {
-        $shops = Shop::all();
-        return $this->showResponse($shops, 'تم جلب كل المتاجر بنجاح');
+        try {
+            $shops = $this->service->index();
+            return $this->showResponse($shops, 'تم جلب المتاجر بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ ما أثناء جلب المتاجر');
+        }
+
     }
 
 
     public function show(string $id)
     {
-        $shop = Shop::with(['user'])->findOrFail($id)
-            ->append([
-                'logo_full_path',
-                'identity_front_face_full_path',
-                'identity_back_face_full_path',
-            ]);
-        return $this->showResponse($shop, 'تم جلب تفاصيل المتجر بنجاح');
+        try {
+            $shop = $this->service->show($id);
+            return $this->showResponse($shop, 'تم جلب تفاصيل المتجر بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ ما أثناء إنشاء متجر');
+        }
     }
 
 
