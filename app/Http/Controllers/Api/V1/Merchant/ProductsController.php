@@ -15,9 +15,9 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Shop $shop)
+    public function index()
     {
-        $products = $shop->products()->get();
+        $products = Product::latest()->paginate(20);
         return $this->showResponse($products);
     }
 
