@@ -31,4 +31,14 @@ class StorehouseController extends Controller
             return $this->showError($e, 'حدث خطأ ما أثناء إنشاء المستودع');
         }
     }
+
+    public function destroy(string $id)
+    {
+        try {
+            $this->service->destroy($id);
+            return $this->showMessage('تم حذف المستودع بنجاح', 200);
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ ما أثناء حذف المستودع');
+        }
+    }
 }

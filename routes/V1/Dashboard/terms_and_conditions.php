@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V1\dashboard\TermsAndConditionsController;
+use App\Http\Controllers\Api\V1\Dashboard\TermsAndConditionsController;
 use Illuminate\Support\Facades\Route;
 
 

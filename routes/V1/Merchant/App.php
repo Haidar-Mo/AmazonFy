@@ -1,11 +1,13 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\Dashboard\ProductController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
+use App\Http\Controllers\Api\V1\MessageController;
 
 
 Route::middleware([
@@ -30,6 +32,11 @@ Route::middleware([
                 Route::apiResource('wallets/{wallet}/walletAddresses', WalletAddressesController::class)->only(['store', 'update', 'destroy']);
             });
         });
+        Route::prefix('chats')->group(function () {
+
+            // Route::get('show/{id}', [ChatController::class, 'show']);
+        });
+        // Route::apiResource('messages', MessageController::class)->only(['store']);
     });
 
 /**

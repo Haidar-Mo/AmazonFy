@@ -40,7 +40,7 @@ class Product extends Model
 
     public function getTypeNameAttribute()
     {
-        return $this->type()->first()->name;
+        return $this->type()->first()->name ?? 'no type found!!';
     }
     public function getFullPathImageAttribute()
     {

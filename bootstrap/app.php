@@ -60,9 +60,9 @@ return Application::configure(basePath: dirname(__DIR__))
                     ], 404);
                 }
 
-                if ($e instanceof NotFoundHttpException) {
-                    return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
-                }
+                // if ($e instanceof NotFoundHttpException) {
+                //     return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
+                // }
 
                 if ($e instanceof AuthorizationException) {
                     return response()->json([

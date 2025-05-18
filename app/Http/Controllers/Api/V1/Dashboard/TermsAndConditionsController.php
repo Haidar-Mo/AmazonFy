@@ -14,7 +14,15 @@ class TermsAndConditionsController extends Controller
 
     public function show()
     {
-        return $this->showResponse(TermsAndConditions::first(), 'تم عرض الشروط و الأحكام بنجاح');
+        $data = TermsAndConditions::first();
+        if (!$data) {
+            $array = [
+                'arabic_content' => 'هنا الشروط و الأحكام باللغة العربية',
+                'english_content' => 'Here will be the Terms&Conditions in English'
+            ];
+            $data = response()->json($array)->original;
+        }
+        return $this->showResponse($data, 'تم عرض الشروط و الأحكام بنجاح');
     }
 
     public function update(Request $request)

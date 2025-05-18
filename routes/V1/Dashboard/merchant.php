@@ -24,4 +24,10 @@ route::prefix('merchants')
             Route::delete('delete/{id}', [ShopController::class, 'destroy']);
         });
 
+        Route::prefix('status')->group(function () {
+
+            Route::post('block/{id}', [MerchantController::class, 'blockMerchant']);
+            Route::post('unblock/{id}', [MerchantController::class, 'unblockMerchant']);
+        });
+
     });

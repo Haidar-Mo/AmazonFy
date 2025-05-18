@@ -13,7 +13,8 @@ class Message extends Model
         'id',
         'chat_id',
         'sender_id',
-        'content'
+        'content',
+        'is_read'
     ];
 
     public function chat()

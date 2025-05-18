@@ -38,6 +38,11 @@ class ShopOrder extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
 
     //! Accessories
 
@@ -73,6 +78,7 @@ class ShopOrder extends Model
     {
         return $this->client()->first()->region()->first()->name;
     }
+
 
     public function getCreatedFromAttribute()
     {
