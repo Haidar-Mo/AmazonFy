@@ -1,13 +1,12 @@
 <?php
 
 use App\Enums\TokenAbility;
-use App\Http\Controllers\Api\V1\ChatController;
-use App\Http\Controllers\Api\V1\Dashboard\ProductController;
+use App\Http\Controllers\Api\V1\Merchant\ChatsController;
+use App\Http\Controllers\Api\V1\Merchant\MessagesController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
-use App\Http\Controllers\Api\V1\MessageController;
 
 
 Route::middleware([
@@ -20,7 +19,7 @@ Route::middleware([
 
         # all these route should be under the merchant role
         Route::resource('shops', ShopsController::class)->only(['create', 'show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
-        Route::get('products', [ProductController::class, 'index']);
+        Route::get('products', [ProductsController::class, 'index']);
         Route::apiResource('shops/{shop}/products', ProductsController::class)->only(['store', 'destroy'])->middleware('shop_must_belong_to_user');
 
 
@@ -32,21 +31,23 @@ Route::middleware([
                 Route::apiResource('wallets/{wallet}/walletAddresses', WalletAddressesController::class)->only(['store', 'update', 'destroy']);
             });
         });
-        Route::prefix('chats')->group(function () {
 
-            // Route::get('show/{id}', [ChatController::class, 'show']);
-        });
-        // Route::apiResource('messages', MessageController::class)->only(['store']);
+        Route::get('chats/show/{id}', [ChatsController::class, 'show']);
+
+        Route::apiResource('messages', MessagesController::class)->only(['store']);
     });
 
+    //! don't forget to set the proper admin id in register controller ^2 and wallets controller ^2
 /**
  * TO DO LIST:
  *
- * Charge & withdraw balance notifications to admin
+ * proceed with orders //*!! in progress
  *
- * the documentation notification when creating a new shop
+ * Charge & withdraw balance notifications to admin //! testing
  *
- * put the expiration time for verification code in a config or .env file
+ * the documentation notification when creating a new shop //! testing
+ *
+ * put the expiration time for verification code in a config or .env file //! Code service
  *
  * add the merchant role middleware for routes in this file
  *

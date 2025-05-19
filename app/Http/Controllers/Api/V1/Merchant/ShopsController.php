@@ -7,11 +7,14 @@ use App\Http\Requests\Api\V1\Merchant\StoreShopRequest;
 use App\Http\Requests\Api\V1\Merchant\UpdateShopRequest;
 use App\Models\Shop;
 use App\Models\ShopType;
+use App\Models\User;
+use App\Notifications\DocumentationRequestNotification;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Notification;
 
 class ShopsController extends Controller
 {
@@ -58,6 +61,9 @@ class ShopsController extends Controller
                 'identity_back_face' => $identity_back_face_path,
                 'address' => $request->address,
             ]);
+
+            $admin = User::findOrFail(4); //! set the proper admin id
+            Notification::send($admin, new DocumentationRequestNotification($request->user()));
 
             return $this->showResponse($shop, status: 201);
         });

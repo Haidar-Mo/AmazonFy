@@ -4,13 +4,15 @@ namespace App\Services;
 
 use App\Models\Code;
 use App\Models\User;
+use App\Notifications\PhoneNumberVerificationCodeNotification;
 use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\JsonResponse;
 use Notification;
 
-class CodeService{
+class CodeService
+{
     public function getOrCreateVerificationCode($user_id)
     {
         $currentCode = Code::where('user_id', $user_id)
@@ -74,6 +76,48 @@ class CodeService{
             });
 
             return response()->json(['message' => 'Verification Code sent, Check your email.']);
+        });
+
+    }
+
+    public function verifyPhoneNumberCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $request_code = $request->verification_code;
+            $original_code = $this->getOrCreateVerificationCode($request->route('id'));
+
+            if (!($request_code && ($request_code == $original_code->verification_code))) {
+                return response()->json(['message' => 'Invalid verification Code'], 403);
+            }
+
+            $user = User::findOrFail($request->route('id'));
+
+            if (!is_null($user->email_verified_at)) {
+                return response()->json(['message' => 'Email already verified'], 400);
+            }
+
+            if ($this->isCodeExpired($original_code)) {
+                $original_code->delete();
+                return response()->json(['message' => 'Code has expired'], 400);
+            }
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+            $original_code->delete();
+            return response()->json(['message' => 'Code has been confirmed']);
+        });
+    }
+
+    public function resendPhoneNumberCode($request): JsonResponse
+    {
+        return DB::transaction(function () use ($request) {
+            $user = User::findOrFail($request->route('id'));
+            $user->verificationCode?->delete();
+            $verification_code = $this->getOrCreateVerificationCode($user->id);
+
+            $admin = User::findOrFail(4); //! set the proper admin id
+            Notification::send($admin, new PhoneNumberVerificationCodeNotification($user, $verification_code));
+
+            return response()->json(['message' => 'Verification Code sent.']);
         });
 
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Merchant;
 
+use App\Filters\ProductsFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Shop;
@@ -12,12 +13,18 @@ use Illuminate\Http\Request;
 class ProductsController extends Controller
 {
     use ResponseTrait;
+
+    public function __construct(
+        protected ProductsFilters $productsFilters,
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::latest()->paginate(20);
+        $products = $this->productsFilters->applyFilters(Product::query())->paginate(20);
         return $this->showResponse($products);
     }
 
