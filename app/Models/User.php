@@ -97,4 +97,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->shop()->first() ? $this->shop()->first()->status : 'غير موثق';
     }
+
+    public function getIsBlockedTextAttribute(){
+        return $this->is_blocked ? 'محظور' : 'متاح';
+    }
 }

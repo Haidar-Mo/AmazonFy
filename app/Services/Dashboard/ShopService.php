@@ -21,16 +21,32 @@ class ShopService
 
     }
 
-
     public function show(string $id)
     {
-        return Shop::with(['user'])->findOrFail($id)
+        $shop = Shop::with(['user.wallet.addresses', 'products', 'shopOrders'])->findOrFail($id)
             ->append([
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
+                'type_name'
             ]);
-
+        if ($shop->shopOrders) {
+            $shop->shopOrders->append([
+                'client_name',
+                'client_email',
+                'client_phone_number',
+                'client_address',
+                'client_region',
+                'created_from'
+            ]);
+        }
+        if($shop->products)
+        {
+            $shop->products->each(function ($product){
+                $product->append(['type_name', 'full_path_image']);
+            });
+        }
+        return $shop;
     }
 
     public function store(FormRequest $request)
@@ -88,6 +104,24 @@ class ShopService
         $shop = Shop::findOrFail($id);
         DB::transaction(function () use ($shop) {
             $shop->delete();
+        });
+    }
+
+
+    public function activateShop(string $id)
+    {
+        $shop = Shop::findOrFail($id);
+        return DB::transaction(function () use ($shop) {
+            $shop->update(['status' => 'active']);
+            return $shop;
+        });
+    }
+    public function deactivateShop(string $id)
+    {
+        $shop = Shop::findOrFail($id);
+        return DB::transaction(function () use ($shop) {
+            $shop->update(['status' => 'inactive']);
+            return $shop;
         });
     }
 }
