@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('phone_number');
             $table->string('password');
             $table->date('email_verified_at')->nullable();
-            $table->boolean('is_banned')->default(false);
+            $table->boolean('is_blocked')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

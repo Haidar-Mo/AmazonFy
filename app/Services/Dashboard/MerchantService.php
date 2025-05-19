@@ -18,11 +18,11 @@ class MerchantService
     public function show(string $id)
     {
 
-        $merchant = User::with(['shop.products', 'wallet.addresses', 'shop.orders'])
+        $merchant = User::with(['shop'])
             ->role('merchant', 'api')
             ->findOrFail($id)
             ->makeVisible(['is_blocked'])
-            ->append(['shop_status']);
+            ->append(['shop_status','is_blocked_text']);
         if ($merchant->shop) {
             $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
         }
@@ -62,7 +62,7 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => true]);
-            return $merchant->makeVisible(['is_blocked']);
+            return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
         });
     }
 
@@ -71,7 +71,7 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => false]);
-            return $merchant->makeVisible(['is_blocked']);
+            return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
         });
     }
 }

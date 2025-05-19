@@ -15,14 +15,6 @@ route::prefix('merchants')
         Route::post('update/{id}', [MerchantController::class, 'update']);
         Route::delete('delete/{id}', [MerchantController::class, 'destroy']);
 
-        Route::prefix('shops')->group(function () {
-
-            Route::get('index', [ShopController::class, 'index']);
-            Route::get('show/{id}', [ShopController::class, 'show']);
-            Route::post('create', [ShopController::class, 'store']);
-            Route::post('update/{id}', [ShopController::class, 'update']);
-            Route::delete('delete/{id}', [ShopController::class, 'destroy']);
-        });
 
         Route::prefix('status')->group(function () {
 
@@ -30,4 +22,16 @@ route::prefix('merchants')
             Route::post('unblock/{id}', [MerchantController::class, 'unblockMerchant']);
         });
 
+
+
+        Route::prefix('shops')->group(function () {
+
+            Route::get('index', [ShopController::class, 'index']);
+            Route::get('show/{id}', [ShopController::class, 'show']);
+            Route::post('create', [ShopController::class, 'store']);
+            Route::post('update/{id}', [ShopController::class, 'update']);
+            Route::delete('delete/{id}', [ShopController::class, 'destroy']);
+            Route::post('activate/{id}', [ShopController::class, 'activateShop']);
+            Route::post('deactivate/{id}', [ShopController::class, 'deactivateShop']);
+        });
     });

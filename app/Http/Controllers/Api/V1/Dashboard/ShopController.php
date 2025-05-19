@@ -69,4 +69,24 @@ class ShopController extends Controller
             return $this->showError($e, 'حدث خطأ ما أثناء حذف المتجر');
         }
     }
+
+    public function activateShop(string $id)
+    {
+        try {
+            $shop = $this->service->activateShop($id);
+            return $this->showResponse($shop, 'تم تفعيل المتجر بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء تفعيل المتجر');
+        }
+    }
+
+    public function deactivateShop(string $id)
+    {
+        try {
+            $shop = $this->service->deactivateShop($id);
+            return $this->showResponse($shop, 'تم إلغاء تفعيل المتجر بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء إلغاء تفعيل المتجر');
+        }
+    }
 }
