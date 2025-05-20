@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Client;
 
+use App\Filters\ShopsFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Traits\ResponseTrait;
@@ -10,12 +11,17 @@ use Illuminate\Http\Request;
 class ShopsController extends Controller
 {
     use ResponseTrait;
+
+    public function __construct(
+        protected ShopsFilters $shopsFilters,
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $shops = Shop::all();
+        $shops = $this->shopsFilters->applyFilters(Shop::query())->where('status', 'active')->paginate(20);
         return $this->showResponse($shops);
     }
 
@@ -40,6 +46,11 @@ class ShopsController extends Controller
      */
     public function show(Shop $shop)
     {
+        if (!$shop | $shop->status != 'active') {
+            return response()->json([
+                'message' => 'Shop not found'
+            ], 404);
+        }
         return $this->showResponse($shop->load('products'));
     }
 

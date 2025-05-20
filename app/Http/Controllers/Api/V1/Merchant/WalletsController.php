@@ -90,8 +90,8 @@ class WalletsController extends Controller
                 )
             );
 
-            $admin = User::findOrFail(4); //! set the proper admin id
-            Notification::send($admin, new NewTransactionNotification($request->user()));
+            $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
+            Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
 
             return $this->showMessage('Operation Successded');
@@ -110,8 +110,8 @@ class WalletsController extends Controller
                 ]
             ));
 
-            $admin = User::findOrFail(4); //! set the proper admin id
-            Notification::send($admin, new NewTransactionNotification($request->user()));
+            $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
+            Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
             return $this->showMessage('Operation Successded');
         });
