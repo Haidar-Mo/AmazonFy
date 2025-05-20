@@ -15,13 +15,12 @@ return new class extends Migration {
             $table->foreignId('shop_id')->nullable()->constrained('shops')->nullOnDelete();
             $table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
-            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
             $table->decimal('wholesale_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->integer('count');
             $table->decimal('total_price', 10, 2);
             $table->string('customer_note');
-            $table->enum('status', ['checking', 'reviewing', 'delivering', 'canceled'])->default('checking');
+            $table->enum('status', ['pending', 'checking', 'reviewing', 'delivering', 'canceled'])->default('pending');
             $table->timestamps();
         });
     }

@@ -7,5 +7,5 @@ Route::middleware('guest')->group(function () {
 
     Route::apiResource('shops', ShopsController::class)->only('index', 'show');
 
-    Route::apiResource('orders',OrdersController::class);
+    Route::apiResource('orders',OrdersController::class)->only('store');
 });

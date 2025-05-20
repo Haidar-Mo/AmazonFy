@@ -62,7 +62,7 @@ class ShopsController extends Controller
                 'address' => $request->address,
             ]);
 
-            $admin = User::findOrFail(4); //! set the proper admin id
+            $admin = User::role('admin','api')->first(); //! set the proper admin id
             Notification::send($admin, new DocumentationRequestNotification($request->user()));
 
             return $this->showResponse($shop, status: 201);

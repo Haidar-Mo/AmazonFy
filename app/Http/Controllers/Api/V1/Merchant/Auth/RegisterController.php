@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Merchant\Auth;
 
-use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Merchant\Auth\RegisterRequest;
 use App\Models\{
@@ -52,33 +51,17 @@ class RegisterController extends Controller
 
                 $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
 
-                $admin = User::findOrFail(4); //! set the proper admin id
-                Notification::send($admin, new PhoneNumberVerificationCodeNotification($user, $verification_code));
+                $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
+                Notification::send($usersWithRoles, new PhoneNumberVerificationCodeNotification($user, $verification_code));
             }
 
             Wallet::create(['user_id' => $user->id]);
 
-            Chat::create(['user_id' => $user->id, 'admin_id' => 4]); //! don't forget to set the proper admin id
-
-            //! $user->assignRole('merchant'); assign the merchant role after being documented by the admin
-
-            // $accessToken = $user->createToken(
-            //     'access_token',
-            //     [TokenAbility::ACCESS_API->value, 'role:merchant'],
-            //     Carbon::now()->addMinutes(config('sanctum.ac_expiration'))
-            // );
-
-            // $refreshToken = $user->createToken(
-            //     'refresh_token',
-            //     [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-            //     Carbon::now()->addMinutes(config('sanctum.rt_expiration'))
-            // );
+            Chat::create(['user_id' => $user->id, 'admin_id' => User::role('admin','api')->first()->id]); //! don't forget to set the proper admin id
 
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
                 'user' => $user,
-                // 'access_token' => $accessToken->plainTextToken,
-                // 'refresh_token' => $refreshToken->plainTextToken,
             ], 201);
         });
     }

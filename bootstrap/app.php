@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\ActiveMerchantMiddleware;
+use App\Http\Middleware\DocumentedMerchantMiddleware;
 use App\Http\Middleware\MerchantMiddleware;
 use App\Http\Middleware\ShopProductMiddleware;
 use App\Http\Middleware\WalletAddressMiddleware;
@@ -37,6 +39,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'shop_must_belong_to_user' => ShopProductMiddleware::class,
             'wallet_must_belong_to_user' => WalletMiddleware::class,
             'address_must_belong_to_wallet' => WalletAddressMiddleware::class,
+            'merchant_must_be_active' => ActiveMerchantMiddleware::class,
+            'merchant_must_be_documented' => DocumentedMerchantMiddleware::class,
 
         ]);
     })
