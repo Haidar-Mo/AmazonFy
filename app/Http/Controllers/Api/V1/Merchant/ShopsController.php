@@ -65,7 +65,7 @@ class ShopsController extends Controller
             $admin = User::role('admin','api')->first(); //! set the proper admin id
             Notification::send($admin, new DocumentationRequestNotification($request->user()));
 
-            return $this->showResponse($shop, status: 201);
+            return $this->showResponse($shop->append(['logo_full_path','identity_front_face_full_path','identity_back_face_full_path']), status: 201);
         });
     }
 
@@ -74,7 +74,7 @@ class ShopsController extends Controller
      */
     public function show(Shop $shop)
     {
-        $data = $shop->withCount('products')->with('products')->where('user_id',Auth::user()->id)->get();
+        $data = $shop->withCount('products')->with('products')->where('user_id',Auth::user()->id)->get()->append(['logo_full_path','identity_front_face_full_path','identity_back_face_full_path']);
         return $this->showResponse($data);
     }
 
@@ -110,7 +110,7 @@ class ShopsController extends Controller
                 $attributes['identity_back_face'] = $identity_back_face_path;
             }
             $shop->update($attributes);
-            return $this->showResponse($shop);
+            return $this->showResponse($shop->append(['logo_full_path','identity_front_face_full_path','identity_back_face_full_path']));
         });
 
     }

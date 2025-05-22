@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Models\ShopOrder;
 use App\Traits\ResponseTrait;
+use Auth;
+use DB;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
@@ -23,7 +25,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = $this->ordersFilters->applyFilters(ShopOrder::query())->paginate(20);
+        $orders = $this->ordersFilters->applyFilters(ShopOrder::query())->where('shop_id', Auth::user()->shop->id)->get();
         return $this->showResponse($orders);
     }
 
@@ -62,19 +64,23 @@ class OrdersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Shop $shop, ShopOrder $shopOrder)
+    public function update(Request $request, ShopOrder $shopOrder)
     {
-        $request->validate(['accepted' => ['required', 'boolean']]);
+        return DB::transaction(function () use ($request, $shopOrder) {
+            $request->validate(['accepted' => ['required', 'boolean']]);
 
-        if ($shop->user_id != $request->user()->id || $shopOrder->shop_id != $shop->id || $shopOrder->status != 'pending') {
-            throw new AuthorizationException();
-        }
-        if ($request->accepted) {
-            $shopOrder->update(['status' => 'checking']);
-        } else {
-            $shopOrder->update(['status', 'canceled']);
-        }
-        return $this->showMessage('Operation succeeded');
+            $shop = Auth::user()->shop;
+            if ($shop->user_id != $request->user()->id || $shopOrder->shop_id != $shop->id || $shopOrder->status != 'pending') {
+                throw new AuthorizationException();
+            }
+            if ($request->accepted) {
+                $shopOrder->update(['status' => 'checking']);
+            } else {
+                $shopOrder->update(['status', 'canceled']);
+            }
+            return $this->showMessage('Operation succeeded');
+
+        });
     }
 
     /**

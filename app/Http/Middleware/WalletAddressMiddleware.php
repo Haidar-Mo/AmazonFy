@@ -19,11 +19,11 @@ class WalletAddressMiddleware
     {
         $walletAddress = $request->walletAddress;
         if (is_null($walletAddress)) {
-            $walletAddress = $request->wallet->addresses()->where('target', $request->target)->firstOrFail();
+            $walletAddress = $request->user()->wallet->addresses()->where('target', $request->target)->firstOrFail();
         }
 
         // $walletAddress = WalletAddress::where('target',$request->target)->firstOrFail();
-        throw_if(!($request->wallet->id == $walletAddress->wallet_id), new AuthorizationException());
+        throw_if(!($request->user()->wallet->id == $walletAddress->wallet_id), new AuthorizationException());
 
         return $next($request);
     }
