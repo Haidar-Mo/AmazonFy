@@ -40,19 +40,19 @@ class RegisterController extends Controller
             if ($request->email) {
                 $user = User::create(array_merge($request->validated(), ['phone_number' => '']));
 
-                $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
+                $code = $this->codeService->getOrCreateVerificationCode($user->id);
 
 
-                DB::afterCommit(function () use ($user, $verification_code) {
-                    Notification::send($user, new VerificationCodeNotification($user, $verification_code));
+                DB::afterCommit(function () use ($user, $code) {
+                    Notification::send($user, new VerificationCodeNotification($user, $code->verification_code));
                 });
             } else {
                 $user = User::create(array_merge($request->validated(), ['email' => '']));
 
-                $verification_code = $this->codeService->getOrCreateVerificationCode($user->id);
+                $code = $this->codeService->getOrCreateVerificationCode($user->id);
 
                 $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
-                Notification::send($usersWithRoles, new PhoneNumberVerificationCodeNotification($user, $verification_code));
+                Notification::send($usersWithRoles, new PhoneNumberVerificationCodeNotification($user, $code->verification_code));
             }
 
             Wallet::create(['user_id' => $user->id]);

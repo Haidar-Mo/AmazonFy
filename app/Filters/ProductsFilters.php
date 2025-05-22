@@ -13,4 +13,9 @@ class ProductsFilters extends BaseFilter
     {
         return $query->where('type_id', $this->request->input('typeId'));
     }
+
+    public function search(Builder $query): Builder
+    {
+        return $query->where('title', 'like', '%' . $this->request->input('search') . '%');
+    }
 }

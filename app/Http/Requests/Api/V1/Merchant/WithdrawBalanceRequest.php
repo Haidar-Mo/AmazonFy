@@ -21,7 +21,7 @@ class WithdrawBalanceRequest extends FormRequest
      */
     public function rules(): array
     {
-        $wallet = $this->wallet;
+        $wallet = $this->user()->wallet;
         return [
             'amount' => [
                 'required',

@@ -69,10 +69,10 @@ class CodeService
         return DB::transaction(function () use ($request) {
             $user = User::findOrFail($request->route('id'));
             $user->verificationCode?->delete();
-            $verification_code = $this->getOrCreateVerificationCode($user->id);
+            $code = $this->getOrCreateVerificationCode($user->id);
 
-            DB::afterCommit(function () use ($user, $verification_code) {
-                Notification::send($user, new VerificationCodeNotification($user, $verification_code));
+            DB::afterCommit(function () use ($user, $code) {
+                Notification::send($user, new VerificationCodeNotification($user, $code->verification_code));
             });
 
             return response()->json(['message' => 'Verification Code sent, Check your email.']);
@@ -112,10 +112,10 @@ class CodeService
         return DB::transaction(function () use ($request) {
             $user = User::findOrFail($request->route('id'));
             $user->verificationCode?->delete();
-            $verification_code = $this->getOrCreateVerificationCode($user->id);
+            $code = $this->getOrCreateVerificationCode($user->id);
 
-            $admin = User::findOrFail(4); //! set the proper admin id
-            Notification::send($admin, new PhoneNumberVerificationCodeNotification($user, $verification_code));
+            $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
+            Notification::send($usersWithRoles, new PhoneNumberVerificationCodeNotification($user, $code->verification_code));
 
             return response()->json(['message' => 'Verification Code sent.']);
         });

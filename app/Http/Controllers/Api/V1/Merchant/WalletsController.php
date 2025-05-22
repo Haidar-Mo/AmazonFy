@@ -10,6 +10,7 @@ use App\Models\Wallet;
 use App\Notifications\NewTransactionNotification;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
+use Auth;
 use DB;
 use Illuminate\Http\Request;
 use Notification;
@@ -44,8 +45,9 @@ class WalletsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Wallet $wallet)
+    public function show()
     {
+        $wallet = Auth::user()->wallet;
         $data = $wallet->load('addresses');
         return $this->showResponse($data);
     }
@@ -74,10 +76,10 @@ class WalletsController extends Controller
         //
     }
 
-    public function chargeBalance(ChargeBalanceRequest $request, Wallet $wallet)
+    public function chargeBalance(ChargeBalanceRequest $request)
     {
-        return DB::transaction(function () use ($request, $wallet) {
-
+        return DB::transaction(function () use ($request) {
+            $wallet = Auth::user()->wallet;
             $image_path = $this->saveFile($request->image, 'Transactions/Charges');
 
             $wallet->transactionHistories()->create(
@@ -90,7 +92,7 @@ class WalletsController extends Controller
                 )
             );
 
-            $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
+            $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
             Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
 
@@ -99,10 +101,10 @@ class WalletsController extends Controller
     }
 
 
-    public function withdrawBalance(WithdrawBalanceRequest $request, Wallet $wallet)
+    public function withdrawBalance(WithdrawBalanceRequest $request)
     {
-        return DB::transaction(function () use ($request, $wallet) {
-
+        return DB::transaction(function () use ($request) {
+            $wallet = Auth::user()->wallet;
             $wallet->transactionHistories()->create(array_merge(
                 $request->validated(),
                 [
@@ -110,7 +112,7 @@ class WalletsController extends Controller
                 ]
             ));
 
-            $usersWithRoles = User::role(['admin', 'supervisor'],'api')->get();
+            $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
             Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
             return $this->showMessage('Operation Successded');

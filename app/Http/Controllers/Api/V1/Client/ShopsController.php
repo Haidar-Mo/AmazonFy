@@ -21,7 +21,7 @@ class ShopsController extends Controller
      */
     public function index()
     {
-        $shops = $this->shopsFilters->applyFilters(Shop::query())->where('status', 'active')->paginate(20);
+        $shops = $this->shopsFilters->applyFilters(Shop::query())->where('status', 'active')->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
         return $this->showResponse($shops);
     }
 
@@ -51,7 +51,7 @@ class ShopsController extends Controller
                 'message' => 'Shop not found'
             ], 404);
         }
-        return $this->showResponse($shop->load('products'));
+        return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path'])->load('products'));
     }
 
     /**
