@@ -15,7 +15,7 @@ Route::prefix('v1/')->group(function () {
         include __DIR__ . "/V1/Dashboard/notification.php";
         include __DIR__ . "/V1/Dashboard/terms_and_conditions.php";
         include __DIR__ . "/V1/Dashboard/storehouse.php";
-        include __DIR__ . "/V1/Dashboard/support.php";
+        include __DIR__ . "/V1/Dashboard/chat.php";
         include __DIR__ . "/V1/Dashboard/transaction.php";
 
         Route::apiResource('shopTypes', ShopTypesController::class);

@@ -24,7 +24,6 @@ class CreateChatRequest extends FormRequest
         return [
             'admin_id' => 'required_without:user_id',
             'user_id' => 'required_without:admin_id',
-            'advertisement_id' => 'required'
         ];
     }
 }

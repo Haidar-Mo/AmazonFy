@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Chat;
 use App\Models\Client;
+use App\Models\Message;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Region;
@@ -35,6 +37,43 @@ class DatabaseSeeder extends Seeder
             ['parent_id' => null, 'name' => 'EG'],
             ['parent_id' => null, 'name' => 'AHK'],
         ]);
+        $user = User::firstOrCreate(
+            [
+                'email' => 'admin@admin.com'
+            ],
+            [
+                'name' => 'Admin',
+                'email' => 'admin@admin.com',
+                'phone_number' => '123456789',
+                'password' => bcrypt('AdminPassword')
+            ]
+        );
+        $user->assignRole(Role::where('name', 'admin')->first());
+        $user->givePermissionTo(Permission::where('guard_name', 'api')->get());
+
+        $user = User::firstOrCreate(
+            [
+                'email' => 'haidar@gmial.com'
+            ],
+            [
+                'name' => 'haidar',
+                'email' => 'haidar@gmial.com',
+                'phone_number' => '0000000000',
+                'password' => bcrypt('password')
+            ]
+        );
+        $user->assignRole(Role::where('name', 'client')->first());
+
+        $user = User::firstOrCreate([
+            'email' => 'user1@gmial.com'
+        ], [
+            'name' => 'user1',
+            'email' => 'user1@gmial.com',
+            'phone_number' => '111111111',
+            'password' => bcrypt('password')
+        ]);
+        $user->assignRole(Role::where('name', 'client')->first());
+
         Region::factory()->count(50)->create();
         Client::factory()->count(10)->create();
         ProductType::factory()->count(20)->create();
@@ -47,34 +86,9 @@ class DatabaseSeeder extends Seeder
             ->has(Wallet::factory()
                 ->has(TransactionHistory::factory()->count(5))
                 ->has(TransactionHistory::factory()->withdraw()->count(5))
-            ->has(WalletAddress::factory()->count(3)))
+                ->has(WalletAddress::factory()->count(3)))
+            ->has(Chat::factory()
+                ->has(Message::factory()->count(10)))
             ->count(3)->create();
-
-
-        $user = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'phone_number' => '123456789',
-            'password' => bcrypt('AdminPassword')
-        ]);
-        $user->assignRole(Role::where('name', 'supervisor')->first());
-        $user->givePermissionTo(Permission::where('guard_name', 'api')->get());
-
-        $user = User::factory()->create([
-            'name' => 'haidar',
-            'email' => 'haidar@gmial.com',
-            'phone_number' => '0000000000',
-            'password' => bcrypt('password')
-        ]);
-        $user->assignRole(Role::where('name', 'client')->first());
-
-        $user = User::factory()->create([
-            'name' => 'user1',
-            'email' => 'user1@admin.com',
-            'phone_number' => '111111111',
-            'password' => bcrypt('password')
-        ]);
-        $user->assignRole(Role::where('name', 'client')->first());
-
     }
 }

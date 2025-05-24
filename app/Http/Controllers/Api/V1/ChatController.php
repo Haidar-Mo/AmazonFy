@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateChatRequest;
+use App\Http\Resources\ChatResource;
 use App\Models\Chat;
 use App\Traits\ResponseTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 
@@ -20,19 +22,19 @@ class ChatController extends Controller
         $user = $request->user();
 
         $chats = $user->chat()
-            ->with(['client', 'seller', 'ads', 'messages'])
+            ->with(['client', 'seller', 'ads', 'message'])
             ->get();
 
         return $this->showResponse($chats->pluck('chat_details'), 'تم جلب المحادثات');
     }
 
 
-        /**
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $chat = Chat::with(['messages'])
+        $chat = Chat::with(['message'])
             ->findOrFail($id);
         $chat->messages()->where('sender_id', '!=', Auth::id())
             ->where('is_read', false)
@@ -51,9 +53,8 @@ class ChatController extends Controller
         DB::beginTransaction();
         try {
             $chat = Chat::FirstOrCreate([
-                'user_one_id' => $user_one_id->id,
-                'user_two_id' => $request->user_two_id,
-                'advertisement_id' => $request->advertisement_id
+                'admin_id' => 'Find the admin',//$request->admin_id,
+                'user_id' => 'Or get the user'//$request->user_id,
             ]);
             DB::commit();
             return $this->showResponse($chat, 'chat created successfully....!');

@@ -27,7 +27,7 @@ class MessageController extends Controller
         DB::beginTransaction();
         try {
             $user = $request->user();
-            $message = $user->chats()->where('id', $request->chat_id)->firstOrFail()->messages()->create([
+            $message = $user->chats()->where('id', $request->chat_id)->firstOrFail()->message()->create([
                 'sender_id' => $user->id,
                 'content' => $request->content,
                 'chat_id' => $request->chat_id

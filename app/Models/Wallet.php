@@ -38,7 +38,7 @@ class Wallet extends Model
         return $this->hasMany(TransactionHistory::class);
     }
 
-    public function addresses(): HasMany
+    public function walletAddress(): HasMany
     {
         return $this->hasMany(WalletAddress::class);
     }
