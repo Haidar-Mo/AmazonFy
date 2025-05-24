@@ -26,4 +26,9 @@ class Client extends Model
     {
         return $this->belongsTo(Region::class);
     }
+
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
 }

@@ -22,6 +22,7 @@ class Shop extends Model
         'identity_back_face',
         'address',
         'status',       //- pending - rejected - active - inactive
+        'rate',
     ];
 
 
@@ -47,6 +48,12 @@ class Shop extends Model
     {
         return $this->belongsToMany(Product::class, 'shop_products');
     }
+
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
+
 
     //! Accessories
 

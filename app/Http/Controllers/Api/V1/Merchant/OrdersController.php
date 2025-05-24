@@ -25,7 +25,13 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = $this->ordersFilters->applyFilters(ShopOrder::query())->where('shop_id', Auth::user()->shop->id)->get();
+        $orders = $this->ordersFilters->applyFilters(ShopOrder::query())
+            ->with(['product', 'client'])
+            ->where('shop_id', Auth::user()->shop->id)
+            ->get()
+            ->each(function ($order) {
+                $order->product?->append('full_path_image');
+            });
         return $this->showResponse($orders);
     }
 
