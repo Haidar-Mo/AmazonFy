@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Client;
 
+use DB;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderRequest extends FormRequest
@@ -22,7 +23,41 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'region_id' => ['required', 'exists:regions,id'],
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'phone_number' => ['required', 'string'],
+            'address' => ['required', 'string'],
+
+
+
+            'orders' => ['required', 'array'],
+            'orders.*.shop_id' => ['required', 'exists:shops,id'],
+            'orders.*.product_id' => [
+                'required',
+                // Custom rule to check product exists in the specified shop
+                function ($attribute, $value, $fail) {
+                    // Extract the order index (e.g., "orders.0.product_id" → index 0)
+                    $index = explode('.', $attribute)[1];
+
+                    // Get the corresponding shop_id for this order item
+                    $shopId = $this->input("orders.$index.shop_id");
+
+                    // Check if the product exists in shop_products for this shop
+                    $exists = DB::table('shop_products')
+                        ->where('product_id', $value)
+                        ->where('shop_id', $shopId)
+                        ->exists();
+
+                    if (!$exists) {
+                        $fail("The product ID {$value} does not exist in shop {$shopId}.");
+                    }
+                },
+            ],
+            'orders.*.wholesale_price' => ['required', 'numeric'],
+            'orders.*.selling_price' => ['required', 'numeric'],
+            'orders.*.count' => ['required', 'integer'],
+            'orders.*.customer_note' => ['required', 'string'],
         ];
     }
 }

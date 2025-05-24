@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Wallet;
 use App\Models\WalletAddress;
 use App\Traits\ResponseTrait;
+use Auth;
 use DB;
 use Illuminate\Http\Request;
 
@@ -32,14 +33,15 @@ class WalletAddressesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Wallet $wallet)
+    public function store(Request $request)
     {
-        return DB::transaction(function () use ($request, $wallet) {
+        return DB::transaction(function () use ($request) {
             $request->validate([
                 'name' => ['required', 'string'],
                 'target' => ['required', 'string']
             ]);
 
+            $wallet = Auth::user()->wallet;
             $wallet->addresses()->create($request->all());
             return $this->showResponse($wallet->load('addresses'));
 
@@ -65,13 +67,14 @@ class WalletAddressesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Wallet $wallet, WalletAddress $walletAddress)
+    public function update(Request $request, WalletAddress $walletAddress)
     {
-        return DB::transaction(function () use ($request, $wallet, $walletAddress) {
+        return DB::transaction(function () use ($request, $walletAddress) {
             $request->validate([
                 'name' => ['string'],
                 'target' => ['string']
             ]);
+            $wallet = Auth::user()->wallet;
             $address = $wallet->addresses()->findOrFail($walletAddress->id);
             $address->update($request->all());
             $address->save();
@@ -82,9 +85,10 @@ class WalletAddressesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wallet $wallet, WalletAddress $walletAddress)
+    public function destroy(WalletAddress $walletAddress)
     {
-        return DB::transaction(function () use ($wallet, $walletAddress) {
+        return DB::transaction(function () use ($walletAddress) {
+            $wallet = Auth::user()->wallet;
             $address = $wallet->addresses()->findOrFail($walletAddress->id);
             $address->delete();
             return $this->showMessage('Deleted successfully');
