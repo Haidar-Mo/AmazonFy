@@ -21,7 +21,15 @@ class ShopsController extends Controller
      */
     public function index()
     {
-        $shops = $this->shopsFilters->applyFilters(Shop::query())->where('status', 'active')->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+        $shops = $this->shopsFilters->applyFilters(Shop::query())
+            ->where('status', 'active')
+            ->with([
+                'products' => function ($query) {
+                    $query->latest()->limit(10); // Get 10 newest products
+                }
+            ])
+            ->get()
+            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
         return $this->showResponse($shops);
     }
 

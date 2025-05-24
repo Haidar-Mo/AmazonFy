@@ -16,7 +16,7 @@ class DocumentedMerchantMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        throw_if(!auth()->user()->hasRole('merchant'), new AuthorizationException());
+        throw_if(!auth()->user()->hasRole('merchant'), new AuthorizationException('Not documented merchant'));
 
         return $next($request);
     }

@@ -42,4 +42,14 @@ class TransactionHistory extends Model
     {
         return $this->wallet()->first()->user()->first()->phone_number;
     }
+
+    public function getImageFullPathAttribute()
+    {
+        if ($this->image) {
+            return asset(path: $this->image);
+        } else {
+            return '';
+        }
+    }
+
 }
