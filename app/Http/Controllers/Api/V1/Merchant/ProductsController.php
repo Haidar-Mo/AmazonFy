@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Traits\ResponseTrait;
+use Auth;
 use DB;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = $this->productsFilters->applyFilters(Product::query())->paginate(20);
+        $products = $this->productsFilters->applyFilters(Product::query())->get()->append('full_path_image');
         return $this->showResponse($products);
     }
 
@@ -39,9 +40,10 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Shop $shop)
+    public function store(Request $request)
     {
-        return DB::transaction(function () use ($request, $shop) {
+        return DB::transaction(function () use ($request) {
+            $shop = Shop::where('user_id', $request->user()->id)->firstOrFail();
             $request->validate(['product_id' => ['required', 'exists:products,id']]);
             $product = Product::findOrFail($request->product_id);
             $shop->products()->attach($product);
@@ -76,9 +78,10 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Shop $shop, Product $product)
+    public function destroy(Product $product)
     {
-        return DB::transaction(function () use ($shop, $product) {
+        return DB::transaction(function () use ($product) {
+            $shop = Shop::where('user_id', Auth::user()->id)->firstOrFail();
             $shop->products()->detach($product);
             return $this->showMessage('Deleted successfully');
         });

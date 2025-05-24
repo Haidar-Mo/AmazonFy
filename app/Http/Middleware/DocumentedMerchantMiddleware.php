@@ -7,7 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class WalletMiddleware
+class DocumentedMerchantMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class WalletMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        throw_if(!(auth()->user()->id == $request->wallet->user_id), new AuthorizationException('This wallet does not belongs to you'));
+        throw_if(!auth()->user()->hasRole('merchant'), new AuthorizationException());
 
         return $next($request);
     }
