@@ -22,7 +22,7 @@ class NewMessageSent implements ShouldBroadcast, ShouldQueue
 
     public function broadcastOn()
     {
-        return new Channel('support.' . $this->message->chat_id);
+        return new PrivateChannel('support.' . $this->message->chat_id);
     }
 
     public function broadcastWith()
