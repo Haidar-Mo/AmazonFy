@@ -17,6 +17,7 @@ use Illuminate\Database\{
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -99,6 +100,16 @@ return Application::configure(basePath: dirname(__DIR__))
                     ], 504);
                 }
 
+                if ($e instanceof AccessDeniedHttpException) {
+                    return response()->json([
+                        'message' => $e->getMessage()
+                    ], 403);
+                }
+
+                // Log::error($e->getMessage() . 'Trace: ' . $e->getTraceAsString());
+                // return response()->json([
+                //     'message' => $e->getMessage()
+                // ], $e->getCode());
                 // return response()->json(get_class($e));
             }
         });
