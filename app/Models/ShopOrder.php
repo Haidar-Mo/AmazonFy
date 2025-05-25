@@ -10,7 +10,6 @@ class ShopOrder extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'shop_id',
         'client_id',

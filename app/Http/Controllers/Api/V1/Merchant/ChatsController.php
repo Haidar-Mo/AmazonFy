@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Http\Controllers\Controller;
-use App\Models\Chat;
 use App\Traits\ResponseTrait;
-use Auth;
-use Illuminate\Http\Request;
 
 class ChatsController extends Controller
 {
@@ -17,13 +14,13 @@ class ChatsController extends Controller
      */
     public function show()
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $chat = $user->chat;
-        $chat->messages()->where('sender_id', '!=', Auth::id())
+        $chat->message()->where('sender_id', '!=', auth()->id())
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return $this->showResponse($chat->load('messages'));
+        return $this->showResponse($chat->load('message'));
         // return $this->showResponse(new ChatResource($chat));
     }
 }

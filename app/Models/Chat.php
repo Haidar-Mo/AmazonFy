@@ -10,23 +10,32 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
-        'admin_id',
         'user_id',
     ];
 
-    public function admin()
+    public function casts()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return [
+            'created_at' => 'date:Y-m-d',
+            'updated_at' => 'date:Y-m-d',
+        ];
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function messages()
+    public function message()
     {
         return $this->hasMany(Message::class);
+    }
+
+
+    //! Accessories
+
+    public function getMerchantNameAttribute()
+    {
+        return $this->user()->first()->name;
     }
 }

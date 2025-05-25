@@ -10,5 +10,5 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('support.{chatId}', function (User $user, int $chatId) {
     $chat = Chat::findOrFail($chatId);
-    return $user->id === $chat->admin_id || $user->id === $chat->user_id;
+    return $user->id === $chat->user_id;
 });

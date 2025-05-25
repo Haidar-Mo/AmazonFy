@@ -57,7 +57,7 @@ class RegisterController extends Controller
 
             Wallet::create(['user_id' => $user->id]);
 
-            Chat::create(['user_id' => $user->id, 'admin_id' => User::role('admin','api')->first()->id]); //! don't forget to set the proper admin id
+            Chat::create(['user_id' => $user->id]);
 
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
