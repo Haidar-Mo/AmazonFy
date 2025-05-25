@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Merchant\MessagesController;
 use App\Http\Controllers\Api\V1\Merchant\OrdersController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
+use App\Http\Controllers\Api\V1\Merchant\TransactionHistoriesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
 use App\Http\Controllers\Api\V1\ProductTypesController;
@@ -21,13 +22,18 @@ Route::middleware([
         Route::resource('shops', ShopsController::class)->only(['store']);
 
         Route::middleware(['merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
-            Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
-            Route::get('products', [ProductsController::class, 'index']);
+            // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
+            Route::get('shop', [ShopsController::class, 'show']);
+            Route::get('shop/statistics',[ShopsController::class,'getStatistics']);
+            Route::put('shop', [ShopsController::class, 'update']);
+            Route::delete('shop', [ShopsController::class, 'destroy']);
+
 
             Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
             Route::get('wallet', [WalletsController::class, 'show']);
             Route::post('wallet/walletAddresses', [WalletAddressesController::class, 'store']);
+            Route::get('wallet/transactionHistory', [TransactionHistoriesController::class, 'index']);
 
             Route::middleware('address_must_belong_to_wallet')->group(function () {
                 Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
@@ -40,12 +46,15 @@ Route::middleware([
             Route::apiResource('messages', MessagesController::class)->only(['store']);
 
             Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
-
-            Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
-            Route::apiResource('productTypes', ProductTypesController::class)->only('index');
         });
 
     });
+
+Route::get('products', [ProductsController::class, 'index']);
+
+Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
+Route::apiResource('productTypes', ProductTypesController::class)->only('index');
+
 
 //! don't forget to set the proper admin id in register controller ^2 and wallets controller ^2 (waiting for haidar)
 /**

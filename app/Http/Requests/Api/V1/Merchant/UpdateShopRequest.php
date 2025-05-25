@@ -13,7 +13,7 @@ class UpdateShopRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->shop->user_id == Auth::user()->id;
+        return true;
     }
 
     /**
@@ -24,9 +24,9 @@ class UpdateShopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string',Rule::unique('shops','name')->ignore($this->shop->id)],
-            'phone_number' => ['string',Rule::unique('shops','phone_number')->ignore($this->shop->id)],
-            'identity_number' => ['string',Rule::unique('shops','identity_number')->ignore($this->shop->id)],
+            'name' => ['string',Rule::unique('shops','name')->ignore(Auth::user()->shop->id)],
+            'phone_number' => ['string',Rule::unique('shops','phone_number')->ignore(Auth::user()->shop->id)],
+            'identity_number' => ['string',Rule::unique('shops','identity_number')->ignore(Auth::user()->shop->id)],
             'logo' => ['image'],
             'identity_front_face' => ['image'],
             'identity_back_face' => ['image'],
