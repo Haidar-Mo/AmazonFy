@@ -16,7 +16,7 @@ class ActiveMerchantMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        throw_if($request->user()->shop->status != 'active', new AuthorizationException());
+        throw_if($request->user()->shop?->status != 'active', new AuthorizationException('Not active merchant'));
 
         return $next($request);
     }
