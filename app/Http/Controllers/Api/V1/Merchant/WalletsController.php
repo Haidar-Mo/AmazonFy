@@ -48,7 +48,7 @@ class WalletsController extends Controller
     public function show()
     {
         $wallet = Auth::user()->wallet;
-        $data = $wallet->load('addresses');
+        $data = $wallet->load('walletAddress');
         return $this->showResponse($data);
     }
 

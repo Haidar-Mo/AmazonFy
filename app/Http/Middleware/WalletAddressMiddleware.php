@@ -19,7 +19,7 @@ class WalletAddressMiddleware
     {
         $walletAddress = $request->walletAddress;
         if (is_null($walletAddress)) {
-            $walletAddress = $request->user()->wallet->addresses()->where('target', $request->target)->firstOrFail();
+            $walletAddress = $request->user()->wallet->walletAddress()->where('target', $request->target)->firstOrFail();
         }
 
         // $walletAddress = WalletAddress::where('target',$request->target)->firstOrFail();
