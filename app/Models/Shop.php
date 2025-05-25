@@ -56,6 +56,7 @@ class Shop extends Model
 
 
     //! Accessories
+    //: logo_full_path, identity_front_face_full_path,  identity_back_face_full_path,   type_name,
 
     public function getLogoFullPathAttribute()
     {

@@ -60,8 +60,9 @@ class ChatsAndMessagesController extends Controller
     {
         DB::beginTransaction();
         try {
+            //DO: change to the authenticated user ( uncomment )
             $user = User::find(1);//$request->user();
-            $message = $user->chats()->where('id', $request->chat_id)->firstOrFail()->message()->create([
+            $message = Chat::where('id', $request->chat_id)->firstOrFail()->message()->create([
                 'sender_id' => $user->id,
                 'content' => $request->content,
                 'chat_id' => $request->chat_id

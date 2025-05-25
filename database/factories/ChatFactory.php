@@ -18,7 +18,6 @@ class ChatFactory extends Factory
     public function definition(): array
     {
         return [
-            'admin_id' => User::role('admin', 'api')->first()->id,
             'user_id' => User::factory()
         ];
     }

@@ -11,7 +11,6 @@ class Chat extends Model
 
     protected $fillable = [
         'user_id',
-        'admin_id',
     ];
 
     public function casts()
@@ -24,12 +23,7 @@ class Chat extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function admin()
-    {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class);
     }
 
     public function message()

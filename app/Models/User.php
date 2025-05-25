@@ -65,11 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Chat::class);
     }
-    public function chats()
-    {
-        return $this->hasMany(Chat::class, 'admin_id');
 
-    }
     public function wallet()
     {
         return $this->hasOne(Wallet::class);
@@ -98,7 +94,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->shop()->first() ? $this->shop()->first()->status : 'غير موثق';
     }
 
-    public function getIsBlockedTextAttribute(){
+    public function getIsBlockedTextAttribute()
+    {
         return $this->is_blocked ? 'محظور' : 'متاح';
     }
 }

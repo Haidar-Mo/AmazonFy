@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 use App\Events\NewMessageSent;
 use App\Http\Controllers\Controller;
 use App\Traits\ResponseTrait;
-use DB;
 use Illuminate\Http\Request;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MessagesController extends Controller
 {
@@ -23,7 +23,7 @@ class MessagesController extends Controller
         try {
             $user = $request->user();
             $chat = $user->chat;
-            $message = $user->chat()->firstOrFail()->messages()->create([
+            $message = $user->chat()->firstOrFail()->message()->create([
                 'sender_id' => $user->id,
                 'content' => $request->content,
                 'chat_id' => $chat->id

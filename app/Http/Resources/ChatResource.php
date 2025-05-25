@@ -11,7 +11,7 @@ class ChatResource extends JsonResource
         return [
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
-            'user_image' => $this->user->shop->logo_full_path,
+            'user_image' => $this->user->shop?->logo_full_path,
             'message' => MessageResource::collection($this->message),
         ];
     }

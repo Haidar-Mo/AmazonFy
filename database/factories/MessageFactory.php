@@ -20,9 +20,7 @@ class MessageFactory extends Factory
     {
         return [
             'chat_id' => Chat::factory(),
-            'sender_id' => fn(array $attributes) => $this->faker->randomElement([
-                Chat::findOrFail($attributes['chat_id'])->user_id
-            ]),
+            'sender_id' => fn(array $attributes) => Chat::findOrFail($attributes['chat_id'])->user_id,
             'content' => $this->faker->sentence(3),
             'is_read' => true,
         ];
