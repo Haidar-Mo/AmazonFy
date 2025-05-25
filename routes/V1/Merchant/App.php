@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
+use App\Events\ExampleEvent;
 use App\Http\Controllers\Api\V1\Merchant\ChatsController;
 use App\Http\Controllers\Api\V1\Merchant\MessagesController;
 use App\Http\Controllers\Api\V1\Merchant\OrdersController;
@@ -41,7 +42,7 @@ Route::middleware([
                 Route::apiResource('wallet/walletAddresses', WalletAddressesController::class)->only(['update', 'destroy']);
             });
 
-            Route::get('chats/show/{id}', [ChatsController::class, 'show']);
+            Route::get('chat', [ChatsController::class, 'show']);
 
             Route::apiResource('messages', MessagesController::class)->only(['store']);
 
@@ -55,7 +56,11 @@ Route::get('products', [ProductsController::class, 'index']);
 Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
 Route::apiResource('productTypes', ProductTypesController::class)->only('index');
 
+Route::get('/trigger-event', function () {
+    ExampleEvent::dispatch('Hello from Laravel!');
 
+    return response()->json(['status' => 'Event triggered']);
+});
 //! don't forget to set the proper admin id in register controller ^2 and wallets controller ^2 (waiting for haidar)
 /**
  * TO DO LIST:

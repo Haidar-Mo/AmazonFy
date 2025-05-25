@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Events\NewMessageSent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\CreateMessageRequest;
 use App\Traits\ResponseTrait;
 use DB;
 use Illuminate\Http\Request;
@@ -17,15 +16,17 @@ class MessagesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateMessageRequest $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
+        $request->validate(['content' => 'required']);
         try {
             $user = $request->user();
-            $message = $user->chats()->where('id', $request->chat_id)->firstOrFail()->messages()->create([
+            $chat = $user->chat;
+            $message = $user->chat()->firstOrFail()->messages()->create([
                 'sender_id' => $user->id,
                 'content' => $request->content,
-                'chat_id' => $request->chat_id
+                'chat_id' => $chat->id
             ]);
             event(new NewMessageSent($message));
             Log::info('Message sent and broadcasted: ', ['message' => $message]);
