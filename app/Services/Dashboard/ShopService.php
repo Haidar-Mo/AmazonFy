@@ -23,7 +23,7 @@ class ShopService
 
     public function show(string $id)
     {
-        $shop = Shop::with(['user.wallet.addresses', 'products', 'shopOrders'])->findOrFail($id)
+        $shop = Shop::with(['user.wallet.walletAddress', 'products', 'shopOrders'])->findOrFail($id)
             ->append([
                 'logo_full_path',
                 'identity_front_face_full_path',
@@ -40,9 +40,8 @@ class ShopService
                 'created_from'
             ]);
         }
-        if($shop->products)
-        {
-            $shop->products->each(function ($product){
+        if ($shop->products) {
+            $shop->products->each(function ($product) {
                 $product->append(['type_name', 'full_path_image']);
             });
         }
