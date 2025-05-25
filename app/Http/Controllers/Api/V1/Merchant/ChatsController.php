@@ -15,15 +15,15 @@ class ChatsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        $chat = Chat::with(['messages'])
-            ->findOrFail($id);
+        $user = Auth::user();
+        $chat = $user->chat;
         $chat->messages()->where('sender_id', '!=', Auth::id())
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return $this->showResponse($chat);
+        return $this->showResponse($chat->load('messages'));
         // return $this->showResponse(new ChatResource($chat));
     }
 }
