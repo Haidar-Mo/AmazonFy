@@ -25,11 +25,16 @@ class ShopsController extends Controller
             ->where('status', 'active')
             ->with([
                 'products' => function ($query) {
-                    $query->latest()->limit(10); // Get 10 newest products
+                    $query->latest()->limit(10);
                 }
             ])
             ->get()
-            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name'])
+            // Append image to each product
+            ->each(function ($shop) {
+                $shop->products->each->append('full_path_image');
+            });
+
         return $this->showResponse($shops);
     }
 
@@ -54,14 +59,28 @@ class ShopsController extends Controller
      */
     public function show(Shop $shop)
     {
-        if (!$shop | $shop->status != 'active') {
+        if (!$shop || $shop->status != 'active') {
             return response()->json([
                 'message' => 'Shop not found'
             ], 404);
         }
-        return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path'])->load('products'));
-    }
 
+        // Eager load the products relationship
+        $shop->load('products');
+
+        // Append 'full_path_image' to each product
+        $shop->products->each->append('full_path_image');
+
+        // Return the response with appended attributes
+        return $this->showResponse(
+            $shop->append([
+                'logo_full_path',
+                'identity_front_face_full_path',
+                'identity_back_face_full_path',
+                'type_name'
+            ])
+        );
+    }
     /**
      * Show the form for editing the specified resource.
      */
