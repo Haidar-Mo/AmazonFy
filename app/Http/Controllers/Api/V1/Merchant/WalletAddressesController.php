@@ -42,8 +42,8 @@ class WalletAddressesController extends Controller
             ]);
 
             $wallet = Auth::user()->wallet;
-            $wallet->addresses()->create($request->all());
-            return $this->showResponse($wallet->load('addresses'));
+            $wallet->walletAddress()->create($request->all());
+            return $this->showResponse($wallet->load('walletAddress'));
 
         });
     }
@@ -75,10 +75,10 @@ class WalletAddressesController extends Controller
                 'target' => ['string']
             ]);
             $wallet = Auth::user()->wallet;
-            $address = $wallet->addresses()->findOrFail($walletAddress->id);
+            $address = $wallet->walletAddress()->findOrFail($walletAddress->id);
             $address->update($request->all());
             $address->save();
-            return $this->showResponse($wallet->load('addresses'));
+            return $this->showResponse($wallet->load('walletAddress'));
         });
     }
 
@@ -89,7 +89,7 @@ class WalletAddressesController extends Controller
     {
         return DB::transaction(function () use ($walletAddress) {
             $wallet = Auth::user()->wallet;
-            $address = $wallet->addresses()->findOrFail($walletAddress->id);
+            $address = $wallet->walletAddress()->findOrFail($walletAddress->id);
             $address->delete();
             return $this->showMessage('Deleted successfully');
         });
