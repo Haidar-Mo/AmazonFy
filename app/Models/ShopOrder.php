@@ -85,4 +85,9 @@ class ShopOrder extends Model
         $diff = $this->created_at->locale('ar')->diffForHumans();
         return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
+
+    public function getTotalProfitAttribute()
+    {
+        return ($this->selling_price - $this->wholesale_price) * $this->count;
+    }
 }
