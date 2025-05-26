@@ -11,11 +11,15 @@ class ProductsFilters extends BaseFilter
 {
     public function typeId(Builder $query): Builder
     {
-        return $query->where('type_id', $this->request->input('typeId'));
+        if ($this->request->filled('typeId'))
+            $query->where('type_id', $this->request->input('typeId'));
+        return $query;
     }
 
     public function search(Builder $query): Builder
     {
-        return $query->where('title', 'like', '%' . $this->request->input('search') . '%');
+        if ($this->request->filled('search'))
+            return $query->where('title', 'like', '%' . $this->request->input('search') . '%');
+        return $query;
     }
 }
