@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
 use App\Http\Controllers\Api\V1\ProductTypesController;
 use App\Http\Controllers\Api\V1\ShopTypesController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::middleware([
@@ -21,7 +22,7 @@ Route::middleware([
 ])
     ->group(function () {
 
-        Route::get('products', [ProductsController::class, 'index']);
+        Route::get('products/index', [ProductsController::class, 'index']);
 
         Route::resource('shops', ShopsController::class)->only(['store']);
 
@@ -54,7 +55,8 @@ Route::middleware([
 
     });
 
-Route::get('guest/products', [ProductsController::class, 'getProductsForGuest']);
+//: This is guest user index products
+Route::get('products', [ProductsController::class, 'getProductsForGuest']);
 
 Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
 Route::apiResource('productTypes', ProductTypesController::class)->only('index');
