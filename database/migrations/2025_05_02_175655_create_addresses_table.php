@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('network_name')->unique();
             $table->string('target');
-            $table->string('image');
+            $table->string('qr_image');
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Client\RegionsController;
 use App\Http\Controllers\Api\V1\Client\ShopsController;
 use App\Http\Controllers\Api\V1\ProductTypesController;
 use App\Http\Controllers\Api\V1\ShopTypesController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
 

@@ -15,7 +15,7 @@ class RegionsController extends Controller
      */
     public function index()
     {
-        $regions = Region::get(['id', 'name']);
+        $regions = Region::whereNull('parent_id')->with(['children'])->get();
         return $this->showResponse($regions);
     }
 

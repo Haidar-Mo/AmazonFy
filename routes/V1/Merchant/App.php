@@ -40,6 +40,8 @@ Route::middleware([
             Route::post('wallet/walletAddresses', [WalletAddressesController::class, 'store']);
             Route::get('wallet/transactionHistory', [TransactionHistoriesController::class, 'index']);
 
+            Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllAdminAddresses']);
+
             Route::middleware('address_must_belong_to_wallet')->group(function () {
                 Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
                 Route::post('wallet/withdraw', [WalletsController::class, 'withdrawBalance']);
