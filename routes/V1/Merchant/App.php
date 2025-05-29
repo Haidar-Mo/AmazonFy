@@ -20,12 +20,15 @@ Route::middleware([
     'type.merchant'
 ])
     ->group(function () {
+
+        Route::get('products', [ProductsController::class, 'index']);
+
         Route::resource('shops', ShopsController::class)->only(['store']);
 
         Route::middleware(['merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
             // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
             Route::get('shop', [ShopsController::class, 'show']);
-            Route::get('shop/statistics',[ShopsController::class,'getStatistics']);
+            Route::get('shop/statistics', [ShopsController::class, 'getStatistics']);
             Route::put('shop', [ShopsController::class, 'update']);
             Route::delete('shop', [ShopsController::class, 'destroy']);
 
@@ -51,7 +54,7 @@ Route::middleware([
 
     });
 
-Route::get('products', [ProductsController::class, 'index']);
+Route::get('guest/products', [ProductsController::class, 'getProductsForGuest']);
 
 Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
 Route::apiResource('productTypes', ProductTypesController::class)->only('index');
