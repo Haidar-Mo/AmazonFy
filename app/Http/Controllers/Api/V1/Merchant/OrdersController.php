@@ -29,6 +29,7 @@ class OrdersController extends Controller
             ->with(['product', 'client'])
             ->where('shop_id', Auth::user()->shop->id)
             ->get()
+            ->append('total_profit')
             ->each(function ($order) {
                 $order->product?->append('full_path_image');
             });

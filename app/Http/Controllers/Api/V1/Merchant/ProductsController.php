@@ -25,8 +25,37 @@ class ProductsController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $shop = $user->shop;
+
+        // Get filtered products and append 'full_path_image'
+        $products = $this->productsFilters->applyFilters(Product::query())->get()->append('full_path_image');
+
+        // Get product IDs associated with the user's shop
+        $shopProductIds = [];
+
+        // 1. If using direct pivot table access:
+        // $shopProductIds = DB::table('shop_products')
+        //     ->where('shop_id', $shop->id)
+        //     ->pluck('product_id')
+        //     ->toArray();
+
+        // 2. If using Eloquent relationship (shop->products()):
+        $shopProductIds = $shop->products()->pluck('products.id')->toArray();
+
+        // Add shop_has_product attribute to each product
+        $products->each(function ($product) use ($shopProductIds) {
+            $product->shop_has_product = in_array($product->id, $shopProductIds);
+        });
+
+        return $this->showResponse($products);
+    }
+
+    public function getProductsForGuest()
+    {
         $products = $this->productsFilters->applyFilters(Product::query())->get()->append('full_path_image');
         return $this->showResponse($products);
+
     }
 
     /**

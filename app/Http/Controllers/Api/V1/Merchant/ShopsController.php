@@ -65,7 +65,7 @@ class ShopsController extends Controller
             $admin = User::role('admin', 'api')->first(); //! set the proper admin id
             Notification::send($admin, new DocumentationRequestNotification($request->user()));
 
-            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']), status: 201);
+            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']), status: 201);
         });
     }
 
@@ -76,9 +76,9 @@ class ShopsController extends Controller
     {
         $shop = Auth::user()->shop;
         if (request()->has('l') && request()->query('l') === 'home') {
-            $data = $shop->withCount(['products', 'shopOrders'])->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+            $data = $shop->withCount(['products', 'shopOrders'])->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
         } else {
-            $data = $shop->withCount(['products', 'shopOrders'])->with('products')->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+            $data = $shop->withCount(['products', 'shopOrders'])->with('products')->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
         }
         return $this->showResponse($data);
     }
@@ -123,7 +123,7 @@ class ShopsController extends Controller
                 }
             ], DB::raw('selling_price - wholesale_price')) // Calculate profit per order
             ->get()
-            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
+            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
         return $this->showResponse($data);
     }
 
@@ -160,7 +160,7 @@ class ShopsController extends Controller
                 $attributes['identity_back_face'] = $identity_back_face_path;
             }
             $shop->update($attributes);
-            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']));
+            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']));
         });
 
     }
