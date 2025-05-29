@@ -10,12 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('wallet_addresses', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('wallet_id')->constrained('wallets')->cascadeOnDelete();
-            $table->string('network_name');
-            $table->string('name');
+            $table->string('network_name')->unique();
             $table->string('target');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallet_addresses');
+        Schema::dropIfExists('addresses');
     }
 };
