@@ -8,5 +8,6 @@ Route::prefix('transactions')
     ->middleware([])
     ->group(function () {
 
-        Route::get('index',[TransactionController::class,'index']);
+        Route::get('index', [TransactionController::class, 'index']);
+        Route::post('handle/{id}', [TransactionController::class, 'handleTransaction']);
     });
