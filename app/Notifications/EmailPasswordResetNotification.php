@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PhoneNumberVerificationCodeNotification extends Notification implements ShouldQueue
+class EmailPasswordResetNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,7 +17,7 @@ class PhoneNumberVerificationCodeNotification extends Notification implements Sh
      */
     public function __construct(public User $user,public string $verificationCode)
     {
-        //
+
     }
 
     /**
@@ -27,7 +27,7 @@ class PhoneNumberVerificationCodeNotification extends Notification implements Sh
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail'];
     }
 
     /**
@@ -36,9 +36,11 @@ class PhoneNumberVerificationCodeNotification extends Notification implements Sh
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->mailer('smtp')
+            ->subject('Reset password Code')
+            ->greeting('Hello ' . $this->user->first_name )
+            ->line('Here is your reset password code: ' . $this->verificationCode)
+            ->line('Please use this code to complete your operation.');
     }
 
     /**
@@ -49,9 +51,7 @@ class PhoneNumberVerificationCodeNotification extends Notification implements Sh
     public function toArray(object $notifiable): array
     {
         return [
-            'user' => $this->user,
-            'verification_code' => $this->verificationCode,
-            'type' => 'verification'
+            //
         ];
     }
 }

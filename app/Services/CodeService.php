@@ -93,7 +93,7 @@ class CodeService
             $user = User::findOrFail($request->route('id'));
 
             if (!is_null($user->email_verified_at)) {
-                return response()->json(['message' => 'Email already verified'], 400);
+                return response()->json(['message' => 'Phone already verified'], 400);
             }
 
             if ($this->isCodeExpired($original_code)) {
