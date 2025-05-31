@@ -23,7 +23,7 @@ class ChargeBalanceRequest extends FormRequest
     {
         return [
             'amount' => ['required', 'numeric'],
-            'target' => ['required', 'string', 'exists:wallet_addresses,target'],
+            // 'target' => ['required', 'string', 'exists:wallet_addresses,target'],
             'charge_network' => ['required', 'string'],
             'coin_type' => ['required', 'string'],
             'image' => ['required', 'image'],
