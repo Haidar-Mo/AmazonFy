@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('wallet_id')->constrained('wallets')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
             $table->enum('transaction_type', ['charge', 'withdraw']);
-            $table->string('target'); // the wallet address
+            $table->string('target')->nullable(); // the wallet address
             $table->string('charge_network')->default('TRC-20');
             $table->string('coin_type')->default('USDT');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
