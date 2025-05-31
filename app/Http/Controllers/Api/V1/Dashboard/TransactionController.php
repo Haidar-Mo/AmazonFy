@@ -19,7 +19,7 @@ class TransactionController extends Controller
     {
         try {
             $transactions = $this->service->index();
-            return $this->showResponse($transactions, 'تم جلب طل المعاملات بنجاح');
+            return $this->showResponse($transactions, 'تم جلب كل المعاملات بنجاح');
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ ما أثناء جلب كل المعاملات');
         }

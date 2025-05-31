@@ -21,6 +21,14 @@ class TransactionHistory extends Model
         'image',
     ];
 
+    public function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d H:i',
+            'updated_at' => 'datetime:Y-m-d H:i'
+        ];
+    }
+
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);

@@ -15,4 +15,14 @@ class Address extends Model
         'qr_image'
     ];
 
+    protected $appends = [
+        'qr_image_full_path'
+    ];
+    //! Accessories
+
+    public function getQrImageFullPathAttribute()
+    {
+        return asset($this->qr_image);
+    }
+
 }
