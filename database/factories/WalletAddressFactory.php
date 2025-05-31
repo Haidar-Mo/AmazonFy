@@ -21,6 +21,7 @@ class WalletAddressFactory extends Factory
             'wallet_id' => Wallet::factory(),
             'name' => $this->faker->word,
             'target' => $this->faker->shuffleString('qwerpoiuytasdfghjkjlzxcvbnm'),
+            'network_name' => $this->faker->word(),
         ];
     }
 }
