@@ -14,8 +14,8 @@ class TransactionService
 
     public function index()
     {
-        return TransactionHistory::all()->each(function ($transaction) {
-            $transaction->append('user_name', 'user_phone_number');
+        return TransactionHistory::where('status', '=', 'pending')->get()->each(function ($transaction) {
+            $transaction->append('user_name', 'user_phone_number', 'image_full_path');
         });
     }
 
@@ -28,6 +28,7 @@ class TransactionService
     {
         $data = $request->validate([
             'decision' => 'required',
+            'point' => 'required_if:decision,approve'
         ]);
         $transaction = TransactionHistory::findOrFail($id);
 
@@ -37,14 +38,14 @@ class TransactionService
 
         return DB::transaction(function () use ($data, $wallet, $transaction) {
             match ($data['decision']) {
-                'approve' => tap($transaction, function () use ($wallet, $transaction) {
+                'approve' => tap($transaction, function () use ($data, $wallet, $transaction) {
                         if ($transaction->transaction_type === 'charge') {
-                            $wallet->total_balance += $transaction->amount;
-                            $wallet->available_balance += $transaction->amount;
+                            $wallet->total_balance += $data['point'];
+                            $wallet->available_balance += $data['point'];
                             $wallet->save();
                         } elseif ($transaction->transaction_type === 'withdraw') {
-                            $wallet->total_balance -= $transaction->amount;
-                            $wallet->available_balance -= $transaction->amount;
+                            $wallet->total_balance -= $data['point'];
+                            $wallet->available_balance -= $data['point'];
                             $wallet->save();
                         }
                         $transaction->update([
@@ -55,7 +56,7 @@ class TransactionService
                 default => null
             };
 
-            return $transaction;
+            return $transaction->load('wallet');
         });
 
     }

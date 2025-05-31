@@ -37,6 +37,7 @@ class Product extends Model
     }
 
     //! Accessories
+    //- type_name,  full_path_image
 
     public function getTypeNameAttribute()
     {

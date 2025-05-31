@@ -50,7 +50,7 @@ class AddressController extends Controller
         try {
             $address = Address::findOrFail($id);
             $data = $request->validate([
-                'network_name' => "sometimes|unique:addresses,network_name,except,$address->id",
+                'network_name' => "sometimes|unique:addresses,network_name,$address->id",
                 'target' => 'sometimes|string',
                 'qr_image' => 'sometimes|image'
 

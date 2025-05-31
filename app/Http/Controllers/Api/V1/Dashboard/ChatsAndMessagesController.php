@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ChatsAndMessagesController extends Controller
 {
@@ -68,6 +69,7 @@ class ChatsAndMessagesController extends Controller
                 'chat_id' => $request->chat_id
             ]);
             event(new NewMessageSent($message));
+            Log::info('Message sent and broadcasted: ', ['message' => $message]);
             DB::commit();
             return $this->showResponse($message, 'Message sent..!');
         } catch (\Exception $e) {
