@@ -3,7 +3,8 @@
 namespace App\Services\Dashboard;
 
 use App\Models\TransactionHistory;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class TransactionService.
@@ -26,14 +27,36 @@ class TransactionService
     public function handleTransaction(string $id, Request $request)
     {
         $data = $request->validate([
-            'type' => 'required',
-            'amount' => 'required|decimal'
+            'decision' => 'required',
         ]);
+        $transaction = TransactionHistory::findOrFail($id);
 
-        if ($data['type'] === 'deposit') {
-            // Add to wallet
-        } elseif ($data['type'] === 'withdraw') {
-            // Subtract from wallet
-        }
+        if ($transaction->status != 'pending')
+            throw new \Exception('هذه العاملة قد تمت معالجتها بالفعل', 400);
+        $wallet = $transaction->wallet()->first();
+
+        return DB::transaction(function () use ($data, $wallet, $transaction) {
+            match ($data['decision']) {
+                'approve' => tap($transaction, function () use ($wallet, $transaction) {
+                        if ($transaction->transaction_type === 'charge') {
+                            $wallet->total_balance += $transaction->amount;
+                            $wallet->available_balance += $transaction->amount;
+                            $wallet->save();
+                        } elseif ($transaction->transaction_type === 'withdraw') {
+                            $wallet->total_balance -= $transaction->amount;
+                            $wallet->available_balance -= $transaction->amount;
+                            $wallet->save();
+                        }
+                        $transaction->update([
+                        'status' => 'approved'
+                        ]);
+                    }),
+                'reject' => $transaction->update(['status' => 'rejected']),
+                default => null
+            };
+
+            return $transaction;
+        });
+
     }
 }

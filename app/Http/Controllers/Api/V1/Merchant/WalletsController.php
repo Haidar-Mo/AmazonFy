@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Merchant\ChargeBalanceRequest;
 use App\Http\Requests\Api\V1\Merchant\WithdrawBalanceRequest;
+use App\Models\Address;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Notifications\NewTransactionNotification;
@@ -115,8 +116,17 @@ class WalletsController extends Controller
             $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
             Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
-            return $this->showMessage('Operation Successded');
+            return $this->showMessage('Operation Succeeded');
         });
     }
 
+
+    public function indexAllAdminAddresses()
+    {
+        try {
+            return $this->showResponse(Address::all());
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ أثناء جلب كل العناوين');
+        }
+    }
 }
