@@ -8,17 +8,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PhoneNumberVerificationCodeNotification extends Notification implements ShouldQueue
+class PhoneNumberPasswordResetNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user,public string $verificationCode)
+    public function __construct(public User $user, public string $verificationCode)
     {
-        //
+
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -51,7 +52,7 @@ class PhoneNumberVerificationCodeNotification extends Notification implements Sh
         return [
             'user' => $this->user,
             'verification_code' => $this->verificationCode,
-            'type' => 'verification'
+            'type' => 'reset-password'
         ];
     }
 }

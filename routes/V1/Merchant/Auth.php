@@ -23,16 +23,19 @@ Route::prefix('auth/')->group(function () {
 
     Route::post('email/verify/{id}', [RegisterController::class, 'verifyEmail']);
 
-    Route::get('email/verify/{id}/resend',[RegisterController::class, 'resendVerificationCode']);
+    Route::get('email/verify/{id}/resend', [RegisterController::class, 'resendVerificationCode']);
 
     Route::post('phone-number/verify/{id}', [RegisterController::class, 'verifyPhoneNumber']);
 
-    Route::get('phone-number/verify/{id}/resend',[RegisterController::class, 'resendPhoneNumberVerificationCode']);
+    Route::get('phone-number/verify/{id}/resend', [RegisterController::class, 'resendPhoneNumberVerificationCode']);
 
     Route::get('refresh-token', [LoginController::class, 'refreshToken'])
         ->middleware([
             'auth:sanctum',
             'ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value
         ]);
+
+    Route::post('password/forgot', [RegisterController::class, 'forgetPassword']);
+    Route::post('password/reset', [RegisterController::class, 'resetPassword']);
 
 });
