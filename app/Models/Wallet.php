@@ -22,17 +22,6 @@ class Wallet extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    public function chargeHistories()
-    {
-        return $this->hasMany(ChargeHistory::class);
-    }
-
-    public function withdrawHistories()
-    {
-        return $this->hasMany(WithdrawHistory::class);
-    }
-
     public function transactionHistories()
     {
         return $this->hasMany(TransactionHistory::class);

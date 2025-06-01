@@ -9,7 +9,6 @@ class Address extends Model
 {
     use HasFactory;
 
-    protected $appends = ['qr_image_full_path'];
 
     public $fillable = [
         'network_name',
@@ -20,6 +19,7 @@ class Address extends Model
     protected $appends = [
         'qr_image_full_path'
     ];
+    
     //! Accessories
 
     public function getQrImageFullPathAttribute()

@@ -35,11 +35,15 @@ class WalletAddressesController extends Controller
      */
     public function store(Request $request)
     {
+        $old_address = auth()->user()->wallet->walletAddress()->where('name', '=', $request->name)->first();
+        if ($old_address)
+            return $this->showMessage('you cant create more than one Address for the same network name', 400, false);
         return DB::transaction(function () use ($request) {
             $request->validate([
                 'name' => ['required', 'string'],
                 'target' => ['required', 'string']
             ]);
+
 
             $wallet = Auth::user()->wallet;
             $wallet->walletAddress()->create($request->all());
@@ -69,13 +73,13 @@ class WalletAddressesController extends Controller
      */
     public function update(Request $request, WalletAddress $walletAddress)
     {
-        return DB::transaction(function () use ($request, $walletAddress) {
+        $wallet = Auth::user()->wallet;
+        $address = $wallet->walletAddress()->findOrFail($walletAddress->id);
+        return DB::transaction(function () use ($request, $wallet, $address) {
             $request->validate([
-                'name' => ['string'],
+                'name' => ['string', 'unique:wallet_addresses,name,' . $address->id],
                 'target' => ['string']
-            ]);
-            $wallet = Auth::user()->wallet;
-            $address = $wallet->walletAddress()->findOrFail($walletAddress->id);
+            ],['name.unique'=>'you cant create more than one Address for the same network name']);
             $address->update($request->all());
             $address->save();
             return $this->showResponse($wallet->load('walletAddress'));
