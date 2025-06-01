@@ -13,8 +13,7 @@ return new class extends Migration {
         Schema::create('wallet_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('wallet_id')->constrained('wallets')->cascadeOnDelete();
-            $table->string('network_name');
-            $table->string('name');
+            $table->string('name');     //! for Network name
             $table->string('target');
             $table->timestamps();
         });

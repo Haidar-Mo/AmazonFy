@@ -11,8 +11,7 @@ class WalletAddress extends Model
 
     protected $fillable = [
         'wallet_id',
-        'network_name',
-        'name',
+        'name',     //!for Network name
         'target'
     ];
 

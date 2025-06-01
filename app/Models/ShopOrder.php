@@ -47,35 +47,35 @@ class ShopOrder extends Model
 
     public function getShopNameAttribute()
     {
-        return $this->shop()->first()->name;
+        return $this->shop()->first()?->name;
     }
 
     public function getMerchantNameAttribute()
     {
-        return $this->shop()->first()->user()->first()->name;
+        return $this->shop()->first()?->user()->first()?->name;
     }
 
     public function getClientNameAttribute()
     {
-        return $this->client()->first()->name;
+        return $this->client()->first()?->name;
     }
     public function getClientEmailAttribute()
     {
-        return $this->client()->first()->email;
+        return $this->client()->first()?->email;
 
     }
     public function getClientAddressAttribute()
     {
-        return $this->client()->first()->address;
+        return $this->client()->first()?->address;
     }
     public function getClientPhoneNumberAttribute()
     {
-        return $this->client()->first()->phone_number;
+        return $this->client()->first()?->phone_number;
 
     }
     public function getClientRegionAttribute()
     {
-        return $this->client()->first()->region()->first()->name;
+        return $this->client()->first()->region()->first()?->name;
     }
 
 
