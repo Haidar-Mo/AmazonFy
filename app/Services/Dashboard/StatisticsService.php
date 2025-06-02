@@ -24,29 +24,31 @@ class StatisticsService
         $type = $request->input('type', 'yearly');
 
         $groupByFormat = match ($type) {
-            'weekly' => 'WEEK(created_at)',
-            'monthly' => 'MONTH(created_at)',
-            'yearly' => 'YEAR(created_at)',
+            'weekly' => 'WEEK',
+            'monthly' => 'MONTH',
+            'yearly' => 'YEAR',
             default => 'YEAR(created_at)',
         };
 
 
 
-        //- Group orders by time range
-        $all_orders = ShopOrder::whereBetween('created_at', [$date_1, $date_2])
-            ->select(DB::raw("$groupByFormat as period"), DB::raw('count(*) as count'))
+        //- Group orders by time-range
+        $orders_count = ShopOrder::whereBetween('created_at', [$date_1, $date_2])
+            ->select(
+                DB::raw("$groupByFormat(created_at) as period"),
+                DB::raw('count(*) as count')
+            )
             ->groupBy('period')
-            ->get();
+            ->get()
+            ->map(fn($item) => [
+                'date' => strval($item->period),
+                'total_orders' => $item->count,
+            ]);
 
-        $orders_count = $all_orders->map(fn($item) => [
-            'date' => strval($item->period),
-            'total_orders' => $item->count,
-        ]);
 
-
-        //- Group clients by time range
+        //- Group clients by time-range
         $all_clients = Client::whereBetween('created_at', [$date_1, $date_2])
-            ->select(DB::raw("$groupByFormat as period"), DB::raw('count(*) as count'))
+            ->select(DB::raw("$groupByFormat(created_at) as period"), DB::raw('count(*) as count'))
             ->groupBy('period')
             ->get();
 
@@ -56,34 +58,25 @@ class StatisticsService
         ]);
 
 
-        //- Group Merchants by time range
-        $Merchants_count_statistic = User::role('merchant', 'api')
-            ->whereBetween('created_at', [$date_1, $date_2])
-            ->with(['shop'])
+        //- Group Shops by Status;
+        $shops_count_statistic = Shop::query()
             ->select(
-                DB::raw("$groupByFormat as period"),
-                DB::raw('count(*) as count')
+                DB::raw('count(*) as count'),
+                DB::raw('status')
             )
-            ->groupBy('period')
-            ->get()
-            ->map(function ($group) {
-
-                $verified = $group->shop ? 1 : 0;
-
-                return [
-                    'date' => strval($group->period),
-                    'total_Merchants' => $group->count,
-                    'verified_count' => $verified,
-                    'unverified_count' => $group->count - $verified,
-                ];
-            })
-            ->values();
+            ->groupBy(['status'])
+            ->get();
 
 
+        //- Number of Products
         $products_count = Product::all()->count();
 
+
+        //- Number of blocked account
         $blocked_accounts_count = User::where('is_blocked', '=', 1)->count();
 
+
+        //- the most product sold
         $most_sold_product = Product::query()
             ->withCount('orders')
             ->orderBy('orders_count', 'desc')
@@ -91,7 +84,7 @@ class StatisticsService
             ->append('full_path_image')
             ->makeHidden(['details', 'type', 'image', 'wholesale_price', 'selling_price', 'is_available', "created_at", "updated_at", "deleted_at",]);
 
-
+        //- The most 10 selling shops
         $most_selling_shops = Shop::withCount('shopOrders')
             ->orderBy('shop_orders_count', 'desc')
             ->limit(10)
@@ -100,11 +93,24 @@ class StatisticsService
             ->makeHidden(['user_id', 'shop_type_id', 'phone_number', 'identity_number', 'logo', 'identity_front_face', 'identity_back_face', 'address', 'status', 'rate', "created_at", "updated_at"]);
 
 
-        //- Financial statistic
-        $benefits_statistics = ShopOrder::where('status', '!=', 'pending')
+        $type_statistics = Product::whereHas('orders')
+            ->withCount('orders')
+            ->join('shop_orders', 'products.id', '=', 'shop_orders.product_id')
+            ->join('product_types', 'products.type_id', '=', 'product_types.id')
+            ->whereBetween('shop_orders.created_at', [$date_1, $date_2])
+            ->select([
+                DB::raw("$groupByFormat(shop_orders.created_at) as period"),
+                DB::raw("count(*) as count"),
+                'product_types.name as type'
+            ])->groupBy(['period', 'type'])
+            ->limit(3)
+            ->get();
+
+        //- Financial statistic group by time-range
+        $financial_statistics = ShopOrder::where('status', '!=', 'pending')
             ->whereBetween('created_at', [$date_1, $date_2])
             ->select(
-                DB::raw("$groupByFormat as period"),
+                DB::raw("$groupByFormat(created_at) as period"),
                 DB::raw("COALESCE(SUM(wholesale_price), 0) as total_benefits")
             )
             ->groupBy('period')
@@ -117,7 +123,7 @@ class StatisticsService
             'orders_count' => $orders_count,    //-done
             'client_count' => $clients_count,   //-done
 
-            //  'Merchants_count_statistic' => $Merchants_count_statistic,  //! not done
+            'shops_count_statistic' => $shops_count_statistic, //- done
 
             'products_count' => $products_count, //- done
 
@@ -125,11 +131,11 @@ class StatisticsService
 
             'most_sold_product' => $most_sold_product,  //-done
 
-            'most_selling_shops' => $most_selling_shops,
+            'most_selling_shops' => $most_selling_shops, //-done
 
-            //'type_statistics' => $type_statistics, //! not done
+            'type_statistics' => $type_statistics, //- done
 
-            'benefits_statistics' => $benefits_statistics, //- done
+            'financial_statistics' => $financial_statistics, //- done
         ];
     }
 }

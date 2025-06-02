@@ -66,7 +66,7 @@ class OrderService
     }
 
 
-    public function cancelOrder(string $id)
+ /*   public function cancelOrder(string $id)
     {
         $order = ShopOrder::findOrFail($id);
         return DB::transaction(function () use ($order) {
@@ -75,7 +75,7 @@ class OrderService
             return $order;
         });
 
-    }
+    }*/
 
 
     //! Helper functions

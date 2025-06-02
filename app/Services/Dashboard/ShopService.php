@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\HasFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 /**
  * Class ShopService.
@@ -110,8 +111,10 @@ class ShopService
     public function activateShop(string $id)
     {
         $shop = Shop::findOrFail($id);
-        return DB::transaction(function () use ($shop) {
+        $user = $shop->user;
+        return DB::transaction(function () use ($shop, $user) {
             $shop->update(['status' => 'active']);
+            $user->assignRole(Role::where('name', '=', 'merchant')->first());
             return $shop;
         });
     }

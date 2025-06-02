@@ -45,7 +45,7 @@ class OrderController extends Controller
         }
     }
 
-    public function cancelOrder(string $id)
+  /*  public function cancelOrder(string $id)
     {
         try {
             $order = $this->service->cancelOrder($id);
@@ -54,7 +54,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ أثناء إلغاء الطلب');
         }
-    }
+    }*/
 
     public function destroy(string $id)
     {
