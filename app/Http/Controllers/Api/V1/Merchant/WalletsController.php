@@ -13,6 +13,7 @@ use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use Auth;
 use DB;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Notification;
 
