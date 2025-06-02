@@ -26,6 +26,10 @@ Route::middleware([
 
         Route::resource('shops', ShopsController::class)->only(['store']);
 
+        Route::get('chat', [ChatsController::class, 'show']);
+
+        Route::apiResource('messages', MessagesController::class)->only(['store']);
+
         Route::middleware(['merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
             // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
             Route::get('shop', [ShopsController::class, 'show']);
@@ -47,10 +51,6 @@ Route::middleware([
                 Route::post('wallet/withdraw', [WalletsController::class, 'withdrawBalance']);
                 Route::apiResource('wallet/walletAddresses', WalletAddressesController::class)->only(['update', 'destroy']);
             });
-
-            Route::get('chat', [ChatsController::class, 'show']);
-
-            Route::apiResource('messages', MessagesController::class)->only(['store']);
 
             Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
