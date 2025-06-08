@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1/')->group(function () {
 
     Route::prefix('dashboard')->group(function () {
+        include __DIR__ . "/V1/Dashboard/auth.php";
         include __DIR__ . "/V1/Dashboard/administration.php";
         include __DIR__ . "/V1/Dashboard/merchant.php";
         include __DIR__ . "/V1/Dashboard/region.php";

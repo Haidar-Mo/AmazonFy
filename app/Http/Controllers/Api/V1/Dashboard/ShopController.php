@@ -35,7 +35,7 @@ class ShopController extends Controller
             $shop = $this->service->show($id);
             return $this->showResponse($shop, 'تم جلب تفاصيل المتجر بنجاح');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إنشاء متجر');
+            return $this->showError($e, 'حدث خطأ ما أثناء عرض تفاصيل المتجر');
         }
     }
 

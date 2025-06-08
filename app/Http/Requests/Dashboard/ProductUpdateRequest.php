@@ -24,7 +24,7 @@ class ProductUpdateRequest extends FormRequest
         return [
             'title' => 'sometimes|string',
             'details' => 'sometimes|string',
-            'type' => 'sometimes|string',
+            'type_id' => 'sometimes|exists:product_types,id',
             'wholesale_price' => 'sometimes|decimal:0,99999999',
             'selling_price' => 'sometimes|decimal:0,99999999',
             'is_available' => 'sometimes|boolean',

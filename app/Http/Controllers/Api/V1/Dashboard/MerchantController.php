@@ -23,7 +23,7 @@ class MerchantController extends Controller
             $merchants = User::role('merchant', 'api')
                 ->get()
                 ->makeVisible(['is_blocked'])
-                ->append(['shop_status']);
+                ->append(['verification_code','shop_status']);
             return $this->showResponse($merchants, 'تم جلب كل التجار');
 
         } catch (\Exception $e) {

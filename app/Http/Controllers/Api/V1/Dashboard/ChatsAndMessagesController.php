@@ -46,7 +46,6 @@ class ChatsAndMessagesController extends Controller
         DB::beginTransaction();
         try {
             $chat = Chat::FirstOrCreate([
-                'admin_id' => 1,//$user_one_id->id,
                 'user_id' => $request->user_id,
             ]);
             DB::commit();
