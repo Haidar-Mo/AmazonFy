@@ -6,26 +6,21 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-trait ResponseTrait
+trait OldResponseTrait
 {
     /**
      * Show a success response with model data.
      *
      * @param mixed $data
-     * @param string $messageKey Translation key from messages.php
-     * @param array $replace Placeholder replacements
+     * @param string $message
      * @param int $status
      * @return JsonResponse
      */
-    public function showResponse(
-        $data, 
-        string $messageKey = 'api.success', 
-        array $replace = [], 
-        int $status = 200
-    ): JsonResponse {
+    public function showResponse($data, string $message = 'Operation succeeded', int $status = 200): JsonResponse
+    {
         return response()->json([
             'success' => true,
-            'message' => __("messages.$messageKey", $replace),
+            'message' => $message,
             'data' => $data,
         ], $status);
     }
@@ -34,25 +29,19 @@ trait ResponseTrait
      * Show an error response with exception message.
      *
      * @param \Exception $exception
-     * @param string $messageKey Translation key from messages.php
-     * @param array $replace Placeholder replacements
+     * @param int $status
      * @return JsonResponse
      */
-    public function showError(
-        \Exception $exception, 
-        string $messageKey = 'api.error',
-        array $replace = []
-    ): JsonResponse {
+    public function showError(\Exception $exception, string $message = 'Operation failed'): JsonResponse
+    {
         Log::error('Error occurred: ' . $exception->getMessage());
-        
         $statusCode = $exception->getCode();
         $validStatus = array_key_exists($statusCode, Response::$statusTexts)
             ? $statusCode
             : Response::HTTP_INTERNAL_SERVER_ERROR;
-            
         return response()->json([
             'success' => false,
-            'message' => __("messages.$messageKey", $replace),
+            'message' => $message,
             'error' => $exception->getMessage(),
         ], $validStatus);
     }
@@ -60,21 +49,16 @@ trait ResponseTrait
     /**
      * Show a general message response.
      *
-     * @param string $messageKey Translation key from messages.php
-     * @param array $replace Placeholder replacements
+     * @param string $message
      * @param int $status
      * @param bool $success
      * @return JsonResponse
      */
-    public function showMessage(
-        string $messageKey, 
-        array $replace = [], 
-        int $status = 200, 
-        bool $success = true
-    ): JsonResponse {
+    public function showMessage(string $message, int $status = 200, bool $success = true): JsonResponse
+    {
         return response()->json([
             'success' => $success,
-            'message' => __("messages.$messageKey", $replace),
+            'message' => $message,
         ], $status);
     }
 }

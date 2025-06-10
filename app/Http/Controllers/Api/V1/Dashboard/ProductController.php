@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
@@ -10,7 +9,6 @@ use App\Traits\ResponseTrait;
 
 class ProductController extends Controller
 {
-
     use ResponseTrait;
 
     public function __construct(public ProductService $service)
@@ -21,9 +19,9 @@ class ProductController extends Controller
     {
         try {
             $products = $this->service->index();
-            return $this->showResponse($products, 'تم جلب كل المنتجات');
+            return $this->showResponse($products, 'product.index_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل المنتجات');
+            return $this->showError($e, 'product.errors.index_error');
         }
     }
 
@@ -31,9 +29,9 @@ class ProductController extends Controller
     {
         try {
             $product = $this->service->show($id);
-            return $this->showResponse($product, 'تم جلب المنتج');
+            return $this->showResponse($product, 'product.show_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء عرض تفاصيل المنتج');
+            return $this->showError($e, 'product.errors.show_error');
         }
     }
 
@@ -41,9 +39,9 @@ class ProductController extends Controller
     {
         try {
             $product = $this->service->store($request);
-            return $this->showResponse($product, 'تم إنشاء المنتج');
+            return $this->showResponse($product, 'product.create_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حفظ المنتج');
+            return $this->showError($e, 'product.errors.create_error');
         }
     }
 
@@ -51,20 +49,19 @@ class ProductController extends Controller
     {
         try {
             $product = $this->service->update($request, $id);
-            return $this->showResponse($product, 'تم تعديل المنتج');
+            return $this->showResponse($product, 'product.update_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء تعديل المنتج');
+            return $this->showError($e, 'product.errors.update_error');
         }
     }
-
 
     public function destroy(string $id)
     {
         try {
             $this->service->destroy($id);
-            return $this->showMessage('تم حذف المنتج');
+            return $this->showMessage('product.delete_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف المنتج');
+            return $this->showError($e, 'product.errors.delete_error');
         }
     }
 }

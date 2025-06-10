@@ -35,7 +35,7 @@ class LoginController extends Controller
         );
 
         return response()->json([
-            'message' => 'User logged in successfully.',
+            'message' => __("messages.auth.login_success"),
             'access_token' => $accessToken->plainTextToken,
             'refresh_token' => $refreshToken->plainTextToken,
             'user' => $user,
@@ -65,7 +65,7 @@ class LoginController extends Controller
             Carbon::now()->addMinutes(config('sanctum.rt_expiration'))
         );
         return response([
-            'message' => 'Success',
+            'message' => __("messages.auth.refresh_success"),
             'access_token' => $accessToken->plainTextToken,
             'refresh_token' => $refreshToken->plainTextToken,
             'user' => $user,

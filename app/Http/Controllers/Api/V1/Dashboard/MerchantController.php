@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Services\Dashboard\MerchantService;
 use App\Traits\ResponseTrait;
 
+use Illuminate\Support\Facades\App; // optional if you want to manually test locale
+
 class MerchantController extends Controller
 {
     use ResponseTrait;
@@ -23,11 +25,11 @@ class MerchantController extends Controller
             $merchants = User::role('merchant', 'api')
                 ->get()
                 ->makeVisible(['is_blocked'])
-                ->append(['verification_code','shop_status']);
-            return $this->showResponse($merchants, 'تم جلب كل التجار');
+                ->append(['verification_code', 'shop_status']);
+            return $this->showResponse($merchants, 'merchants.fetched');
 
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل التجار ');
+            return $this->showError($e, 'merchants.errors.errors.fetch_error');
         }
     }
 
@@ -35,9 +37,9 @@ class MerchantController extends Controller
     {
         try {
             $merchant = $this->service->show($id);
-            return $this->showResponse($merchant, 'تم جلب معلومات التاجر');
+            return $this->showResponse($merchant, 'merchants.details_fetched');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء عرض بيانات التاجر');
+            return $this->showError($e, 'merchants.errors.details_error');
         }
     }
 
@@ -45,31 +47,29 @@ class MerchantController extends Controller
     {
         try {
             $merchant = $this->service->store($request);
-            return $this->showResponse($merchant, 'تم إنشاء التاجر بنجاح');
+            return $this->showResponse($merchant, 'merchants.created');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إنشاء تاجر جديد ');
+            return $this->showError($e, 'merchants.errors.create_error');
         }
     }
-
 
     public function update(MerchantUpdateRequest $request, string $id)
     {
         try {
             $merchant = $this->service->update($request, $id);
-            return $this->showResponse($merchant, 'تم تعديل معلومات التاجر بنجاح');
+            return $this->showResponse($merchant, 'merchants.updated');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء تعديل بيانات التاجر');
+            return $this->showError($e, 'merchants.errors.update_error');
         }
     }
-
 
     public function destroy(string $id)
     {
         try {
             $this->service->destroy($id);
-            return $this->showMessage('تم حذف التاجر بنجاح');
+            return $this->showMessage('merchants.deleted');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف التاجر');
+            return $this->showError($e, 'merchants.errors.delete_error');
         }
     }
 
@@ -77,21 +77,20 @@ class MerchantController extends Controller
     {
         try {
             $merchant = $this->service->blockMerchant($id);
-            return $this->showResponse($merchant, 'تم حظر المستخدم بنجاح');
+            return $this->showResponse($merchant, 'merchants.blocked');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء حظر المستخدم');
+            return $this->showError($e, 'merchants.errors.block_error');
         }
-
     }
 
     public function unblockMerchant(string $id)
     {
         try {
             $merchant = $this->service->unblockMerchant($id);
-            return $this->showResponse($merchant, 'تم فك حظر المستخدم بنجاح');
+            return $this->showResponse($merchant, 'merchants.unblocked');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء فك حظر المستخدم');
+            return $this->showError($e, 'merchants.errors.unblock_error');
         }
-
     }
+
 }

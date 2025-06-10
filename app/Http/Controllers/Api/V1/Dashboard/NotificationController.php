@@ -1,15 +1,10 @@
 <?php
-
-namespace App\Http\Controllers\Api\V1\dashboard;
+namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\NotificationRequest;
-use App\Models\User;
-use App\Notifications\ToMerchantNotification;
 use App\Services\Dashboard\NotificationService;
 use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
-use function PHPUnit\Framework\isInstanceOf;
 
 class NotificationController extends Controller
 {
@@ -23,9 +18,9 @@ class NotificationController extends Controller
     {
         try {
             $notifications = $this->service->indexSended();
-            return $this->showResponse($notifications, 'تم جلب كل الإشعارات بنجاح', 200);
+            return $this->showResponse($notifications, 'notification.index_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل الإشعارات');
+            return $this->showError($e, 'notification.errors.index_error');
         }
     }
 
@@ -33,9 +28,9 @@ class NotificationController extends Controller
     {
         try {
             $notifications = $this->service->indexReceived();
-            return $this->showResponse($notifications, 'تم جلب كل الإشعارات بنجاح', 200);
+            return $this->showResponse($notifications, 'notification.index_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل الإشعارات');
+            return $this->showError($e, 'notification.errors.index_error');
         }
     }
 
@@ -43,20 +38,19 @@ class NotificationController extends Controller
     {
         try {
             $notification = $this->service->show($id);
-            return $this->showResponse($notification, 'تم جلب الإشعار بنجاح', 200);
+            return $this->showResponse($notification, 'notification.show_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل الإشعارات');
+            return $this->showError($e, 'notification.errors.show_error');
         }
     }
-
 
     public function store(NotificationRequest $request, string $id)
     {
         try {
             $this->service->store($request, $id);
-            return $this->showMessage('تم إرسال الإشعار بنجاح', 200);
+            return $this->showMessage('notification.create_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إرسال الإشعار');
+            return $this->showError($e, 'notification.errors.create_error');
         }
     }
 
@@ -64,9 +58,9 @@ class NotificationController extends Controller
     {
         try {
             $this->service->destroy($id);
-            return $this->showMessage('تم حذف الإشعار بنجاح', 200);
+            return $this->showMessage('notification.delete_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف الإشعار');
+            return $this->showError($e, 'notification.errors.delete_error');
         }
     }
 
@@ -74,6 +68,6 @@ class NotificationController extends Controller
     {
         $user = auth()->user();
         $notification_count = $user->notifications->count();
-        return $this->showResponse($notification_count);
+        return $this->showResponse($notification_count, 'notification.count_success');
     }
 }

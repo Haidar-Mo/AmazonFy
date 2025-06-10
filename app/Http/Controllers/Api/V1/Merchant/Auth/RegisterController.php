@@ -27,6 +27,7 @@ use App\Notifications\verfication_code;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use function PHPUnit\Framework\isNull;
 
 class RegisterController extends Controller
@@ -63,6 +64,7 @@ class RegisterController extends Controller
 
             Chat::create(['user_id' => $user->id]);
 
+            $user->assignRole(Role::where('name', '=', 'merchant')->first());
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
                 'user' => $user,
