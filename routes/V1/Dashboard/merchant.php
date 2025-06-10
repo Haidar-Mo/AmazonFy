@@ -1,12 +1,16 @@
 <?php
 
+use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\V1\Dashboard\MerchantController;
 use App\Http\Controllers\Api\V1\Dashboard\ShopController;
 use Illuminate\Support\Facades\Route;
 
 
 route::prefix('merchants')
-    ->middleware([])
+    ->middleware([
+        'auth:sanctum',
+        'ability:' . TokenAbility::ACCESS_API->value,
+    ])
     ->group(function () {
 
         Route::get('index', [MerchantController::class, 'index']);

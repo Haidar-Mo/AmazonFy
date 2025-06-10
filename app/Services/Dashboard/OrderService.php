@@ -24,7 +24,7 @@ class OrderService
                 'created_from',
             ]);
         $orders->each(function ($order) {
-            $order->product->append('full_path_image');
+            $order->product?->append('full_path_image');
         });
         return $orders;
     }
@@ -43,7 +43,7 @@ class OrderService
                 'client_region',
                 'created_from'
             ]);
-        $order->product->append('full_path_image');
+        $order->product?->append('full_path_image');
         return $order;
     }
 

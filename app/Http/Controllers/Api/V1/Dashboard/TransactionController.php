@@ -35,4 +35,14 @@ class TransactionController extends Controller
         }
     }
 
+
+    public function createTransaction(Request $request, string $id)
+    {
+        try {
+            $wallet = $this->service->createTransaction($request ,$id);
+            return $this->showResponse($wallet,'تمت المعاملة بنجاح');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'حدث خطأ ما أثناء إنجاز المعاملة');
+        }
+    }
 }

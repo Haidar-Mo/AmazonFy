@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\NotificationRequest;
+use App\Models\User;
 use App\Notifications\ToMerchantNotification;
 use App\Services\Dashboard\NotificationService;
 use App\Traits\ResponseTrait;
@@ -67,5 +68,12 @@ class NotificationController extends Controller
         } catch (\Exception $e) {
             return $this->showError($e, 'حدث خطأ ما أثناء حذف الإشعار');
         }
+    }
+
+    public function countNotification()
+    {
+        $user = auth()->user();
+        $notification_count = $user->notifications->count();
+        return $this->showResponse($notification_count);
     }
 }

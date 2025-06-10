@@ -22,7 +22,7 @@ class MerchantService
             ->role('merchant', 'api')
             ->findOrFail($id)
             ->makeVisible(['is_blocked'])
-            ->append(['shop_status','is_blocked_text']);
+            ->append(['verification_code','shop_status','is_blocked_text']);
         if ($merchant->shop) {
             $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
         }

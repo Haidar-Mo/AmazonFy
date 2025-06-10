@@ -59,14 +59,17 @@ class StatisticsService
 
 
         //- Group Shops by Status;
-        $shops_count_statistic = Shop::query()
-            ->select(
-                DB::raw('count(*) as count'),
-                DB::raw('status')
-            )
-            ->groupBy(['status'])
-            ->get();
+        $shops_count = Shop::count();
+        $verified_count = Shop::where('status', '=', 'active')->count();
+        $unverified_count = $shops_count - $verified_count;
 
+        $verified_shops_ratio = $shops_count > 0 ? ($verified_count / $shops_count) * 100 : 0;
+        $unverified_shops_ratio = $shops_count > 0 ? ($unverified_count / $shops_count) * 100 : 0;
+
+        $shops_ratios = (object) [
+            'verified_shops_ratio' => round($verified_shops_ratio, 2),
+            'unverified_shops_ratio' => round($unverified_shops_ratio, 2),
+        ];
 
         //- Number of Products
         $products_count = Product::all()->count();
@@ -123,7 +126,7 @@ class StatisticsService
             'orders_count' => $orders_count,    //-done
             'client_count' => $clients_count,   //-done
 
-            'shops_count_statistic' => $shops_count_statistic, //- done
+            'shops_count_statistic' => $shops_ratios, //- done
 
             'products_count' => $products_count, //- done
 
