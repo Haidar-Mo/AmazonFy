@@ -14,4 +14,5 @@ Route::prefix('transactions')
 
         Route::get('index', [TransactionController::class, 'index']);
         Route::post('handle/{id}', [TransactionController::class, 'handleTransaction']);
+        Route::post('create/{id}', [TransactionController::class, 'createTransaction']); //- pass user id
     });

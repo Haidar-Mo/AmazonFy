@@ -71,7 +71,7 @@ class TransactionService
         ]);
         $wallet = User::findOrFail($id)->wallet()->first();
 
-        match ($request->type) {
+        return match ($request->type) {
             'charge' =>
             DB::transaction(function () use ($request, $wallet) {
                     $wallet->update([
@@ -79,22 +79,24 @@ class TransactionService
                     'total_balance' => $wallet->total_balance += $request->point
                     ]);
 
-                    //? Create transaction ??
+                    //DO: Create transaction ??
     
                     return $wallet;
                 }),
+
             'withdraw' =>
             DB::transaction(function () use ($request, $wallet) {
-                    //!! Check Available balance
-                    
+                    if ($wallet->available_balance < $request->point) {
+                        throw new \Exception("no enough points", 400);
+                    }
+
                     $wallet->update([
-                    'available_balance' => $wallet->available_balance += $request->point,
-                    'total_balance' => $wallet->total_balance += $request->point
+                    'available_balance' => $wallet->available_balance -= $request->point,
+                    'total_balance' => $wallet->total_balance -= $request->point
                     ]);
 
-                    //? Create transaction ??
+                    //DO: Create transaction ??    
     
-
                     return $wallet;
                 }),
         };
