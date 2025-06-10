@@ -3,6 +3,7 @@
 namespace App\Services\Dashboard;
 
 use App\Models\TransactionHistory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -59,5 +60,43 @@ class TransactionService
             return $transaction->load('wallet');
         });
 
+    }
+
+
+    public function createTransaction(Request $request, string $id)
+    {
+        $request->validate([
+            'type' => 'required|in:charge,withdraw',
+            'point' => 'required|numeric'
+        ]);
+        $wallet = User::findOrFail($id)->wallet()->first();
+
+        match ($request->type) {
+            'charge' =>
+            DB::transaction(function () use ($request, $wallet) {
+                    $wallet->update([
+                    'available_balance' => $wallet->available_balance += $request->point,
+                    'total_balance' => $wallet->total_balance += $request->point
+                    ]);
+
+                    //? Create transaction ??
+    
+                    return $wallet;
+                }),
+            'withdraw' =>
+            DB::transaction(function () use ($request, $wallet) {
+                    //!! Check Available balance
+                    
+                    $wallet->update([
+                    'available_balance' => $wallet->available_balance += $request->point,
+                    'total_balance' => $wallet->total_balance += $request->point
+                    ]);
+
+                    //? Create transaction ??
+    
+
+                    return $wallet;
+                }),
+        };
     }
 }

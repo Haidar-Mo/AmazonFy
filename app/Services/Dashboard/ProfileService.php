@@ -5,9 +5,7 @@ namespace App\Services\Dashboard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Class ProfileService.
- */
+
 class ProfileService
 {
 
@@ -19,7 +17,8 @@ class ProfileService
             'phone_number' => 'sometimes|string|unique:users,phone_number',
             'password' => 'sometimes|string',
         ]);
-        $data['password'] = bcrypt($data['password']);
+        if (array_key_exists('password', $data))
+            $data['password'] = bcrypt($data['password']);
         $user = auth()->user();
         return DB::transaction(function () use ($user, $data) {
 

@@ -7,8 +7,6 @@ use App\Services\Dashboard\ProfileService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 
-
-
 class ProfileController extends Controller
 {
     use ResponseTrait;

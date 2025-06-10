@@ -1,11 +1,15 @@
 <?php
 
+use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\V1\Dashboard\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('notifications')
-->middleware([])
+->middleware([
+    'auth:sanctum',
+    'ability:' . TokenAbility::ACCESS_API->value,
+])
 ->group(function () {
 
     Route::get('index', [NotificationController::class, 'indexSended']);
