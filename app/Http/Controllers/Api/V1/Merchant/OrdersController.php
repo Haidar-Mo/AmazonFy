@@ -90,8 +90,9 @@ class OrdersController extends Controller
                 $wallet->save();
                 $shopOrder->update(['status' => 'checking']);
             } else {
-                $shopOrder->update(['status', 'canceled']);
+                $shopOrder->update(['status' => 'canceled']);
             }
+            $shopOrder->save();
             return $this->showMessage('Operation succeeded');
 
         });
