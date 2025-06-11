@@ -22,7 +22,7 @@ class MerchantService
             ->role('merchant', 'api')
             ->findOrFail($id)
             ->makeVisible(['is_blocked'])
-            ->append(['verification_code','shop_status','is_blocked_text']);
+            ->append(['verification_code', 'shop_status', 'is_blocked_text']);
         if ($merchant->shop) {
             $merchant->shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path']);
         }
@@ -32,6 +32,7 @@ class MerchantService
     public function store(FormRequest $request)
     {
         $data = $request->validated();
+        $data['email_verified_at'] = now();
         return DB::transaction(function () use ($data) {
             $user = User::create($data);
             $user->assignRole(Role::where('name', 'merchant')->where('guard_name', 'api')->first());

@@ -18,17 +18,21 @@ class StorehouseController extends Controller
 
     public function index()
     {
-        return $this->showResponse(Storehouse::all()->append(['region_name']), 'تم جلب كل المستودعات بنجاح', 200);
+        try {
+            $storehouses = Storehouse::all()->append(['region_name']);
+            return $this->showResponse($storehouses, 'storehouse.index_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'storehouse.errors.index_error');
+        }
     }
-
 
     public function store(StorehouseCreateRequest $request)
     {
         try {
             $storehouse = $this->service->store($request);
-            return $this->showResponse($storehouse, 'تم إنشاء المستودع بنجاح', 200);
+            return $this->showResponse($storehouse, 'storehouse.store_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إنشاء المستودع');
+            return $this->showError($e, 'storehouse.errors.store_error');
         }
     }
 
@@ -36,9 +40,9 @@ class StorehouseController extends Controller
     {
         try {
             $this->service->destroy($id);
-            return $this->showMessage('تم حذف المستودع بنجاح', 200);
+            return $this->showMessage('storehouse.delete_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف المستودع');
+            return $this->showError($e, 'storehouse.errors.delete_error');
         }
     }
 }

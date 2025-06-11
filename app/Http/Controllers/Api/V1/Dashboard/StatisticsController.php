@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
 {
-
     use ResponseTrait;
+
     public function __construct(public StatisticsService $service)
     {
     }
@@ -23,11 +23,12 @@ class StatisticsController extends Controller
                 'first_date' => 'required',
                 'second_date' => 'required',
             ]);
+
             $data = $this->service->statistics($request);
-            return $this->showResponse($data, 'Daily statistics retrieved !!');
+            return $this->showResponse($data, 'statistics.success');
         } catch (\Exception $e) {
             report($e);
-            return $this->showError($e, 'An error occur while retrieving daily statistics !!!');
+            return $this->showError($e, 'statistics.errors.failed');
         }
     }
 }

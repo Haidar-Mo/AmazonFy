@@ -136,11 +136,13 @@ return [
         'index_success' => 'Orders retrieved successfully',
         'show_success' => 'Order details retrieved successfully',
         'update_success' => 'Order status updated successfully',
+        'canceled_success' => 'Order canceled successfully',
         'delete_success' => 'Order deleted successfully',
         'errors' => [
             'index_error' => 'Error occurred while retrieving orders',
             'show_error' => 'Error occurred while showing order details',
             'update_error' => 'Error occurred while updating order status',
+            'cancel_error' => 'Error occurred while canceling the order',
             'delete_error' => 'Error occurred while deleting the order',
         ],
     ],
@@ -190,4 +192,84 @@ return [
             'delete_error' => 'Error occurred while deleting region',
         ],
     ],
+
+    'shop' => [
+        'index_success' => 'Shops retrieved successfully',
+        'show_success' => 'Shop details retrieved successfully',
+        'store_success' => 'Shop created successfully',
+        'update_success' => 'Shop updated successfully',
+        'delete_success' => 'Shop deleted successfully',
+        'activate_success' => 'Shop activated successfully',
+        'deactivate_success' => 'Shop deactivated successfully',
+
+        'errors' => [
+            'index_error' => 'An error occurred while retrieving shops',
+            'show_error' => 'An error occurred while retrieving shop details',
+            'store_error' => 'An error occurred while creating the shop',
+            'update_error' => 'An error occurred while updating the shop',
+            'delete_error' => 'An error occurred while deleting the shop',
+            'activate_error' => 'An error occurred while activating the shop',
+            'deactivate_error' => 'An error occurred while deactivating the shop',
+        ],
+    ],
+
+    'shop_type' => [
+        'index_success' => 'Shop types retrieved successfully',
+        'store_success' => 'Shop type created successfully',
+        'show_success' => 'Shop type retrieved successfully',
+        'update_success' => 'Shop type updated successfully',
+        'delete_success' => 'Shop type deleted successfully',
+
+        'errors' => [
+            'index_error' => 'An error occurred while retrieving shop types',
+            'store_error' => 'An error occurred while creating shop type',
+            'show_error' => 'An error occurred while retrieving shop type',
+            'update_error' => 'An error occurred while updating shop type',
+            'delete_error' => 'An error occurred while deleting shop type',
+        ],
+    ],
+
+    'storehouse' => [
+        'index_success' => 'Storehouses retrieved successfully',
+        'store_success' => 'Storehouse created successfully',
+        'delete_success' => 'Storehouse deleted successfully',
+
+        'errors' => [
+            'index_error' => 'An error occurred while retrieving storehouses',
+            'store_error' => 'An error occurred while creating storehouse',
+            'delete_error' => 'An error occurred while deleting storehouse',
+        ],
+    ],
+
+    'terms' => [
+        'show_success' => 'Terms and conditions retrieved successfully',
+        'update_success' => 'Terms and conditions updated successfully',
+        'arabic_placeholder' => 'هنا الشروط و الأحكام باللغة العربية',
+        'english_placeholder' => 'Here will be the Terms&Conditions in English',
+
+        'errors' => [
+            'show_error' => 'An error occurred while showing terms and conditions',
+            'update_error' => 'An error occurred while updating terms and conditions',
+        ],
+    ],
+
+    'transactions' => [
+        'index_success' => 'Transactions retrieved successfully',
+        'handle_success' => 'Transaction handled successfully',
+        'create_success' => 'Transaction completed successfully',
+
+        'errors' => [
+            'index_error' => 'An error occurred while retrieving transactions',
+            'handle_error' => 'An error occurred while handling the transaction',
+            'create_error' => 'An error occurred while completing the transaction',
+        ],
+    ],
+
+    'statistics' => [
+        'success' => 'Statistics retrieved successfully',
+        'errors' => [
+            'failed' => 'An error occurred while retrieving statistics',
+        ],
+    ],
+
 ];

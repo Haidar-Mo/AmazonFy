@@ -43,13 +43,13 @@ class OrderController extends Controller
         }
     }
 
-    public function destroy(string $id)
+    public function cancel(string $id)
     {
         try {
-            $this->service->destroy($id);
-            return $this->showMessage('order.delete_success', [], 200);
+            $this->service->cancel($id);
+            return $this->showMessage('order.canceled_success', [], 200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'order.errors.delete_error');
+            return $this->showError($e, 'order.errors.cancel_error');
         }
     }
 }

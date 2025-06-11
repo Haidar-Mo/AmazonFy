@@ -24,6 +24,7 @@ class SupervisorUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string',
             'email' => 'sometimes|email',
+            'phone_number' => 'sometimes|string',
             'password' => 'sometimes|min:8',
             'permissions' => 'sometimes|array',
             'permissions*' => 'exists:permissions,id'

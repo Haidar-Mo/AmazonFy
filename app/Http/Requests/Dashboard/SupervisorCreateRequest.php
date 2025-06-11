@@ -23,7 +23,8 @@ class SupervisorCreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
+            'phone_number' => 'nullable|string',
             'password' => 'required|min:8',
             'permissions' => 'required|array',
             'permissions*' => 'exists:permissions,id'

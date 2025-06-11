@@ -15,7 +15,6 @@ Route::prefix('orders')
         Route::get('index', [OrderController::class, 'index']);
         Route::get('show/{id}', [OrderController::class, 'show']);
         Route::post('update/{id}', [OrderController::class, 'update']);
-        Route::post('cancel/{id}', [OrderController::class, 'cancelOrder']);
-        Route::delete('delete/{id}', [OrderController::class, 'destroy']);
+        Route::post('cancel/{id}', [OrderController::class, 'cancel']);
 
     });
