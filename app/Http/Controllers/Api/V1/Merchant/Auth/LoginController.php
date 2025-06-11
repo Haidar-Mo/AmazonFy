@@ -47,6 +47,15 @@ class LoginController extends Controller
             Carbon::now()->addMinutes(config('sanctum.rt_expiration'))
         );
 
+        if (($user->shop->status ?? null) == 'active') {
+            $user->is_documented = true; // Assuming 'is_documented' can be added as a dynamic property
+        } else {
+            $user->is_documented = false;
+        }
+
+        // Remove the 'shop' property
+        unset($user->shop);
+
         return response()->json([
             'message' => 'User logged in successfully.',
             'user' => $user,
