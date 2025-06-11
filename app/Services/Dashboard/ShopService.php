@@ -114,7 +114,6 @@ class ShopService
         $user = $shop->user;
         return DB::transaction(function () use ($shop, $user) {
             $shop->update(['status' => 'active']);
-            $user->assignRole(Role::where('name', '=', 'merchant')->first());
             return $shop;
         });
     }

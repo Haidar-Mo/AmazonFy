@@ -8,14 +8,12 @@ use App\Http\Requests\Dashboard\SupervisorUpdateRequest;
 use App\Models\User;
 use App\Services\Dashboard\AdministrationService;
 use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdministrationController extends Controller
 {
-
     use ResponseTrait;
-
 
     public function __construct(public AdministrationService $service)
     {
@@ -23,13 +21,23 @@ class AdministrationController extends Controller
 
     public function index()
     {
-        $supervisors = User::role('supervisor', 'api')->get()
-            ->append(['role_name', 'permissions_names'])
-            ->makeHidden(['roles', 'permissions']);
+        try {
+            $supervisors = User::role('supervisor', 'api')->get()
+                ->append(['role_name', 'permissions_names'])
+                ->makeHidden(['roles', 'permissions']);
 
-        return $this->showResponse($supervisors, 'تم جلب كل المشرفين بنجاح', 200);
+            return $this->showResponse(
+                $supervisors,
+                'administration.supervisor.index_success'
+            );
+        } catch (\Exception $e) {
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.index_error',
+                []
+            );
+        }
     }
-
 
     public function show(string $id)
     {
@@ -38,65 +46,86 @@ class AdministrationController extends Controller
                 ->append(['role_name', 'permissions_names'])
                 ->makeHidden(['roles', 'permissions']);
 
-            return $this->showResponse($supervisor, 'تم جلب كل المشرف بنجاح', 200);
+            return $this->showResponse(
+                $supervisor,
+                'administration.supervisor.show_success'
+            );
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء تسجيل الحساب');
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.show_error',
+                []
+            );
         }
     }
 
-    /**
-     * Store the newly created resource in storage.
-     */
-    public function store(SupervisorCreateRequest $adminCreateRequest)
+    public function store(SupervisorCreateRequest $request)
     {
         try {
-            $admin = $this->service->store($adminCreateRequest);
-            return $this->showResponse($admin, 'تم تسجيل الحساب بنجاح', 200);
+            $admin = $this->service->store($request);
+            return $this->showResponse(
+                $admin,
+                'administration.supervisor.store_success',
+                [],
+                Response::HTTP_CREATED
+            );
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء تسجيل الحساب');
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.store_error',
+                []
+            );
         }
     }
 
-
-    /**
-     * Update the resource in storage.
-     */
-    public function update(SupervisorUpdateRequest $supervisorUpdateRequest, string $id)
+    public function update(SupervisorUpdateRequest $request, string $id)
     {
         try {
             $supervisor = User::findOrFail($id);
-            $user = $this->service->update($supervisor, $supervisorUpdateRequest);
-            return $this->showResponse($user, 'تم تعديل البيانات بنجاح', 200);
+            $user = $this->service->update($supervisor, $request);
+            return $this->showResponse(
+                $user,
+                'administration.supervisor.update_success'
+            );
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء التعديل على بيانات المشرف');
-
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.update_error',
+                []
+            );
         }
-
     }
 
-    /**
-     * Remove the resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
             $supervisor = User::findOrFail($id);
             $supervisor->delete();
-            return $this->showMessage('تم حذف حساب المشرف بنجاح', 200);
+            return $this->showMessage(
+                'administration.supervisor.delete_success'
+            );
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف المشرف');
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.delete_error',
+                []
+            );
         }
     }
 
-    /**
-     * List all of Permissions
-     * 
-     * the list can be use to assign permissions to a supervisor
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function indexPermissions()
     {
-        return $this->showResponse(Permission::query()->get(['id', 'name']), 'تم جلب كل الصلاحيات', 200);
+        try {
+            return $this->showResponse(
+                Permission::query()->get(['id', 'name']),
+                'administration.supervisor.permissions_success'
+            );
+        } catch (\Exception $e) {
+            return $this->showError(
+                $e,
+                'administration.supervisor.errors.permissions_error',
+                []
+            );
+        }
     }
 }

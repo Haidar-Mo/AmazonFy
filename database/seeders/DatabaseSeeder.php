@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password')
             ]
         );
-        $user->assignRole(Role::where('name', 'client')->first());
+        $user->assignRole(Role::where('name', 'merchant')->first());
 
         $user = User::firstOrCreate([
             'email' => 'user1@gmial.com'
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '111111111',
             'password' => bcrypt('password')
         ]);
-        $user->assignRole(Role::where('name', 'client')->first());
+        $user->assignRole(Role::where('name', 'merchant')->first());
 
         Region::factory()->count(50)->create();
         Client::factory()->count(10)->create();

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
@@ -15,21 +14,22 @@ class ProductTypeController extends Controller
     {
         try {
             $regions = ProductType::all();
-            return $this->showResponse($regions, 'تم جلب كل الفئات بنجاح', 200);
+            return $this->showResponse($regions, 'product_type.index_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل الفئات');
+            return $this->showError($e, 'product_type.errors.index_error');
         }
     }
+
     public function show(string $id)
     {
         try {
             $regions = ProductType::findOrFail($id);
-            return $this->showResponse($regions, 'تم جلب كل الفئة بنجاح', 200);
+            return $this->showResponse($regions, 'product_type.show_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب معلومات الفئة');
+            return $this->showError($e, 'product_type.errors.show_error');
         }
-
     }
+
     public function store(Request $request)
     {
         try {
@@ -37,13 +37,13 @@ class ProductTypeController extends Controller
                 'name' => 'required|string'
             ]);
             $region = ProductType::create($data);
-            return $this->showResponse($region, 'تم إضافة فئة جديدة');
+            return $this->showResponse($region, 'product_type.create_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إضافة فئة جديدة');
+            return $this->showError($e, 'product_type.errors.create_error');
         }
-
     }
-    public function update(request $request, string $id)
+
+    public function update(Request $request, string $id)
     {
         try {
             $data = $request->validate([
@@ -51,19 +51,19 @@ class ProductTypeController extends Controller
             ]);
             $region = ProductType::findOrFail($id);
             $region->update($data);
-            return $this->showResponse($region, 'تم تعديل الفئة بنجاح');
+            return $this->showResponse($region, 'product_type.update_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء تعديل الفئة');
+            return $this->showError($e, 'product_type.errors.update_error');
         }
-
     }
+
     public function destroy(string $id)
     {
         try {
             ProductType::findOrFail($id)->delete();
-            return $this->showMessage('تم حذف الفئة بنجاح', 200);
+            return $this->showMessage('product_type.delete_success',[],200);
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف الفئة');
+            return $this->showError($e, 'product_type.errors.delete_error');
         }
     }
 }

@@ -30,7 +30,7 @@ class ShopOrderFactory extends Factory
             'selling_price' => $wholesalePrice,
             'count' => $count,
             'total_price' => $wholesalePrice * $count,
-            'status' => $this->faker->randomElement(['checking', 'reviewing', 'delivering', 'canceled']),
+            'status' => $this->faker->randomElement(['pending', 'checking', 'preparing', 'delivered']),
             'customer_note' => $this->faker->sentence,
         ];
     }

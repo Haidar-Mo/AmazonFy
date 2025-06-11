@@ -29,6 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+    
+        $middleware->append([
+            \App\Http\Middleware\AcceptLanguage::class
+        ]);
+
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
@@ -66,7 +71,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 // if ($e instanceof NotFoundHttpException) {
                 //     return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
                 // }
-
+    
                 if ($e instanceof AuthorizationException) {
                     return response()->json([
                         'message' => 'This action is unauthorized.',
