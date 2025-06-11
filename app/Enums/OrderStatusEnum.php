@@ -8,5 +8,5 @@ enum OrderStatusEnum: string
     case CHECKING = 'checking';
     case PREPARING = 'preparing';
     case DELIVERED = 'delivered';
-    // case CANCELED = 'canceled';
+    case CANCELED = 'canceled';
 }

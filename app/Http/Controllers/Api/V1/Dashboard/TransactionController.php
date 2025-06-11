@@ -19,9 +19,9 @@ class TransactionController extends Controller
     {
         try {
             $transactions = $this->service->index();
-            return $this->showResponse($transactions, 'تم جلب كل المعاملات بنجاح');
+            return $this->showResponse($transactions, 'transactions.index_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب كل المعاملات');
+            return $this->showError($e, 'transactions.errors.index_error');
         }
     }
 
@@ -29,20 +29,19 @@ class TransactionController extends Controller
     {
         try {
             $transaction = $this->service->handleTransaction($id, $request);
-            return $this->showResponse($transaction, 'تم معالجة المعاملة بنجاح');
+            return $this->showResponse($transaction, 'transactions.handle_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما معالجة المعاملة');
+            return $this->showError($e, 'transactions.errors.handle_error');
         }
     }
-
 
     public function createTransaction(Request $request, string $id)
     {
         try {
-            $wallet = $this->service->createTransaction($request ,$id);
-            return $this->showResponse($wallet,'تمت المعاملة بنجاح');
+            $wallet = $this->service->createTransaction($request, $id);
+            return $this->showResponse($wallet, 'transactions.create_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إنجاز المعاملة');
+            return $this->showError($e, 'transactions.errors.create_error');
         }
     }
 }

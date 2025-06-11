@@ -16,37 +16,33 @@ class ShopController extends Controller
     {
     }
 
-
     public function index()
     {
         try {
             $shops = $this->service->index();
-            return $this->showResponse($shops, 'تم جلب المتاجر بنجاح');
+            return $this->showResponse($shops, 'shop.index_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء جلب المتاجر');
+            return $this->showError($e, 'shop.errors.index_error');
         }
-
     }
-
 
     public function show(string $id)
     {
         try {
             $shop = $this->service->show($id);
-            return $this->showResponse($shop, 'تم جلب تفاصيل المتجر بنجاح');
+            return $this->showResponse($shop, 'shop.show_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء عرض تفاصيل المتجر');
+            return $this->showError($e, 'shop.errors.show_error');
         }
     }
-
 
     public function store(ShopCreateRequest $request)
     {
         try {
             $shop = $this->service->store($request);
-            return $this->showResponse($shop, 'تم إنشاء المتجر بنجاح');
+            return $this->showResponse($shop, 'shop.store_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء إنشاء متجر');
+            return $this->showError($e, 'shop.errors.store_error');
         }
     }
 
@@ -54,9 +50,9 @@ class ShopController extends Controller
     {
         try {
             $shop = $this->service->update($request, $id);
-            return $this->showResponse($shop, 'تم تعديل بيانات المتجر بنجاح');
+            return $this->showResponse($shop, 'shop.update_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء تعديل بيانات متجر');
+            return $this->showError($e, 'shop.errors.update_error');
         }
     }
 
@@ -64,9 +60,9 @@ class ShopController extends Controller
     {
         try {
             $this->service->destroy($id);
-            return $this->showMessage('تم حذف المتجر بنجاح');
+            return $this->showMessage('shop.delete_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما أثناء حذف المتجر');
+            return $this->showError($e, 'shop.errors.delete_error');
         }
     }
 
@@ -74,9 +70,9 @@ class ShopController extends Controller
     {
         try {
             $shop = $this->service->activateShop($id);
-            return $this->showResponse($shop, 'تم تفعيل المتجر بنجاح');
+            return $this->showResponse($shop, 'shop.activate_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء تفعيل المتجر');
+            return $this->showError($e, 'shop.errors.activate_error');
         }
     }
 
@@ -84,9 +80,9 @@ class ShopController extends Controller
     {
         try {
             $shop = $this->service->deactivateShop($id);
-            return $this->showResponse($shop, 'تم إلغاء تفعيل المتجر بنجاح');
+            return $this->showResponse($shop, 'shop.deactivate_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'حدث خطأ أثناء إلغاء تفعيل المتجر');
+            return $this->showError($e, 'shop.errors.deactivate_error');
         }
     }
 }

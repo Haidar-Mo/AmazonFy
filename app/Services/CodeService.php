@@ -7,9 +7,9 @@ use App\Models\User;
 use App\Notifications\PhoneNumberVerificationCodeNotification;
 use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
-use Notification;
+use Illuminate\Support\Facades\Notification;
 
 class CodeService
 {

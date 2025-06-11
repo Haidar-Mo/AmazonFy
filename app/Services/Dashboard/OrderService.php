@@ -3,6 +3,7 @@
 namespace App\Services\Dashboard;
 
 use App\Models\ShopOrder;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatusEnum;
 /**
@@ -47,36 +48,33 @@ class OrderService
         return $order;
     }
 
-    public function destroy(string $id)
+    public function cancel(string $id)
     {
         $order = ShopOrder::findOrFail($id);
-        DB::transaction(function () use ($order) {
-            $order->delete();
-        });
+        if (in_array($order->status, ['pending', 'delivered', 'canceled']))
+            throw new \Exception('can not cancel this order', 400);
+
+        $merchant_wallet = $order->shop()->first()
+            ->user()->first()
+            ->wallet()->first();
+
+        return $this->makeCancel($order, $merchant_wallet);
     }
 
 
     public function updateStatus(string $id)
     {
         $order = ShopOrder::findOrFail($id);
+
+        $merchant_wallet = $order->shop()->first()
+            ->user()->first()
+            ->wallet()->first();
+
         return match ($order->status) {
             'checking' => $this->makePreparing($order),
-            'preparing' => $this->makeDelivered($order),
+            'preparing' => $this->makeDelivered($order, $merchant_wallet),
         };
     }
-
-
- /*   public function cancelOrder(string $id)
-    {
-        $order = ShopOrder::findOrFail($id);
-        return DB::transaction(function () use ($order) {
-            $order->update(['status' => OrderStatusEnum::CANCELED]);
-            //Update Balance 
-            return $order;
-        });
-
-    }*/
-
 
     //! Helper functions
     private function makePreparing(ShopOrder $order)
@@ -88,13 +86,30 @@ class OrderService
         });
 
     }
-    private function makeDelivered(ShopOrder $order)
+    private function makeDelivered(ShopOrder $order, Wallet $wallet)
     {
-        return DB::transaction(function () use ($order) {
+        return DB::transaction(function () use ($order, $wallet) {
             $order->update(['status' => OrderStatusEnum::DELIVERED]);
+            $wallet->update([
+                'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
+                'available_balance' => $wallet->available_balance + $order->selling_price * $order->count,
+                'total' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
+            ]);
+
             return $order;
-            //Wallet balance recharge
         });
 
+    }
+
+    private function makeCancel(ShopOrder $order, Wallet $wallet)
+    {
+        return DB::transaction(function () use ($order, $wallet) {
+            $order->update(['status' => OrderStatusEnum::CANCELED]);
+            $wallet->update([
+                'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
+                'available_balance' => $wallet->available_balance + $order->wholesale_price * $order->count,
+            ]);
+            return $order;
+        });
     }
 }

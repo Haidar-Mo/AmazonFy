@@ -25,7 +25,7 @@ class MerchantCreateRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'phone_number' => 'required|string|unique:users,phone_number',
-            'password' => 'required|confirmed|min:6'
+            'password' => 'required|confirmed|min:6',
         ];
     }
 }

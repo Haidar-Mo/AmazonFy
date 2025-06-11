@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
@@ -11,68 +10,73 @@ use Illuminate\Support\Facades\DB;
 class ShopTypesController extends Controller
 {
     use ResponseTrait;
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $types = ShopType::all();
-        return $this->showResponse($types);
+        try {
+            $types = ShopType::all();
+            return $this->showResponse($types, 'shop_type.index_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'shop_type.errors.index_error');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            $request->validate([
-                'name' => ['required', 'string']
-            ]);
-            $type = ShopType::create([
-                'name' => $request->name
-            ]);
+            try {
+                $request->validate([
+                    'name' => ['required', 'string']
+                ]);
 
-            return response()->json([
-                'message' => 'Type created successfully',
-                'type' => $type
-            ], 201);
+                $type = ShopType::create([
+                    'name' => $request->name
+                ]);
+
+                return $this->showResponse($type, 'shop_type.store_success');
+            } catch (\Exception $e) {
+                return $this->showError($e, 'shop_type.errors.store_error');
+            }
         });
-
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(ShopType $shopType)
     {
-        return $this->showResponse($shopType);
+        try {
+            return $this->showResponse($shopType, 'shop_type.show_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'shop_type.errors.show_error');
+        }
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, ShopType $shopType)
     {
         return DB::transaction(function () use ($request, $shopType) {
-            $shopType->update([
-                'name' => $request->name
-            ]);
+            try {
+                $request->validate([
+                    'name' => ['required', 'string']
+                ]);
 
-            return $this->showResponse($shopType);
+                $shopType->update([
+                    'name' => $request->name
+                ]);
+
+                return $this->showResponse($shopType, 'shop_type.update_success');
+            } catch (\Exception $e) {
+                return $this->showError($e, 'shop_type.errors.update_error');
+            }
         });
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(ShopType $shopType)
     {
         return DB::transaction(function () use ($shopType) {
-            $shopType->delete();
-            return $this->showMessage('Deleted successfully');
+            try {
+                $shopType->delete();
+                return $this->showMessage('shop_type.delete_success');
+            } catch (\Exception $e) {
+                return $this->showError($e, 'shop_type.errors.delete_error');
+            }
         });
     }
 }
