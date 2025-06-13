@@ -33,10 +33,21 @@ class MerchantService
     {
         $data = $request->validated();
         $data['email_verified_at'] = now();
+        if (key_exists('email', $data) && $data['email'] == null)
+            $data['email'] = '';
+        if (key_exists('phone_number', $data) && $data['phone_number'] == null)
+            $data['phone_number'] = '';
+
         return DB::transaction(function () use ($data) {
+
             $user = User::create($data);
             $user->assignRole(Role::where('name', 'merchant')->where('guard_name', 'api')->first());
-            return $user;
+            $user->wallet()->create([
+                'available_balance' => (Float) 0,
+                'marginal_balance' => (Float) 0,
+                'total_balance' => (Float) 0,
+            ]);
+            return $user->load('wallet');
         });
     }
 

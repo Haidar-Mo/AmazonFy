@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('regions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')->nullable()->constrained('regions')->cascadeOnDelete();
+            $table->string('locale')->default('en');
             $table->string('name');
             $table->timestamps();
         });

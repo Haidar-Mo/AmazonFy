@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('storehouses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('region_id')->constrained('regions')->cascadeOnDelete();
+            $table->string('locale')->default('en');
             $table->string('name');
             $table->timestamps();
         });

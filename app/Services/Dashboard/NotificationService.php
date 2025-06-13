@@ -33,6 +33,7 @@ class NotificationService
     public function indexReceived()
     {
         $user = request()->user();
+        $user->unreadNotifications->markAsRead();
         return $user->notifications;
     }
 

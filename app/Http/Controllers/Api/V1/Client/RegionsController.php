@@ -16,7 +16,7 @@ class RegionsController extends Controller
     public function index()
     {
         $regions = Region::whereNull('parent_id')->with(['children'])->get();
-        return $this->showResponse($regions);
+        return $this->showResponse($regions, __('messages.api.success'));
     }
 
     /**

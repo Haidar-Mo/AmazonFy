@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('terms_and_conditions', function (Blueprint $table) {
             $table->id();
-            $table->text('arabic_content')->default('مرحباً بك في أمازون-فاي');
-            $table->text('english_content')->default('Welcome To AmazonFy');
+            $table->string('locale')->default('en');
+            $table->text('content')->default('Welcome To AmazonFy');
             $table->timestamps();
         });
     }

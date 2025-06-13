@@ -10,7 +10,10 @@ class ProductType extends Model
     use HasFactory;
 
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'local',
+        'name'
+    ];
 
     public function products()
     {

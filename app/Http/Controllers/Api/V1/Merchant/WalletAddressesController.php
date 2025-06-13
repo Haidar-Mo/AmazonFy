@@ -37,7 +37,7 @@ class WalletAddressesController extends Controller
     {
         $old_address = auth()->user()->wallet->walletAddress()->where('name', '=', $request->name)->first();
         if ($old_address)
-            return $this->showMessage('you cant create more than one Address for the same network name', 400, false);
+            return $this->showMessage(__('messages.address.validation.network_name.unique'), status: 400, success: false);
         return DB::transaction(function () use ($request) {
             $request->validate([
                 'name' => ['required', 'string'],
@@ -47,7 +47,7 @@ class WalletAddressesController extends Controller
 
             $wallet = Auth::user()->wallet;
             $wallet->walletAddress()->create($request->all());
-            return $this->showResponse($wallet->load('walletAddress'));
+            return $this->showResponse($wallet->load('walletAddress'), __('messages.address.store_success'));
 
         });
     }
@@ -79,10 +79,10 @@ class WalletAddressesController extends Controller
             $request->validate([
                 'name' => ['string', 'unique:wallet_addresses,name,' . $address->id],
                 'target' => ['string']
-            ],['name.unique'=>'you cant create more than one Address for the same network name']);
+            ], ['name.unique' => __('messages.address.validation.network_name.unique')]);
             $address->update($request->all());
             $address->save();
-            return $this->showResponse($wallet->load('walletAddress'));
+            return $this->showResponse($wallet->load('walletAddress'), __('messages.address.update_success'));
         });
     }
 
@@ -95,7 +95,7 @@ class WalletAddressesController extends Controller
             $wallet = Auth::user()->wallet;
             $address = $wallet->walletAddress()->findOrFail($walletAddress->id);
             $address->delete();
-            return $this->showMessage('Deleted successfully');
+            return $this->showMessage(__('messages.address.delete_success'));
         });
 
     }

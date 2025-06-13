@@ -15,8 +15,14 @@ class AdministrationService
 
     public function store(FormRequest $request)
     {
-        $request->validated();
-        $user = User::create($request->only(['name', 'email', 'phone_number', 'password']));
+        $data = $request->validated();
+
+        if (key_exists('email', $data) && $data['email'] == null)
+            $data['email'] = '';
+        if (key_exists('phone_number', $data) && $data['phone_number'] == null)
+            $data['phone_number'] = '';
+
+        $user = User::create($data);
         $user->markEmailAsVerified();
         $user->assignRole(Role::where('name', 'supervisor')->first());
         $permissions = [];

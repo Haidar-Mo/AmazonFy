@@ -34,7 +34,7 @@ class ShopsController extends Controller
     {
         $types = ShopType::get(['id', 'name']);
         return response()->json([
-            'message' => 'success',
+            'message' => __('messages.shop_type.show_success'),
             'types' => $types
         ]);
     }
@@ -65,7 +65,7 @@ class ShopsController extends Controller
             $admin = User::role('admin', 'api')->first(); //! set the proper admin id
             Notification::send($admin, new DocumentationRequestNotification($request->user()));
 
-            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']), status: 201);
+            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']), __('messages.shop.store_success'), status: 201);
         });
     }
 
@@ -80,7 +80,7 @@ class ShopsController extends Controller
         } else {
             $data = $shop->withCount(['products', 'shopOrders'])->with('products')->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
         }
-        return $this->showResponse($data);
+        return $this->showResponse($data, __('messages.shop.show_success'));
     }
 
     public function getStatistics()
@@ -124,7 +124,7 @@ class ShopsController extends Controller
             ], DB::raw('selling_price - wholesale_price')) // Calculate profit per order
             ->get()
             ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
-        return $this->showResponse($data);
+        return $this->showResponse($data, __('messages.statistics.success'));
     }
 
     /**
@@ -160,7 +160,11 @@ class ShopsController extends Controller
                 $attributes['identity_back_face'] = $identity_back_face_path;
             }
             $shop->update($attributes);
-            return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']));
+
+            return $this->showResponse(
+                $shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']),
+                __('messages.shop.update_success')
+            );
         });
 
     }
@@ -176,7 +180,7 @@ class ShopsController extends Controller
             $this->deleteFile($shop->identity_front_face);
             $this->deleteFile($shop->identity_back_face);
             $shop->delete();
-            return $this->showMessage('Deleted Successfully');
+            return $this->showMessage(__('messages.shop.delete_success'));
         });
     }
 }

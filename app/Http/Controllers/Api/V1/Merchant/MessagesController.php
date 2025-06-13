@@ -31,7 +31,7 @@ class MessagesController extends Controller
             event(new NewMessageSent($message));
             Log::info('Message sent and broadcasted: ', ['message' => $message]);
             DB::commit();
-            return $this->showMessage('Message sent..!');
+            return $this->showMessage(__('messages.chat.message_sent'));
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->showError($e);

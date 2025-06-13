@@ -26,8 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'password',
         'is_blocked',
-        'verify_code',
-        'verified_at'
+        'email_verified_at'
     ];
 
     /**
@@ -91,16 +90,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getShopStatusAttribute()
     {
-        return $this->shop()->first() ? $this->shop()->first()->status : 'غير موثق';
+        return $this->shop()->first() ? __('texts.shop.status.verified') : __('texts.shop.status.unverified');
     }
 
     public function getIsBlockedTextAttribute()
     {
-        return $this->is_blocked ? 'محظور' : 'متاح';
+        return $this->is_blocked ? __('texts.user.status.blocked') : __('texts.user.status.unblocked');
     }
 
     public function getVerificationCodeAttribute()
     {
-        return $this->verificationCode()->first()?->code;
+        return $this->verificationCode()->first()?->verification_code;
     }
 }
