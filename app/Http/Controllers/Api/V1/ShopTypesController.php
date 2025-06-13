@@ -15,7 +15,12 @@ class ShopTypesController extends Controller
      */
     public function index()
     {
-        $types = ShopType::get(['id', 'name']);
+        $types = ShopType::select(['id', 'name'])
+            ->withCount('shops') // Adds a 'shops_count' attribute
+            ->orderByDesc('shops_count') // Sort by count descending
+            ->get()
+            ->makeHidden('shops_count'); // Optional: Hide the count from the response
+
         return $this->showResponse($types);
     }
 
