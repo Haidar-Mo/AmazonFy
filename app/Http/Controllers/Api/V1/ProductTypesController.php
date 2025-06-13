@@ -15,7 +15,12 @@ class ProductTypesController extends Controller
      */
     public function index()
     {
-        $types = ProductType::get(['id', 'name']);
+        $types = ProductType::select(['id', 'name'])
+            ->withCount('products') // Adds a 'products_count' attribute
+            ->orderByDesc('products_count') // Sort by count descending
+            ->get()
+            ->makeHidden('products_count'); // Optional: Hide the count from the response
+
         return $this->showResponse($types);
     }
 
