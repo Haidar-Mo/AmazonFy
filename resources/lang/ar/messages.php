@@ -86,11 +86,13 @@ return [
         'index_success' => 'تم جلب المحادثات بنجاح',
         'show_success' => 'تم جلب المحادثة بنجاح',
         'create_success' => 'تم إنشاء المحادثة بنجاح',
+        'delete_success' => 'تم حذف المحادثة بنجاح',
         'message_sent' => 'تم إرسال الرسالة بنجاح',
         'errors' => [
             'index_error' => 'حدث خطأ أثناء جلب المحادثات',
             'show_error' => 'حدث خطأ أثناء جلب المحادثة',
             'create_error' => 'حدث خطأ أثناء إنشاء المحادثة',
+            'delete_error' => 'حدث خطأ أثناء حذف المحادثة',
             'message_error' => 'حدث خطأ أثناء إرسال الرسالة',
         ],
     ],
@@ -132,8 +134,8 @@ return [
     'wallet' => [
         'show_success' => 'تم عرض تفاصيل المحفظة بنجاح',
 
-        'charge_create'=>'تم إنشاء طلب الشحن بنجاح',
-        'withdraw_create'=>'تم إنشاء طلب السحب بنجاح',
+        'charge_create' => 'تم إنشاء طلب الشحن بنجاح',
+        'withdraw_create' => 'تم إنشاء طلب السحب بنجاح',
 
         'errors' => [
             'insufficient_funds' => 'ليس لديك رصيد كافي',

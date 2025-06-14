@@ -14,5 +14,6 @@ Route::prefix('chats')
         Route::get('index', [ChatsAndMessagesController::class, 'indexChats']);
         Route::get('show/{id}', [ChatsAndMessagesController::class, 'showChat']);
         Route::post('store', [ChatsAndMessagesController::class, 'storeChat']);
+        Route::delete('delete/{id}', [ChatsAndMessagesController::class, 'destroy']);
         Route::post('message-send', [ChatsAndMessagesController::class, 'storeMessage']);
     });

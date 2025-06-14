@@ -53,7 +53,7 @@ class OrdersController extends Controller
 
         $client->orders()->createMany($orders_data);
 
-        return $this->showMessage(__('messages.api.success'));
+        return $this->showMessage('api.success');
     }
 
     /**

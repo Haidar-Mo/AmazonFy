@@ -56,7 +56,7 @@ class Shop extends Model
 
 
     //! Accessories
-    //: logo_full_path, identity_front_face_full_path,  identity_back_face_full_path,   type_name,
+    //: logo_full_path, identity_front_face_full_path,  identity_back_face_full_path,   type_name,  is_blocked, is_blocked_text
 
     public function getLogoFullPathAttribute()
     {
@@ -74,5 +74,15 @@ class Shop extends Model
     public function getTypeNameAttribute()
     {
         return $this->type()->first()->name;
+    }
+
+    public function getIsBlockedAttribute()
+    {
+        return $this->user()->first()->is_blocked;
+    }
+
+    public function getIsBlockedTextAttribute()
+    {
+        return $this->user()->first()->is_blocked ? __('texts.user.status.blocked') : __('texts.user.status.unblocked');
     }
 }

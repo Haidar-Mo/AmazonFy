@@ -124,7 +124,7 @@ class ShopsController extends Controller
             ], DB::raw('selling_price - wholesale_price')) // Calculate profit per order
             ->get()
             ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
-        return $this->showResponse($data, __('messages.statistics.success'));
+        return $this->showResponse($data, 'messages.statistics.success');
     }
 
     /**
@@ -163,7 +163,7 @@ class ShopsController extends Controller
 
             return $this->showResponse(
                 $shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']),
-                __('messages.shop.update_success')
+                'messages.shop.update_success'
             );
         });
 
@@ -180,7 +180,7 @@ class ShopsController extends Controller
             $this->deleteFile($shop->identity_front_face);
             $this->deleteFile($shop->identity_back_face);
             $shop->delete();
-            return $this->showMessage(__('messages.shop.delete_success'));
+            return $this->showMessage('messages.shop.delete_success');
         });
     }
 }

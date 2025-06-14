@@ -20,7 +20,7 @@ class ChatsController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return $this->showResponse($chat->load('message'),__('messages.chat.show_success'));
+        return $this->showResponse($chat->load('message'), 'chat.show_success');
         // return $this->showResponse(new ChatResource($chat));
     }
 }

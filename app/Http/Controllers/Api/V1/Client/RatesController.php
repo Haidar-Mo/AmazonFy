@@ -53,7 +53,7 @@ class RatesController extends Controller
                 'rate' => $shop->rates()->avg('rate') ?? 0
             ]);
 
-            return $this->showMessage(__('messages.api.success'));
+            return $this->showMessage('api.success');
         });
 
     }

@@ -8,14 +8,18 @@ use App\Http\Requests\Api\V1\CreateChatRequest;
 use App\Http\Requests\Api\V1\CreateMessageRequest;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
+use App\Services\Dashboard\ChatsAndMessagesService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ChatsAndMessagesController extends Controller
 {
     use ResponseTrait;
+
+    public function __construct(protected ChatsAndMessagesService $service)
+    {
+    }
 
     public function indexChats(Request $request)
     {
@@ -23,7 +27,7 @@ class ChatsAndMessagesController extends Controller
             $chats = Chat::all()->each(function ($chat) {
                 $chat->append(['merchant_name']);
             });
-            
+
             return $this->showResponse(
                 $chats,
                 'chat.index_success'
@@ -41,7 +45,7 @@ class ChatsAndMessagesController extends Controller
         try {
             $chat = Chat::with(['user.shop', 'message'])
                 ->findOrFail($id);
-                
+
             $chat->message()
                 ->where('sender_id', '!=', request()->id)
                 ->where('is_read', false)
@@ -66,7 +70,7 @@ class ChatsAndMessagesController extends Controller
             $chat = Chat::firstOrCreate([
                 'user_id' => $request->user_id,
             ]);
-            
+
             DB::commit();
             return $this->showResponse(
                 $chat,
@@ -78,6 +82,16 @@ class ChatsAndMessagesController extends Controller
                 $e,
                 'chat.errors.create_error'
             );
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $this->service->destroyChat($id);
+            return $this->showMessage('chat.delete_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'chat.delete_error');
         }
     }
 
@@ -94,10 +108,8 @@ class ChatsAndMessagesController extends Controller
                     'content' => $request->content,
                     'chat_id' => $request->chat_id
                 ]);
-                
+
             event(new NewMessageSent($message));
-            Log::info('Message sent and broadcasted: ', ['message' => $message]);
-            
             DB::commit();
             return $this->showResponse(
                 $message,

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('product_types', function (Blueprint $table) {
             $table->id();
-            $table->string('locale')->default('en');
+          //  $table->string('locale')->default('en');
             $table->string('name');
             $table->timestamps();
         });

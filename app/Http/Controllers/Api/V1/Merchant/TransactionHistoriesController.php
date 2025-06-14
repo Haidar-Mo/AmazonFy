@@ -28,7 +28,7 @@ class TransactionHistoriesController extends Controller
             ->where('wallet_id', $wallet->id)
             ->get()->append('image_full_path');
 
-        return $this->showResponse($data, __('messages.transactions.index_success'));
+        return $this->showResponse($data, 'messages.transactions.index_success');
     }
 
     /**

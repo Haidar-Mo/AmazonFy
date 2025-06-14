@@ -51,7 +51,7 @@ class WalletsController extends Controller
     {
         $wallet = Auth::user()->wallet;
         $data = $wallet->load('walletAddress');
-        return $this->showResponse($data, __('messages.wallet.show_success'));
+        return $this->showResponse($data, 'wallet.show_success');
     }
 
     /**
@@ -98,7 +98,7 @@ class WalletsController extends Controller
             Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
 
-            return $this->showMessage(__('messages.wallet.charge_create'));
+            return $this->showMessage('wallet.charge_create');
         });
     }
 
@@ -117,7 +117,7 @@ class WalletsController extends Controller
             $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
             Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
 
-            return $this->showMessage(__('messages.wallet.withdraw_create'));
+            return $this->showMessage('wallet.withdraw_create');
         });
     }
 
@@ -127,7 +127,7 @@ class WalletsController extends Controller
         try {
             return $this->showResponse(Address::all());
         } catch (\Exception $e) {
-            return $this->showError($e, __('messages.address.index_error'));
+            return $this->showError($e, 'address.index_error');
         }
     }
 }

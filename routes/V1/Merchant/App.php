@@ -55,6 +55,11 @@ Route::middleware([
             Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
 
+        //? isolated API To check id the user has documented shop or not 
+        Route::get('is-documented', function () {
+            return (auth()->user()->shop?->status == 'active') ? (object) ['is_documented' => true] : (object) ['is_documented' => false];
+        });
+
     });
 
 //: This is guest user index products

@@ -35,7 +35,7 @@ class ShopsController extends Controller
                 $shop->products->each->append('full_path_image');
             });
 
-        return $this->showResponse($shops, __('messages.api.success'));
+        return $this->showResponse($shops, 'api.success');
     }
 
     /**
@@ -79,7 +79,7 @@ class ShopsController extends Controller
                 'identity_back_face_full_path',
                 'type_name'
             ]),
-            __('messages.api.success')
+            'api.success'
         );
     }
     /**

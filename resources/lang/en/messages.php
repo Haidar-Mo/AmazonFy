@@ -87,11 +87,13 @@ return [
         'index_success' => 'Chats retrieved successfully',
         'show_success' => 'Chat retrieved successfully',
         'create_success' => 'Chat created successfully',
+        'delete_success' => 'Chat deleted successfully',
         'message_sent' => 'Message sent successfully',
         'errors' => [
             'index_error' => 'Error occurred while retrieving chats',
             'show_error' => 'Error occurred while retrieving chat',
             'create_error' => 'Error occurred while creating chat',
+            'delete_error' => 'Error occurred while deleting chat',
             'message_error' => 'Error occurred while sending message',
         ],
     ],
