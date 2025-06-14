@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Merchant\Auth;
 
+use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Merchant\Auth\RegisterRequest;
 use App\Models\{
@@ -64,10 +65,25 @@ class RegisterController extends Controller
 
             Chat::create(['user_id' => $user->id]);
 
+            $accessToken = $user->createToken(
+                'access_token',
+                [TokenAbility::ACCESS_API->value, 'role:merchant'],
+                Carbon::now()->addMinutes(config('sanctum.ac_expiration'))
+            );
+
+            $refreshToken = $user->createToken(
+                'refresh_token',
+                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
+                Carbon::now()->addMinutes(config('sanctum.rt_expiration'))
+            );
+
+
             $user->assignRole(Role::where('name', '=', 'merchant')->first());
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
                 'user' => $user,
+                'access_token' => $accessToken->plainTextToken,
+                'refresh_token' => $refreshToken->plainTextToken,
             ], 201);
         });
     }
