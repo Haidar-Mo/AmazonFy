@@ -81,8 +81,8 @@ class ShopOrder extends Model
 
     public function getCreatedFromAttribute()
     {
-        Carbon::setLocale('ar');
-        $diff = $this->created_at->locale('ar')->diffForHumans();
+        $locale = app()->getLocale();
+        $diff = $this->created_at->locale($locale)->diffForHumans();
         return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
 

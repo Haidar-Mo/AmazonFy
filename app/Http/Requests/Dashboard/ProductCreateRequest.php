@@ -22,13 +22,18 @@ class ProductCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string',
+            // 'products' => 'required|array|min:1',
+            // 'products.*.locale' => 'required|string|size:2',
+            // 'products.*.title' => 'required|string|max:255',
+            // 'products.*.details' => 'required|string',
+
+            'title' => 'required|string|max:255',
             'details' => 'required|string',
             'type_id' => 'required|exists:product_types,id',
-            'wholesale_price' => 'required|decimal:0,99999999',
-            'selling_price' => 'required|decimal:0,99999999',
-            'is_available' => 'boolean',
-            'image' => 'required|image'
+            'is_available' => 'sometimes|boolean',
+            'selling_price' => 'required|numeric',
+            'wholesale_price' => 'required|numeric',
+            'image' => 'nullable|image',
         ];
     }
 }

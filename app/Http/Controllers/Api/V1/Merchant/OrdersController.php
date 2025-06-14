@@ -33,7 +33,7 @@ class OrdersController extends Controller
             ->each(function ($order) {
                 $order->product?->append('full_path_image');
             });
-        return $this->showResponse($orders);
+        return $this->showResponse($orders, 'order.index_success');
     }
 
     /**
@@ -83,7 +83,7 @@ class OrdersController extends Controller
             if ($request->accepted) {
                 $wallet = Auth::user()->wallet;
                 if ($wallet->available_balance < $shopOrder->total_price) {
-                    return $this->showMessage('You do not have enough balance', 400, false);
+                    return $this->showMessage('wallet.errors.insufficient_funds', [], 400, false);
                 }
                 $wallet->available_balance -= $shopOrder->total_price;
                 $wallet->marginal_balance += $shopOrder->total_price;
@@ -93,7 +93,7 @@ class OrdersController extends Controller
                 $shopOrder->update(['status' => 'canceled']);
             }
             $shopOrder->save();
-            return $this->showMessage('Operation succeeded');
+            return $this->showMessage('order.update_success');
 
         });
     }

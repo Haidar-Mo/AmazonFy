@@ -48,13 +48,13 @@ class ProductsController extends Controller
             $product->shop_has_product = in_array($product->id, $shopProductIds);
         });
 
-        return $this->showResponse($products);
+        return $this->showResponse($products, 'product.index_success');
     }
 
     public function getProductsForGuest()
     {
         $products = $this->productsFilters->applyFilters(Product::query())->get()->append('full_path_image');
-        return $this->showResponse($products);
+        return $this->showResponse($products, 'product.index_success');
 
     }
 
@@ -76,7 +76,7 @@ class ProductsController extends Controller
             $request->validate(['product_id' => ['required', 'exists:products,id']]);
             $product = Product::findOrFail($request->product_id);
             $shop->products()->attach($product);
-            return $this->showMessage('Added successfully');
+            return $this->showMessage('product.add_success');
         });
     }
 
@@ -112,7 +112,7 @@ class ProductsController extends Controller
         return DB::transaction(function () use ($product) {
             $shop = Shop::where('user_id', Auth::user()->id)->firstOrFail();
             $shop->products()->detach($product);
-            return $this->showMessage('Deleted successfully');
+            return $this->showMessage('messages.product.remove_success');
         });
     }
 }

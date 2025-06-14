@@ -87,11 +87,13 @@ return [
         'index_success' => 'Chats retrieved successfully',
         'show_success' => 'Chat retrieved successfully',
         'create_success' => 'Chat created successfully',
+        'delete_success' => 'Chat deleted successfully',
         'message_sent' => 'Message sent successfully',
         'errors' => [
             'index_error' => 'Error occurred while retrieving chats',
             'show_error' => 'Error occurred while retrieving chat',
             'create_error' => 'Error occurred while creating chat',
+            'delete_error' => 'Error occurred while deleting chat',
             'message_error' => 'Error occurred while sending message',
         ],
     ],
@@ -132,14 +134,28 @@ return [
         ],
     ],
 
+    'wallet' => [
+        'show_success' => 'Wallet retrieved successfully',
+
+
+        'charge_create' => 'Charge request sended',
+        'withdraw_create' => 'Withdraw request sended',
+
+        'errors' => [
+            'insufficient_funds' => 'You do not have enough balance',
+        ]
+    ],
+
     'order' => [
         'index_success' => 'Orders retrieved successfully',
         'show_success' => 'Order details retrieved successfully',
+        'create_success' => 'Order created successfully',
         'update_success' => 'Order status updated successfully',
         'canceled_success' => 'Order canceled successfully',
         'delete_success' => 'Order deleted successfully',
         'errors' => [
             'index_error' => 'Error occurred while retrieving orders',
+            'create_error' => 'Error occurred while create your order',
             'show_error' => 'Error occurred while showing order details',
             'update_error' => 'Error occurred while updating order status',
             'cancel_error' => 'Error occurred while canceling the order',
@@ -154,12 +170,18 @@ return [
         'create_success' => 'Product created successfully',
         'update_success' => 'Product updated successfully',
         'delete_success' => 'Product deleted successfully',
+        'add_success' => 'Product added successfully ',
+        'remove_success' => 'product removed successfully',
+
         'errors' => [
             'index_error' => 'Error occurred while retrieving products',
             'show_error' => 'Error occurred while retrieving product details',
             'create_error' => 'Error occurred while saving the product',
             'update_error' => 'Error occurred while updating the product',
             'delete_error' => 'Error occurred while deleting the product',
+            'add_error' => 'Error occurred while adding the product',
+            'remove_error' => 'Error occurred while removing the product',
+
         ],
     ],
 

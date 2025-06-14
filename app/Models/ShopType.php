@@ -11,6 +11,7 @@ class ShopType extends Model
     use HasFactory;
 
     protected $fillable = [
+        'local',
         'name'
     ];
 

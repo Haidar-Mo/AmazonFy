@@ -23,8 +23,8 @@ class MerchantCreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'phone_number' => 'required|string|unique:users,phone_number',
+            'email' => 'required_if:phone_number,null|sometimes|unique:users,email',
+            'phone_number' => 'required_if:email,null|sometimes|unique:users,phone_number',
             'password' => 'required|confirmed|min:6',
         ];
     }

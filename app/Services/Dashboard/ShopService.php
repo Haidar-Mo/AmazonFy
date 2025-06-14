@@ -18,8 +18,7 @@ class ShopService
 
     public function index()
     {
-        return Shop::all();
-
+        return Shop::orderByDesc('created_at')->get()->append(['is_blocked', 'is_blocked_text']);
     }
 
     public function show(string $id)
@@ -29,7 +28,9 @@ class ShopService
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
-                'type_name'
+                'type_name',
+                'is_blocked',
+                'is_blocked_text'
             ]);
         if ($shop->shopOrders) {
             $shop->shopOrders->append([
@@ -65,6 +66,8 @@ class ShopService
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
+                'is_blocked',
+                'is_blocked_text'
             ]);
 
         });
@@ -95,6 +98,8 @@ class ShopService
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
+                'is_blocked',
+                'is_blocked_text'
             ]);
         });
     }
@@ -114,7 +119,15 @@ class ShopService
         $user = $shop->user;
         return DB::transaction(function () use ($shop, $user) {
             $shop->update(['status' => 'active']);
-            return $shop;
+            return $shop->append([
+                'logo_full_path',
+                'identity_front_face_full_path',
+                'identity_back_face_full_path',
+                'type_name',
+                'is_blocked',
+                'is_blocked_text'
+            ]);
+            ;
         });
     }
     public function deactivateShop(string $id)
@@ -122,7 +135,15 @@ class ShopService
         $shop = Shop::findOrFail($id);
         return DB::transaction(function () use ($shop) {
             $shop->update(['status' => 'inactive']);
-            return $shop;
+            return $shop->append([
+                'logo_full_path',
+                'identity_front_face_full_path',
+                'identity_back_face_full_path',
+                'type_name',
+                'is_blocked',
+                'is_blocked_text'
+            ]);
+            ;
         });
     }
 }

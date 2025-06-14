@@ -12,9 +12,10 @@ class Product extends Model
 
     protected $fillable = [
         'id',
+        'type_id',
+        'local',
         'title',
         'details',
-        'type_id',
         'image',
         'wholesale_price',
         'selling_price',
@@ -41,7 +42,7 @@ class Product extends Model
 
     public function getTypeNameAttribute()
     {
-        return $this->type()->first()->name ?? 'no type found!!';
+        return $this->type()->first()->name ?? __('texts.product.type.undefined');
     }
     public function getFullPathImageAttribute()
     {
