@@ -41,6 +41,7 @@ Route::middleware([
             Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
             Route::get('wallet', [WalletsController::class, 'show']);
+            Route::put('wallet/updatePassword', [WalletsController::class, 'update']);
             Route::post('wallet/walletAddresses', [WalletAddressesController::class, 'store']);
             Route::get('wallet/transactionHistory', [TransactionHistoriesController::class, 'index']);
 
@@ -55,7 +56,7 @@ Route::middleware([
             Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
 
-        //? isolated API To check id the user has documented shop or not 
+        //? isolated API To check id the user has documented shop or not
         Route::get('is-documented', function () {
             return (auth()->user()->shop?->status == 'active') ? (object) ['is_documented' => true] : (object) ['is_documented' => false];
         });
