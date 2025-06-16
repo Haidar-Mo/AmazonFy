@@ -22,6 +22,7 @@ class Shop extends Model
         'identity_back_face',
         'address',
         'status',       //- pending - rejected - active - inactive
+        'representative_code',
         'rate',
     ];
 

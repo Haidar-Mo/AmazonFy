@@ -17,8 +17,7 @@ class TermsAndConditionsController extends Controller
             $data = TermsAndConditions::first();
             if (!$data) {
                 $data = [
-                    'arabic_content' => __('terms.arabic_placeholder'),
-                    'english_content' => __('terms.english_placeholder'),
+                    'content' => __('texts.terms'),
                 ];
             }
             return $this->showResponse($data, 'terms.show_success');
@@ -31,8 +30,8 @@ class TermsAndConditionsController extends Controller
     {
         try {
             $data = $request->validate([
+                
                 'english_content' => 'sometimes|string',
-                'arabic_content' => 'sometimes|string'
             ]);
 
             $terms = TermsAndConditions::first();

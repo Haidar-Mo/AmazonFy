@@ -8,12 +8,21 @@ Route::prefix('chats')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
+        'role:admin|supervisor',
     ])
     ->group(function () {
+        Route::get('index', [ChatsAndMessagesController::class, 'indexChats'])
+            ->middleware('hasAnyPermission:read-chat|all');
 
-        Route::get('index', [ChatsAndMessagesController::class, 'indexChats']);
-        Route::get('show/{id}', [ChatsAndMessagesController::class, 'showChat']);
-        Route::post('store', [ChatsAndMessagesController::class, 'storeChat']);
-        Route::delete('delete/{id}', [ChatsAndMessagesController::class, 'destroy']);
-        Route::post('message-send', [ChatsAndMessagesController::class, 'storeMessage']);
+        Route::get('show/{id}', [ChatsAndMessagesController::class, 'showChat'])
+            ->middleware('hasAnyPermission:read-chat|all');
+
+        Route::post('store', [ChatsAndMessagesController::class, 'storeChat'])
+            ->middleware('hasAnyPermission:create-chat|all');
+
+        Route::delete('delete/{id}', [ChatsAndMessagesController::class, 'destroy'])
+            ->middleware('hasAnyPermission:delete-chat|all');
+
+        Route::post('message-send', [ChatsAndMessagesController::class, 'storeMessage'])
+            ->middleware('hasAnyPermission:update-chat|all');
     });

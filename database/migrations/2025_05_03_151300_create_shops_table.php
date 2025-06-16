@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('identity_front_face');
             $table->string('identity_back_face');
             $table->string('address');
+            $table->string('representative_code');
             $table->enum('status', ['pending', 'rejected', 'active', 'inactive']);
             $table->timestamps();
         });
