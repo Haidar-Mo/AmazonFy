@@ -32,7 +32,7 @@ class WithdrawBalanceRequest extends FormRequest
                     }
                 },
             ],
-            'target' => ['required', 'string', 'exists:wallet_addresses,target'],
+            'target' => ['required', 'string'],//, 'exists:wallet_addresses,target' //! old version
             'charge_network' => ['required', 'string'],
             'coin_type' => ['required', 'string'],
             'wallet_password' => ['string'],
