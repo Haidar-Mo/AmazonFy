@@ -2,8 +2,10 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\Client;
 use App\Models\ShopOrder;
 use App\Models\Wallet;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatusEnum;
 /**
@@ -46,6 +48,31 @@ class OrderService
             ]);
         $order->product?->append('full_path_image');
         return $order;
+    }
+
+
+    public function createOrder(FormRequest $request)
+    {
+        $client_data = [
+            'region_id' => $request->region_id,
+            'name' => $request->name,
+            'email' => $request->email ?? '',
+            'phone_number' => $request->phone_number ?? '',
+            'address' => $request->address ?? '',
+        ];
+        DB::transaction(function () use ($request, $client_data) {
+
+            $client = Client::firstOrCreate($client_data, $client_data);
+
+            $orders_data = $request->orders;
+
+            foreach ($orders_data as &$order) {
+                $order['total_price'] = $order['selling_price'] * $order['count'];
+            }
+            unset($order);
+
+            $client->orders()->createMany($orders_data);
+        });
     }
 
     public function cancel(string $id)

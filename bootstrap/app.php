@@ -32,7 +32,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->append([
-            \App\Http\Middleware\AcceptLanguage::class
+            \App\Http\Middleware\AcceptLanguage::class,
+            \App\Http\Middleware\CorsMiddleware::class,
+
         ]);
 
         $middleware->alias([

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\OrderCreateRequest;
 use App\Services\Dashboard\OrderService;
 use App\Traits\ResponseTrait;
 
@@ -30,6 +31,17 @@ class OrderController extends Controller
             return $this->showResponse($orders, 'order.index_success', [], 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'order.errors.index_error');
+        }
+    }
+
+    public function store(OrderCreateRequest $request)
+    {
+        try {
+            $this->service->createOrder($request);
+            return $this->showMessage('order.create_success');
+            // return $this->showResponse($order, 'order.create_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'order.errors.create_error');
         }
     }
 
