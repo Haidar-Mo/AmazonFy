@@ -24,13 +24,13 @@ Route::middleware([
 
         Route::get('products/index', [ProductsController::class, 'index']);
 
-        Route::resource('shops', ShopsController::class)->only(['store']);
+        Route::resource('shops', ShopsController::class)->only(['store'])->middleware('user_must_not_be_blocked');
 
         Route::get('chat', [ChatsController::class, 'show']);
 
         Route::apiResource('messages', MessagesController::class)->only(['store']);
 
-        Route::middleware(['merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
+        Route::middleware(['user_must_not_be_blocked', 'merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
             // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
             Route::get('shop', [ShopsController::class, 'show']);
             Route::get('shop/statistics', [ShopsController::class, 'getStatistics']);
@@ -48,8 +48,9 @@ Route::middleware([
             Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllAdminAddresses']);
 
             Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
+            Route::post('wallet/withdraw', [WalletsController::class, 'withdrawBalance']);
+
             Route::middleware('address_must_belong_to_wallet')->group(function () {
-                Route::post('wallet/withdraw', [WalletsController::class, 'withdrawBalance']);
                 Route::apiResource('wallet/walletAddresses', WalletAddressesController::class)->only(['update', 'destroy']);
             });
 
