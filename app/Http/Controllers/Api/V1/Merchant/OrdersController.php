@@ -28,6 +28,7 @@ class OrdersController extends Controller
         $orders = $this->ordersFilters->applyFilters(ShopOrder::query())
             ->with(['product', 'client'])
             ->where('shop_id', Auth::user()->shop->id)
+            ->where('status', 'pending')
             ->get()
             ->append('total_profit')
             ->each(function ($order) {
