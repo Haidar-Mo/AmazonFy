@@ -13,7 +13,7 @@ class ProductTypeController extends Controller
     public function index()
     {
         try {
-            $regions = ProductType::all();
+            $regions = ProductType::where('locale', '=', app()->getLocale())->get();
             return $this->showResponse($regions, 'product_type.index_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.index_error');
@@ -23,7 +23,7 @@ class ProductTypeController extends Controller
     public function show(string $id)
     {
         try {
-            $regions = ProductType::findOrFail($id);
+            $regions = ProductType::where('locale', '=', app()->getLocale())->findOrFail($id);
             return $this->showResponse($regions, 'product_type.show_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.show_error');
@@ -38,6 +38,26 @@ class ProductTypeController extends Controller
             ]);
             $region = ProductType::create($data);
             return $this->showResponse($region, 'product_type.create_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'product_type.errors.create_error');
+        }
+    }
+
+    public function localeStore(Request $request)
+    {
+        try {
+            $request->validate([
+                'types' => 'required|array',
+                'types.*.locale' => 'required',
+                'types.*.name' => 'required|string'
+            ]);
+            foreach ($request->types as $type) {
+                $types[] = ProductType::create([
+                    'locale' => $type['locale'],
+                    'name' => $type['name']
+                ]);
+            }
+            return $this->showResponse($types, 'product_type.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.create_error');
         }
@@ -61,7 +81,7 @@ class ProductTypeController extends Controller
     {
         try {
             ProductType::findOrFail($id)->delete();
-            return $this->showMessage('product_type.delete_success',[],200);
+            return $this->showMessage('product_type.delete_success', [], 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.delete_error');
         }

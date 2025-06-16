@@ -3,6 +3,7 @@
 use App\Http\Middleware\ActiveMerchantMiddleware;
 use App\Http\Middleware\ActiveUserMiddleware;
 use App\Http\Middleware\DocumentedMerchantMiddleware;
+use App\Http\Middleware\HasAnyPermissions;
 use App\Http\Middleware\MerchantMiddleware;
 use App\Http\Middleware\ShopProductMiddleware;
 use App\Http\Middleware\WalletAddressMiddleware;
@@ -39,8 +40,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+           // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+           // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'hasAnyPermission' => HasAnyPermissions::class,
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
 
 
@@ -77,7 +79,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 // if ($e instanceof NotFoundHttpException) {
                 //     return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
                 // }
-
+    
                 if ($e instanceof AuthorizationException) {
                     return response()->json([
                         'message' => 'This action is unauthorized.',

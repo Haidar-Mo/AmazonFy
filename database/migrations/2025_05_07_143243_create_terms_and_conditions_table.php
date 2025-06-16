@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('terms_and_conditions', function (Blueprint $table) {
             $table->id();
-//$table->string('locale')->default('en');
+            $table->string('locale')->default('en');
             $table->text('content')->default('Welcome To AmazonFy');
             $table->timestamps();
         });

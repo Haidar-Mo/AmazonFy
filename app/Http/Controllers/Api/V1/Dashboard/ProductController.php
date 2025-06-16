@@ -6,6 +6,7 @@ use App\Http\Requests\Dashboard\ProductCreateRequest;
 use App\Http\Requests\Dashboard\ProductUpdateRequest;
 use App\Services\Dashboard\ProductService;
 use App\Traits\ResponseTrait;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -39,6 +40,16 @@ class ProductController extends Controller
     {
         try {
             $product = $this->service->store($request);
+            return $this->showResponse($product, 'product.create_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'product.errors.create_error');
+        }
+    }
+    public function localeStore(Request $request)
+    {
+       
+        try {
+            $product = $this->service->localeStore($request);
             return $this->showResponse($product, 'product.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product.errors.create_error');

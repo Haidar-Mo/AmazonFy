@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('type_id')->nullable()->constrained('product_types')->nullOnDelete();
-         //   $table->string('locale')->default('en');
+            $table->string('locale')->default('en');
             $table->string('title');
             $table->text('details');
             $table->string('image');

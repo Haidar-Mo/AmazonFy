@@ -14,7 +14,7 @@ class ShopTypesController extends Controller
     public function index()
     {
         try {
-            $types = ShopType::all();
+            $types = ShopType::where('locale', '=', app()->getLocale())->get();
             return $this->showResponse($types, 'shop_type.index_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'shop_type.errors.index_error');
@@ -34,6 +34,28 @@ class ShopTypesController extends Controller
                 ]);
 
                 return $this->showResponse($type, 'shop_type.store_success');
+            } catch (\Exception $e) {
+                return $this->showError($e, 'shop_type.errors.store_error');
+            }
+        });
+    }
+
+    public function localeStore(Request $request)
+    {
+        return DB::transaction(function () use ($request) {
+            try {
+                $request->validate([
+                    'types' => 'required|array',
+                    'types.*.locale' => ['required', 'string'],
+                    'types.*.name' => ['required', 'string']
+                ]);
+                foreach ($request->types as $type) {
+                    $types[] = ShopType::create([
+                        'locale' => $type['locale'],
+                        'name' => $type['name']
+                    ]);
+                }
+                return $this->showResponse($types, 'shop_type.store_success');
             } catch (\Exception $e) {
                 return $this->showError($e, 'shop_type.errors.store_error');
             }

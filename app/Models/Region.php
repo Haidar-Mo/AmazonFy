@@ -11,7 +11,7 @@ class Region extends Model
 
     protected $fillable = [
         'parent_id',
-        'local',
+        'locale',
         'name'
     ];
 

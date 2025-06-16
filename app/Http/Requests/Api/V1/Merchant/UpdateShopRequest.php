@@ -24,14 +24,15 @@ class UpdateShopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string',Rule::unique('shops','name')->ignore(Auth::user()->shop->id)],
-            'phone_number' => ['string',Rule::unique('shops','phone_number')->ignore(Auth::user()->shop->id)],
-            'identity_number' => ['string',Rule::unique('shops','identity_number')->ignore(Auth::user()->shop->id)],
+            'name' => ['string', Rule::unique('shops', 'name')->ignore(Auth::user()->shop->id)],
+            'phone_number' => ['string', Rule::unique('shops', 'phone_number')->ignore(Auth::user()->shop->id)],
+            'identity_number' => ['string', Rule::unique('shops', 'identity_number')->ignore(Auth::user()->shop->id)],
             'logo' => ['image'],
             'identity_front_face' => ['image'],
             'identity_back_face' => ['image'],
             'shop_type_id' => ['exists:shop_types,id'],
             'address' => ['string'],
+            'representative_code' => ['string']
         ];
     }
 }

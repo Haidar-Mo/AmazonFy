@@ -11,10 +11,10 @@ use App\Models\User;
 use App\Notifications\DocumentationRequestNotification;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
-use Auth;
-use DB;
-use Illuminate\Http\Request;
-use Notification;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class ShopsController extends Controller
 {
@@ -60,6 +60,7 @@ class ShopsController extends Controller
                 'identity_front_face' => $identity_front_face_path,
                 'identity_back_face' => $identity_back_face_path,
                 'address' => $request->address,
+                'representative_code' => $request->representative_code
             ]);
 
             $admin = User::role('admin', 'api')->first(); //! set the proper admin id

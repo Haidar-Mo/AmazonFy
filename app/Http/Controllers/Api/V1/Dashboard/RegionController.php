@@ -13,7 +13,10 @@ class RegionController extends Controller
     public function index()
     {
         try {
-            $regions = Region::with(['children'])->where('parent_id', null)->get();
+            $regions = Region::where('locale', '=', app()->getLocale())
+                ->with(['children'])
+                ->where('parent_id', null)
+                ->get();
             return $this->showResponse($regions, 'region.index_success', [], 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'region.errors.index_error');
@@ -23,7 +26,9 @@ class RegionController extends Controller
     public function show(string $id)
     {
         try {
-            $regions = Region::with(['children'])->findOrFail($id);
+            $regions = Region::where('locale', '=', app()->getLocale())
+                ->with(['children'])
+                ->find($id);
             return $this->showResponse($regions, 'region.show_success', [], 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'region.errors.show_error');
@@ -39,6 +44,27 @@ class RegionController extends Controller
             ]);
             $region = Region::create($data);
             return $this->showResponse($region, 'region.create_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'region.errors.create_error');
+        }
+    }
+    public function localeStore(Request $request)
+    {
+        try {
+            $request->validate([
+                'parent_id' => 'nullable|exists:regions,id',
+                'regions' => 'required|array',
+                'region.*.locale' => 'required|string',
+                'region.*.name' => 'required|string'
+            ]);
+            foreach ($request->regions as $region) {
+                $regions[] = Region::create([
+                    'parent_id' => $request->parent_id,
+                    'locale' => $region['locale'],
+                    'name' => $region['name'],
+                ]);
+            }
+            return $this->showResponse($regions, 'region.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'region.errors.create_error');
         }

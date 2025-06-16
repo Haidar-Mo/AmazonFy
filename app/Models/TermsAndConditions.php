@@ -8,7 +8,7 @@ class TermsAndConditions extends Model
 {
 
     protected $fillable = [
-        'local',
+        'locale',
         'content',
     ];
 

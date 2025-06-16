@@ -33,8 +33,7 @@ class AdministrationController extends Controller
         } catch (\Exception $e) {
             return $this->showError(
                 $e,
-                'administration.supervisor.errors.index_error',
-                []
+                'administration.supervisor.errors.index_error'
             );
         }
     }
@@ -117,14 +116,13 @@ class AdministrationController extends Controller
     {
         try {
             return $this->showResponse(
-                Permission::query()->get(['id', 'name']),
+                Permission::all(),
                 'administration.supervisor.permissions_success'
             );
         } catch (\Exception $e) {
             return $this->showError(
                 $e,
-                'administration.supervisor.errors.permissions_error',
-                []
+                'administration.supervisor.errors.permissions_error'
             );
         }
     }

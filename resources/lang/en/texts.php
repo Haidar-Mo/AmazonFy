@@ -22,4 +22,5 @@ return [
             ]
         ],
 
+    'terms' => 'Terms and conditions',
 ];
