@@ -16,7 +16,20 @@ class Wallet extends Model
         'available_balance',
         'marginal_balance',
         'total_balance',
+        'wallet_password',
     ];
+
+    // protected $hidden = [
+    //     'wallet_password',
+    // ];
+
+    protected function casts(): array
+    {
+        return [
+            'wallet_password' => 'hashed',
+        ];
+    }
+
 
     public function user()
     {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ActiveMerchantMiddleware;
+use App\Http\Middleware\ActiveUserMiddleware;
 use App\Http\Middleware\DocumentedMerchantMiddleware;
 use App\Http\Middleware\MerchantMiddleware;
 use App\Http\Middleware\ShopProductMiddleware;
@@ -42,11 +43,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
 
+
             'type.merchant' => MerchantMiddleware::class,
             'shop_must_belong_to_user' => ShopProductMiddleware::class,
             'address_must_belong_to_wallet' => WalletAddressMiddleware::class,
             'merchant_must_be_active' => ActiveMerchantMiddleware::class,
             'merchant_must_be_documented' => DocumentedMerchantMiddleware::class,
+
+            'user_must_not_be_blocked' => ActiveUserMiddleware::class,
 
         ]);
     })
@@ -73,7 +77,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 // if ($e instanceof NotFoundHttpException) {
                 //     return response()->json(['message' => explode(']', explode('\\', $e->getMessage())[2])[0] . ' Not Found.'], 404);
                 // }
-    
+
                 if ($e instanceof AuthorizationException) {
                     return response()->json([
                         'message' => 'This action is unauthorized.',

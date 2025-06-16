@@ -78,7 +78,28 @@ class ShopsController extends Controller
         if (request()->has('l') && request()->query('l') === 'home') {
             $data = $shop->withCount(['products', 'shopOrders'])->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
         } else {
-            $data = $shop->withCount(['products', 'shopOrders'])->with('products')->where('user_id', Auth::user()->id)->get()->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
+            $data = $shop->withCount(['products', 'shopOrders'])
+                ->with([
+                    'products' => function ($query) {
+                        // No append here - we'll handle it later
+                    }
+                ])
+                ->where('user_id', Auth::user()->id)
+                ->get()
+                ->map(function ($shop) {
+                    // Append shop attributes
+                    $shop->append([
+                        'logo_full_path',
+                        'identity_front_face_full_path',
+                        'identity_back_face_full_path',
+                        'type_name'
+                    ]);
+
+                    // Append full_path_image to each product
+                    $shop->products->each->append('full_path_image');
+
+                    return $shop;
+                });
         }
         return $this->showResponse($data, __('messages.shop.show_success'));
     }

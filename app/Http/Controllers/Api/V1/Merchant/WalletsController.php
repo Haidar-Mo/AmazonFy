@@ -15,6 +15,7 @@ use Auth;
 use DB;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Notification;
 
 class WalletsController extends Controller
@@ -65,9 +66,16 @@ class WalletsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Wallet $wallet)
+    public function update(Request $request)
     {
-        //
+        return DB::transaction(function () use ($request) {
+            $request->validate(['wallet_password' => ['required', 'confirmed']]);
+            $wallet = Auth::user()->wallet;
+            // return response()->json($request->wallet_password);
+            $wallet->update(['wallet_password' => $request->wallet_password]);
+            $wallet->save();
+            return $this->showResponse($wallet);
+        });
     }
 
     /**
@@ -80,6 +88,13 @@ class WalletsController extends Controller
 
     public function chargeBalance(ChargeBalanceRequest $request)
     {
+        $wallet_password = $request->wallet_password;
+        $hashedPassword = Auth::user()->wallet->wallet_password;
+
+        if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
+            return $this->showMessage('wrong_wallet_password');
+        }
+
         return DB::transaction(function () use ($request) {
             $wallet = Auth::user()->wallet;
             $image_path = $this->saveFile($request->image, 'Transactions/Charges');
@@ -105,6 +120,13 @@ class WalletsController extends Controller
 
     public function withdrawBalance(WithdrawBalanceRequest $request)
     {
+        $wallet_password = $request->wallet_password;
+        $hashedPassword = Auth::user()->wallet->wallet_password;
+
+        if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
+            return $this->showMessage('wrong_wallet_password');
+        }
+
         return DB::transaction(function () use ($request) {
             $wallet = Auth::user()->wallet;
             $wallet->transactionHistories()->create(array_merge(
