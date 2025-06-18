@@ -82,11 +82,11 @@ class OrdersController extends Controller
             }
             if ($request->accepted) {
                 $wallet = Auth::user()->wallet;
-                if ($wallet->available_balance < $shopOrder->total_price) {
+                if ($wallet->available_balance < ($shopOrder->selling_price * $shopOrder->count)) {
                     return $this->showMessage('wallet.errors.insufficient_funds', [], 400, false);
                 }
-                $wallet->available_balance -= $shopOrder->total_price;
-                $wallet->marginal_balance += $shopOrder->total_price;
+                $wallet->available_balance -= ($shopOrder->selling_price * $shopOrder->count);
+                $wallet->marginal_balance += ($shopOrder->selling_price * $shopOrder->count);
                 $wallet->save();
                 $shopOrder->update(['status' => 'checking']);
             } else {
