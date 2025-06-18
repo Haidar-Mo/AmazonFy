@@ -85,8 +85,8 @@ class OrdersController extends Controller
                 if ($wallet->available_balance < $shopOrder->total_price) {
                     return $this->showMessage('wallet.errors.insufficient_funds', [], 400, false);
                 }
-                $wallet->available_balance -= $shopOrder->total_price;
-                $wallet->marginal_balance += $shopOrder->total_price;
+                $wallet->available_balance -= ($shopOrder->selling_price * $shopOrder->count);
+                $wallet->marginal_balance += ($shopOrder->selling_price * $shopOrder->count);
                 $wallet->save();
                 $shopOrder->update(['status' => 'checking']);
             } else {
