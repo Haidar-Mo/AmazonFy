@@ -15,7 +15,10 @@ class OrderService
 {
     public function index()
     {
-        $orders = ShopOrder::with(['shop', 'product'])->get()
+        $orders = ShopOrder::with(['shop', 'product'])
+            ->where('status', '!=', 'pending')
+            ->orderByDesc('created_at')
+            ->get()
             ->append([
                 'shop_name',
                 'merchant_name',
@@ -111,21 +114,20 @@ class OrderService
             return $order;
 
         });
-
     }
+
     private function makeDelivered(ShopOrder $order, Wallet $wallet)
     {
         return DB::transaction(function () use ($order, $wallet) {
             $order->update(['status' => OrderStatusEnum::DELIVERED]);
             $wallet->update([
-                'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
-                'available_balance' => $wallet->available_balance + $order->selling_price * $order->count,
-                'total' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
+                'marginal_balance' => $wallet->marginal_balance - ($order->wholesale_price * $order->count),
+                'available_balance' => $wallet->available_balance + ($order->selling_price * $order->count),
+                'total_balance' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
             ]);
 
             return $order;
         });
-
     }
 
     private function makeCancel(ShopOrder $order, Wallet $wallet)

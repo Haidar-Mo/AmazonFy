@@ -9,6 +9,15 @@ class CorsMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        
+        if ($request->getMethod() === "OPTIONS") {
+            return response()->json('OK', 200, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Origin, Content-Type, Authorization',
+            ]);
+        }
+
         $response = $next($request);
 
         $response->headers->set('Access-Control-Allow-Origin', '*');

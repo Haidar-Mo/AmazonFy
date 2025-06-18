@@ -34,14 +34,15 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->append([
             \App\Http\Middleware\AcceptLanguage::class,
-            \App\Http\Middleware\CorsMiddleware::class,
-
+            // \App\Http\Middleware\CorsMiddleware::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
+            
         ]);
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-           // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-           // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'hasAnyPermission' => HasAnyPermissions::class,
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
 
