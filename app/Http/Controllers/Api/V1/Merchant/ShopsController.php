@@ -120,28 +120,28 @@ class ShopsController extends Controller
             ->withSum([
                 'shopOrders as daily_sales' => function ($query) {
                     $query->whereDate('created_at', today())
-                        ->where('status', 'delivering');
+                        ->where('status', 'delivered');
                 },
                 'shopOrders as total_sales' => function ($query) {
-                    $query->where('status', 'delivering');
+                    $query->where('status', 'delivered');
                 }
             ], 'selling_price')
             // ->withSum([
             //     'shopOrders as daily_whole_sales' => function ($query) {
             //         $query->whereDate('created_at', today())
-            //             ->where('status', 'delivering');
+            //             ->where('status', 'delivered');
             //     },
             //     'shopOrders as total_whole_sales' => function ($query) {
-            //         $query->where('status', 'delivering');
+            //         $query->where('status', 'delivered');
             //     }
             // ], 'wholesale_price')
             ->withSum([
                 'shopOrders as daily_profit' => function ($query) {
                     $query->whereDate('created_at', today())
-                        ->where('status', 'delivering');
+                        ->where('status', 'delivered');
                 },
                 'shopOrders as total_profit' => function ($query) {
-                    $query->where('status', 'delivering');
+                    $query->where('status', 'delivered');
                 }
             ], DB::raw('selling_price - wholesale_price')) // Calculate profit per order
             ->get()
