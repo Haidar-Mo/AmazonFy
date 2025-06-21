@@ -20,7 +20,7 @@ class NotificationService
     public function indexSended()
     {
         $notifications = DatabaseNotification::where('type', ToMerchantNotification::class)
-            ->orderBy('created_at', 'asc')
+            ->latest()
             ->get()
             ->map(function ($notification) {
                 $notifiable = $notification->notifiable;

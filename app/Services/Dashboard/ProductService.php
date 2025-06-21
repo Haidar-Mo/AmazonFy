@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\DB;
 class ProductService
 {
     use HasFiles;
+
     public function index()
     {
-
         return Product::where('locale', '=', app()->getLocale())->get()
             ->append(['type_name', 'full_path_image']);
     }

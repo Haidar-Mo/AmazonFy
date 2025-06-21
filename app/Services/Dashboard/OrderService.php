@@ -16,7 +16,7 @@ class OrderService
     public function index()
     {
         $orders = ShopOrder::with(['shop', 'product'])
-            ->where('status', '!=', 'pending')
+            ->whereNotIn('status', [OrderStatusEnum::PENDING->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::CANCELED->value])
             ->orderByDesc('created_at')
             ->get()
             ->append([
