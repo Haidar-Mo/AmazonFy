@@ -14,8 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('type_id')->nullable()->constrained('product_types')->nullOnDelete();
             $table->string('locale')->default('en');
-            $table->string('title');
-            $table->text('details');
             $table->string('image');
             $table->decimal('wholesale_price', 10, 2);
             $table->decimal('selling_price', 10, 2);

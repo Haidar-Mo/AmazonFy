@@ -10,8 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('shop_types', function (Blueprint $table) {
+        Schema::create('terms_and_conditions_translations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('terms_and_condition_id')->constrained('terms_and_conditions')->cascadeOnDelete();
+            $table->string('locale');
+            $table->string('content');
             $table->timestamps();
         });
     }
@@ -21,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('shop_types');
+        Schema::dropIfExists('terms_and_conditions_translations');
     }
 };

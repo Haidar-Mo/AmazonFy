@@ -8,6 +8,8 @@ use App\Models\Wallet;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatusEnum;
+
+
 /**
  * Class OrderService.
  */
@@ -17,7 +19,7 @@ class OrderService
     {
         $orders = ShopOrder::with(['shop', 'product'])
             ->whereNotIn('status', [OrderStatusEnum::PENDING->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::CANCELED->value])
-            ->orderByDesc('created_at')
+            ->latest()
             ->get()
             ->append([
                 'shop_name',
@@ -125,7 +127,6 @@ class OrderService
                 'available_balance' => $wallet->available_balance + ($order->selling_price * $order->count),
                 'total_balance' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
             ]);
-
             return $order;
         });
     }

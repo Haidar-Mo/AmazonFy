@@ -45,16 +45,6 @@ class ProductController extends Controller
             return $this->showError($e, 'product.errors.create_error');
         }
     }
-    public function localeStore(Request $request)
-    {
-       
-        try {
-            $product = $this->service->localeStore($request);
-            return $this->showResponse($product, 'product.create_success');
-        } catch (\Exception $e) {
-            return $this->showError($e, 'product.errors.create_error');
-        }
-    }
 
     public function update(ProductUpdateRequest $request, string $id)
     {

@@ -40,31 +40,24 @@ class RegionController extends Controller
         try {
             $data = $request->validate([
                 'parent_id' => 'nullable|exists:regions,id',
-                'name' => 'required|string'
+                'name_en' => 'required|string',
+                'name_ar' => 'required|string',
             ]);
-            $region = Region::create($data);
+            $region = Region::create([
+                'parent_id' => $data['parent_id']
+            ]);
+            $region->translations->createMany([
+                [
+                    'local' => 'en',
+                    'name' => $data['name_en']
+                ],
+                [
+                    'local' => 'ar',
+                    'name' => $data['name_ar']
+
+                ]
+            ]);
             return $this->showResponse($region, 'region.create_success');
-        } catch (\Exception $e) {
-            return $this->showError($e, 'region.errors.create_error');
-        }
-    }
-    public function localeStore(Request $request)
-    {
-        try {
-            $request->validate([
-                'parent_id' => 'nullable|exists:regions,id',
-                'regions' => 'required|array',
-                'region.*.locale' => 'required|string',
-                'region.*.name' => 'required|string'
-            ]);
-            foreach ($request->regions as $region) {
-                $regions[] = Region::create([
-                    'parent_id' => $request->parent_id,
-                    'locale' => $region['locale'],
-                    'name' => $region['name'],
-                ]);
-            }
-            return $this->showResponse($regions, 'region.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'region.errors.create_error');
         }
@@ -75,10 +68,19 @@ class RegionController extends Controller
         try {
             $data = $request->validate([
                 'parent_id' => 'sometimes|exists:regions,id',
-                'name' => 'sometimes|string'
+                'name_ar' => 'sometimes|string',
+                'name_en' => 'sometimes|string'
             ]);
             $region = Region::findOrFail($id);
-            $region->update($data);
+            $region->update($request->only('parent_id'));
+
+            if (isset($data['name_ar'])) {
+                $region->translateOrNew('ar')->name = $data['name_ar'];
+            }
+            if (isset($data['name_en'])) {
+                $region->translateOrNew('en')->name = $data['name_en'];
+            }
+            $region->save();
             return $this->showResponse($region, 'region.update_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'region.errors.update_error');

@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductType extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
 
-
-    protected $fillable = [
-        'locale',
-        'name'
-    ];
+    public $translatedAttributes = ['name'];
 
     public function products()
     {
