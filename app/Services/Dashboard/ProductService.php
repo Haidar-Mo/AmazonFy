@@ -85,6 +85,7 @@ class ProductService
             }
 
             $product->save();
+            
             return $product->append(['type_name', 'full_path_image']);
         });
     }

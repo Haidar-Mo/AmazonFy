@@ -12,9 +12,12 @@ return new class extends Migration {
     {
         Schema::create('terms_and_conditions_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('terms_and_condition_id')->constrained('terms_and_conditions')->cascadeOnDelete();
-            $table->string('locale');
-            $table->string('content');
+            $table->foreignId('terms_and_conditions_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->name('tc_translations_tc_id_foreign'); // short name
+            $table->string('locale')->index();
+            $table->text('content');
             $table->timestamps();
         });
     }

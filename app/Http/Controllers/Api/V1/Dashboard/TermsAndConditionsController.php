@@ -26,19 +26,34 @@ class TermsAndConditionsController extends Controller
         }
     }
 
+
     public function update(Request $request)
     {
         try {
             $data = $request->validate([
-                'content' => 'required|string',
+                'content_ar' => 'sometimes|string',
+                'content_en' => 'sometimes|string',
             ]);
-
-            $terms = TermsAndConditions::updateOrCreate([
-                'locale' => app()->getLocale()
-            ], [
-                'locale' => app()->getLocale(),
-                'content' => $data['content']
-            ]);
+            if ($terms = TermsAndConditions::first()) {
+                if (isset($data['content_ar'])) {
+                    $terms->translateOrNew('ar')->content = $data['content_ar'];
+                }
+                if (isset($data['content_en'])) {
+                    $terms->translateOrNew('en')->content = $data['content_en'];
+                }
+            } else {
+                $terms = TermsAndConditions::create();
+                $terms->translations()->createMany([
+                    [
+                        'local' => 'en',
+                        'content' => $data['content_en']
+                    ],
+                    [
+                        'local' => 'ar',
+                        'content' => $data['content_ar']
+                    ]
+                ]);
+            }
 
             return $this->showResponse($terms, 'terms.update_success');
         } catch (\Exception $e) {
