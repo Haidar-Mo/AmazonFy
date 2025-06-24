@@ -27,7 +27,7 @@ class ChargeBalanceRequest extends FormRequest
             'charge_network' => ['required', 'string'],
             'coin_type' => ['required', 'string'],
             'image' => ['required', 'image'],
-            'wallet_password' => ['string'],
+            // 'wallet_password' => ['string'],
         ];
     }
 
