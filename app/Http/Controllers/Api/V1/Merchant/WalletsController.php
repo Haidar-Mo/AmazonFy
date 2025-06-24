@@ -88,12 +88,12 @@ class WalletsController extends Controller
 
     public function chargeBalance(ChargeBalanceRequest $request)
     {
-        $wallet_password = $request->wallet_password;
-        $hashedPassword = Auth::user()->wallet->wallet_password;
+        // $wallet_password = $request->wallet_password;
+        // $hashedPassword = Auth::user()->wallet->wallet_password;
 
-        if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
-            return $this->showMessage('wrong_wallet_password');
-        }
+        // if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
+        //     return $this->showMessage('wrong_wallet_password');
+        // }
 
         return DB::transaction(function () use ($request) {
             $wallet = Auth::user()->wallet;

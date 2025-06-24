@@ -33,17 +33,6 @@ Route::middleware([
         Route::middleware('user_must_not_be_blocked')->group(function () {
             Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
             Route::post('wallet/withdraw', [WalletsController::class, 'withdrawBalance']);
-        });
-
-        Route::middleware(['user_must_not_be_blocked', 'merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
-            // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
-            Route::get('shop', [ShopsController::class, 'show']);
-            Route::get('shop/statistics', [ShopsController::class, 'getStatistics']);
-            Route::put('shop', [ShopsController::class, 'update']);
-            Route::delete('shop', [ShopsController::class, 'destroy']);
-
-
-            Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
             Route::get('wallet', [WalletsController::class, 'show']);
             Route::put('wallet/updatePassword', [WalletsController::class, 'update']);
@@ -55,6 +44,18 @@ Route::middleware([
             Route::middleware('address_must_belong_to_wallet')->group(function () {
                 Route::apiResource('wallet/walletAddresses', WalletAddressesController::class)->only(['update', 'destroy']);
             });
+
+        });
+
+        Route::middleware(['user_must_not_be_blocked', 'merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
+            // Route::apiResource('shops', ShopsController::class)->only(['show', 'update', 'destroy'])->middleware('shop_must_belong_to_user');
+            Route::get('shop', [ShopsController::class, 'show']);
+            Route::get('shop/statistics', [ShopsController::class, 'getStatistics']);
+            Route::put('shop', [ShopsController::class, 'update']);
+            Route::delete('shop', [ShopsController::class, 'destroy']);
+
+
+            Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
             Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
