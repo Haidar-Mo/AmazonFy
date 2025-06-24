@@ -17,6 +17,8 @@ class Message extends Model
         'is_read'
     ];
 
+    protected $touches = ['chat'];
+
     public function chat()
     {
         return $this->belongsTo(Chat::class, 'chat_id');

@@ -2,18 +2,14 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Region extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'parent_id',
-        'locale',
-        'name'
-    ];
+    use HasFactory, Translatable;
+    public $translatedAttributes = ['name'];
 
     public function parent()
     {

@@ -7,6 +7,7 @@ use App\Traits\HasFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ProductService.
@@ -14,62 +15,44 @@ use Illuminate\Support\Facades\DB;
 class ProductService
 {
     use HasFiles;
+
     public function index()
     {
-
-        return Product::where('locale', '=', app()->getLocale())->get()
-            ->append(['type_name', 'full_path_image']);
+        return Product::all()->append(['type_name', 'full_path_image']);
     }
 
     public function show(string $id)
     {
 
-        return Product::where('locale', '=', app()->getLocale())
-            ->where('id', '=', $id)->first()
-            ->append(['type_name', 'full_path_image']);
+        return Product::findOrFail($id)->append(['type_name', 'full_path_image']);
     }
 
     public function store(FormRequest $request)
     {
-
         $data = $request->validated();
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->saveFile($request->file('image'), 'Images/Products');
-        }
-        return Product::create($data)->append(['type_name', 'full_path_image']);
-    }
+        $data['image'] = $this->saveFile($request->file('image'), 'Images/Products');
 
-    public function localeStore(Request $request)
-    {
-        $data = $request->validate([
-            'products' => 'required|array|min:1',
-            'products.*.locale' => 'required|string|size:2',
-            'products.*.title' => 'required|string|max:255',
-            'products.*.details' => 'required|string',
-            'type_id' => 'required|exists:product_types,id',
-            'is_available' => 'sometimes|boolean',
-            'selling_price' => 'required|numeric',
-            'wholesale_price' => 'required|numeric',
-            'image' => 'nullable|image',
+        $product = Product::create([
+            'image' => $data['image'],
+            'type_id' => $data['type_id'],
+            'wholesale_price' => $data['wholesale_price'],
+            'selling_price' => $data['selling_price'],
+            'is_available' => $data['is_available'] ?? true,
         ]);
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->saveFile($request->file('image'), 'Images/Products');
-        }
 
-        $products = [];
-        foreach ($request->products as $product) {
-            $products[] = Product::create([
-                'locale' => $product['locale'],
-                'title' => $product['title'],
-                'details' => $product['details'],
-                'image' => $data['image'],
-                'type_id' => $data['type_id'],
-                'wholesale_price' => $data['wholesale_price'],
-                'selling_price' => $data['selling_price'],
-                'is_available' => $data['is_available'] ?? true,
-            ])->append(['type_name', 'full_path_image']);
-        }
-        return $products;
+        $product->translations()->createMany([
+            [
+                'locale' => 'en',
+                'title' => $data['title_en'],
+                'details' => $data['details_en'],
+            ],
+            [
+                'locale' => 'ar',
+                'title' => $data['title_ar'],
+                'details' => $data['details_ar'],
+            ]
+        ]);
+        return $product->append(['type_name', 'full_path_image']);
     }
 
     public function update(FormRequest $request, string $id)
@@ -80,8 +63,28 @@ class ProductService
             $data['image'] = $this->saveFile($request->file('image'), 'Images/Products');
             $this->deleteFile($product->image);
         }
-        return DB::transaction(function () use ($data, $product) {
-            $product->update($data);
+        return DB::transaction(function () use ($data, $request, $product) {
+            $product->update(array_merge(
+                $request->only('type_id', 'selling_price', 'wholesale_price', 'is_available'),
+                isset($data['image']) ? ['image' => $data['image']] : []
+            ));
+            if (isset($data['title_ar'])) {
+                $product->translateOrNew('ar')->title = $data['title_ar'];
+            }
+
+            if (isset($data['details_ar'])) {
+                $product->translateOrNew('ar')->details = $data['details_ar'];
+            }
+
+            if (isset($data['title_en'])) {
+                $product->translateOrNew('en')->title = $data['title_en'];
+            }
+
+            if (isset($data['details_en'])) {
+                $product->translateOrNew('en')->details = $data['details_en'];
+            }
+
+            $product->save();
             return $product->append(['type_name', 'full_path_image']);
         });
     }

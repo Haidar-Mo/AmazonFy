@@ -14,7 +14,7 @@ class TermsAndConditionsController extends Controller
     public function show()
     {
         try {
-            $data = TermsAndConditions::first();
+            $data = TermsAndConditions::where('locale', '=', app()->getLocale())->first();
             if (!$data) {
                 $data = [
                     'content' => __('texts.terms'),
@@ -30,18 +30,17 @@ class TermsAndConditionsController extends Controller
     {
         try {
             $data = $request->validate([
-                
-                'english_content' => 'sometimes|string',
+                'content' => 'required|string',
             ]);
 
-            $terms = TermsAndConditions::first();
-            if ($terms) {
-                $terms->update($data);
-            } else {
-                TermsAndConditions::create($data);
-            }
+            $terms = TermsAndConditions::updateOrCreate([
+                'locale' => app()->getLocale()
+            ], [
+                'locale' => app()->getLocale(),
+                'content' => $data['content']
+            ]);
 
-            return $this->showResponse(TermsAndConditions::first(), 'terms.update_success');
+            return $this->showResponse($terms, 'terms.update_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'terms.errors.update_error');
         }

@@ -34,30 +34,21 @@ class ProductTypeController extends Controller
     {
         try {
             $data = $request->validate([
-                'name' => 'required|string'
+                'name_en' => 'required|string',
+                'name_ar' => 'required|string'
             ]);
-            $region = ProductType::create($data);
+            $region = ProductType::create();
+            $region->translations()->createMany([
+                [
+                    'locale' => 'en',
+                    'name' => $data['name_en']
+                ],
+                [
+                    'locale' => 'ar',
+                    'name' => $data['name_ar']
+                ]
+            ]);
             return $this->showResponse($region, 'product_type.create_success');
-        } catch (\Exception $e) {
-            return $this->showError($e, 'product_type.errors.create_error');
-        }
-    }
-
-    public function localeStore(Request $request)
-    {
-        try {
-            $request->validate([
-                'types' => 'required|array',
-                'types.*.locale' => 'required',
-                'types.*.name' => 'required|string'
-            ]);
-            foreach ($request->types as $type) {
-                $types[] = ProductType::create([
-                    'locale' => $type['locale'],
-                    'name' => $type['name']
-                ]);
-            }
-            return $this->showResponse($types, 'product_type.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.create_error');
         }

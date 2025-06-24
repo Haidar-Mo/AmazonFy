@@ -42,9 +42,6 @@ Route::prefix('products')
             Route::post('create', [ProductTypeController::class, 'store'])
                 ->middleware('hasAnyPermission:create-product-type|all');
 
-            Route::post('locale-create', [ProductTypeController::class, 'localeStore'])
-                ->middleware('hasAnyPermission:create-product-type|all');
-
             Route::post('update/{id}', [ProductTypeController::class, 'update'])
                 ->middleware('hasAnyPermission:update-product-type|all');
 

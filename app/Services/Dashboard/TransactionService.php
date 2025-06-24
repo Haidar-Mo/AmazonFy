@@ -15,9 +15,10 @@ class TransactionService
 
     public function index()
     {
-        return TransactionHistory::where('status', '=', 'pending')->get()->each(function ($transaction) {
-            $transaction->append('user_name', 'user_phone_number', 'image_full_path');
-        });
+        return TransactionHistory::where('status', '=', 'pending')
+            ->latest()
+            ->get()
+            ->append(['user_name', 'user_phone_number', 'image_full_path']);
     }
 
     public function show(string $id)
