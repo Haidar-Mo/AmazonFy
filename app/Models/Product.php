@@ -46,6 +46,7 @@ class Product extends Model
     {
         return $this->type()->first()->name ?? __('texts.product.type.undefined');
     }
+    
     public function getFullPathImageAttribute()
     {
         return asset($this->image);

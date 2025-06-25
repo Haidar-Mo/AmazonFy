@@ -12,6 +12,8 @@ class ProductType extends Model
 
     public $translatedAttributes = ['name'];
 
+    //protected $fillable =['name'];
+
     public function products()
     {
         return $this->hasMany(Product::class, 'type_id');

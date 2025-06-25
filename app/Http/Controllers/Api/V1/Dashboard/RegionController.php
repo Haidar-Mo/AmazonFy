@@ -13,8 +13,7 @@ class RegionController extends Controller
     public function index()
     {
         try {
-            $regions = Region::where('locale', '=', app()->getLocale())
-                ->with(['children'])
+            $regions = Region::with(['children'])
                 ->where('parent_id', null)
                 ->get();
             return $this->showResponse($regions, 'region.index_success', [], 200);
@@ -26,8 +25,7 @@ class RegionController extends Controller
     public function show(string $id)
     {
         try {
-            $regions = Region::where('locale', '=', app()->getLocale())
-                ->with(['children'])
+            $regions = Region::with(['children'])
                 ->find($id);
             return $this->showResponse($regions, 'region.show_success', [], 200);
         } catch (\Exception $e) {
