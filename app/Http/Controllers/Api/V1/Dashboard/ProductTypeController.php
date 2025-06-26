@@ -13,8 +13,8 @@ class ProductTypeController extends Controller
     public function index()
     {
         try {
-            $regions = ProductType::where('locale', '=', app()->getLocale())->get();
-            return $this->showResponse($regions, 'product_type.index_success');
+            $types = ProductType::where('locale', '=', app()->getLocale())->get();
+            return $this->showResponse($types, 'product_type.index_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.index_error');
         }
@@ -23,8 +23,8 @@ class ProductTypeController extends Controller
     public function show(string $id)
     {
         try {
-            $regions = ProductType::where('locale', '=', app()->getLocale())->findOrFail($id);
-            return $this->showResponse($regions, 'product_type.show_success');
+            $types = ProductType::where('locale', '=', app()->getLocale())->findOrFail($id);
+            return $this->showResponse($types, 'product_type.show_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.show_error');
         }
@@ -37,8 +37,8 @@ class ProductTypeController extends Controller
                 'name_en' => 'required|string',
                 'name_ar' => 'required|string'
             ]);
-            $region = ProductType::create();
-            $region->translations()->createMany([
+            $type = ProductType::create();
+            $type->translations()->createMany([
                 [
                     'locale' => 'en',
                     'name' => $data['name_en']
@@ -48,7 +48,7 @@ class ProductTypeController extends Controller
                     'name' => $data['name_ar']
                 ]
             ]);
-            return $this->showResponse($region, 'product_type.create_success');
+            return $this->showResponse($type, 'product_type.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.create_error');
         }
@@ -58,11 +58,19 @@ class ProductTypeController extends Controller
     {
         try {
             $data = $request->validate([
-                'name' => 'sometimes|string'
+                'name_ar' => 'sometimes|string',
+                'name_en' => 'sometimes|string'
             ]);
-            $region = ProductType::findOrFail($id);
-            $region->update($data);
-            return $this->showResponse($region, 'product_type.update_success');
+            $type = ProductType::findOrFail($id);
+
+            if (isset($data['name_ar'])) {
+                $type->translateOrNew('ar')->name = $data['name_ar'];
+            }
+            if (isset($data['name_en'])) {
+                $type->translateOrNew('en')->name = $data['name_en'];
+            }
+            $type->save();
+            return $this->showResponse($type, 'product_type.update_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.update_error');
         }

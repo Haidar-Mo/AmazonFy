@@ -14,7 +14,7 @@ class TermsAndConditionsController extends Controller
     public function show()
     {
         try {
-            $data = TermsAndConditions::where('locale', '=', app()->getLocale())->first();
+            $data = TermsAndConditions::first();
             if (!$data) {
                 $data = [
                     'content' => __('texts.terms'),

@@ -42,15 +42,15 @@ class RegionController extends Controller
                 'name_ar' => 'required|string',
             ]);
             $region = Region::create([
-                'parent_id' => $data['parent_id']
+                'parent_id' => $data['parent_id'] ?? null
             ]);
-            $region->translations->createMany([
+            $region->translations()->createMany([
                 [
-                    'local' => 'en',
+                    'locale' => 'en',
                     'name' => $data['name_en']
                 ],
                 [
-                    'local' => 'ar',
+                    'locale' => 'ar',
                     'name' => $data['name_ar']
 
                 ]
