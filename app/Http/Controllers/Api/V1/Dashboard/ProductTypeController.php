@@ -13,7 +13,7 @@ class ProductTypeController extends Controller
     public function index()
     {
         try {
-            $types = ProductType::where('locale', '=', app()->getLocale())->get();
+            $types = ProductType::all();
             return $this->showResponse($types, 'product_type.index_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.index_error');
@@ -23,7 +23,7 @@ class ProductTypeController extends Controller
     public function show(string $id)
     {
         try {
-            $types = ProductType::where('locale', '=', app()->getLocale())->findOrFail($id);
+            $types = ProductType::findOrFail($id);
             return $this->showResponse($types, 'product_type.show_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.show_error');
