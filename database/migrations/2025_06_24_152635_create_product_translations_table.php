@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('locale');
             $table->string('title');
             $table->text('details');
-            $table->unique(['meal_id', 'locale']);
             $table->timestamps();
         });
     }
