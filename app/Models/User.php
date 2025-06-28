@@ -90,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getShopStatusAttribute()
     {
-        return $this->shop()->first() ? __('texts.shop.status.verified') : __('texts.shop.status.unverified');
+        return $this->shop()->where('status', 'active')->first() ? __('texts.shop.status.verified') : __('texts.shop.status.unverified');
     }
 
     public function getIsBlockedTextAttribute()

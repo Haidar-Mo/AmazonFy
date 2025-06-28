@@ -13,7 +13,7 @@ class ProductTypeController extends Controller
     public function index()
     {
         try {
-            $types = ProductType::where('locale', '=', app()->getLocale())->get();
+            $types = ProductType::all();
             return $this->showResponse($types, 'product_type.index_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.index_error');
@@ -23,7 +23,7 @@ class ProductTypeController extends Controller
     public function show(string $id)
     {
         try {
-            $types = ProductType::where('locale', '=', app()->getLocale())->findOrFail($id);
+            $types = ProductType::findOrFail($id);
             return $this->showResponse($types, 'product_type.show_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.show_error');
@@ -34,20 +34,16 @@ class ProductTypeController extends Controller
     {
         try {
             $data = $request->validate([
-                'name_en' => 'required|string',
-                'name_ar' => 'required|string'
+                'name_en' => 'required_without:name_ar|string',
+                'name_ar' => 'required_without:name_en|string'
             ]);
             $type = ProductType::create();
-            $type->translations()->createMany([
-                [
-                    'locale' => 'en',
-                    'name' => $data['name_en']
-                ],
-                [
-                    'locale' => 'ar',
-                    'name' => $data['name_ar']
-                ]
-            ]);
+            if (isset($data['name_ar'])) {
+                $type->translateOrNew('ar')->name = $data['name_ar'];
+            }
+            if (isset($data['name_en'])) {
+                $type->translateOrNew('en')->name = $data['name_en'];
+            }
             return $this->showResponse($type, 'product_type.create_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'product_type.errors.create_error');

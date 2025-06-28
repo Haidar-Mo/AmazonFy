@@ -22,7 +22,10 @@ class MerchantController extends Controller
     public function index()
     {
         try {
-            $merchants = User::role('merchant', 'api')
+            $merchants = User::role('merchant')
+                ->with('shop')
+                ->whereRelation('shop', 'status', 'pending')
+                ->latest()
                 ->get()
                 ->makeVisible(['is_blocked'])
                 ->append(['verification_code', 'shop_status']);

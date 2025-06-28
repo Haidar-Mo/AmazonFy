@@ -31,8 +31,8 @@ class TermsAndConditionsController extends Controller
     {
         try {
             $data = $request->validate([
-                'content_ar' => 'sometimes|string',
-                'content_en' => 'sometimes|string',
+                'content_ar' => 'required_without:content_en|string',
+                'content_en' => 'required_without:content_ar|string',
             ]);
             if ($terms = TermsAndConditions::first()) {
                 if (isset($data['content_ar'])) {

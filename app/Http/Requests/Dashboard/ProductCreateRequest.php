@@ -29,10 +29,10 @@ class ProductCreateRequest extends FormRequest
             'image' => 'required|image',
 
             // Validate translations
-            'title_ar' => 'required|string|max:255',
-            'details_ar' => 'required|string',
-            'title_en' => 'required|string|max:255',
-            'details_en' => 'required|string',
+            'title_ar' => 'required_without:title_en|required_with:details_ar|string|max:255',
+            'details_ar' => 'required_without:details_en|required_with:title_ar|string',
+            'title_en' => 'required_without:title_ar|required_with:details_en|string|max:255',
+            'details_en' => 'required_without:details_ar|required_with:title_en|string',
         ];
     }
 }

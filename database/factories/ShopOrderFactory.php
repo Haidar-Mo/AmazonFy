@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\OrderStatusEnum;
 use App\Models\Client;
 use App\Models\Product;
 use App\Models\Shop;
@@ -30,7 +31,7 @@ class ShopOrderFactory extends Factory
             'selling_price' => $wholesalePrice,
             'count' => $count,
             'total_price' => $wholesalePrice * $count,
-            'status' => $this->faker->randomElement(['pending', 'checking', 'preparing', 'delivered']),
+            'status' => $this->faker->randomElement([OrderStatusEnum::PENDING->value, OrderStatusEnum::CHECKING->value, OrderStatusEnum::PREPARING->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::CANCELED->value]),
             'customer_note' => $this->faker->sentence,
         ];
     }
