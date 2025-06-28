@@ -40,18 +40,25 @@ class ProductService
             'is_available' => $data['is_available'] ?? true,
         ]);
 
-        $product->translations()->createMany([
-            [
-                'locale' => 'en',
-                'title' => $data['title_en'],
-                'details' => $data['details_en'],
-            ],
-            [
-                'locale' => 'ar',
-                'title' => $data['title_ar'],
-                'details' => $data['details_ar'],
-            ]
-        ]);
+        if (isset($data['title_ar'])) {
+            $product->translations()->create(
+                [
+                    'locale' => 'ar',
+                    'title' => $data['title_ar'],
+                    'details' => $data['details_ar'],
+                ]
+            );
+        }
+
+        if (isset($data['title_en'])) {
+            $product->translations()->create(
+                [
+                    'locale' => 'en',
+                    'title' => $data['title_en'],
+                    'details' => $data['details_en'],
+                ]
+            );
+        }
         return $product->append(['type_name', 'full_path_image']);
     }
 
@@ -85,7 +92,7 @@ class ProductService
             }
 
             $product->save();
-            
+
             return $product->append(['type_name', 'full_path_image']);
         });
     }

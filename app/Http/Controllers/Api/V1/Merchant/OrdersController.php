@@ -6,11 +6,15 @@ use App\Filters\OrdersFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Models\ShopOrder;
+use App\Models\User;
+use App\Notifications\NewOrderNotification;
 use App\Traits\ResponseTrait;
 use Auth;
 use DB;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+
 
 class OrdersController extends Controller
 {
@@ -89,6 +93,9 @@ class OrdersController extends Controller
                 $wallet->marginal_balance += ($shopOrder->wholesale_price * $shopOrder->count);
                 $wallet->save();
                 $shopOrder->update(['status' => 'checking']);
+                $notifiable = User::role(['admin', 'supervisor'],'api')->get();
+                Notification::send($notifiable, new NewOrderNotification($shopOrder));
+
             } else {
                 $shopOrder->update(['status' => 'canceled']);
             }
