@@ -31,6 +31,7 @@ class ShopCreateRequest extends FormRequest
             'identity_front_face' => 'required|image',
             'identity_back_face' => 'required|image',
             'address' => 'required|string',
+            'representative_code'=>'required|string'
         ];
     }
 }
