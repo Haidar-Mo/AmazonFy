@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Client\StoreOrderRequest;
 use App\Models\Client;
 use App\Models\ShopOrder;
+use App\Notifications\NewOrderNotification;
 use App\Traits\ResponseTrait;
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class OrdersController extends Controller
 {
@@ -34,26 +37,35 @@ class OrdersController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        $client_data = [
-            'region_id' => $request->region_id,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-        ];
+        return DB::transaction(function () use($request) {
+            $client_data = [
+                'region_id' => $request->region_id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'address' => $request->address,
+            ];
 
-        $client = Client::firstOrCreate($client_data, $client_data);
+            $client = Client::firstOrCreate($client_data, $client_data);
 
-        $orders_data = $request->orders;
+            $orders_data = $request->orders;
 
-        foreach ($orders_data as &$order) {
-            $order['total_price'] = $order['selling_price'] * $order['count'];
-        }
-        unset($order);
+            foreach ($orders_data as &$order) {
+                $order['total_price'] = $order['selling_price'] * $order['count'];
+            }
+            unset($order);
 
-        $client->orders()->createMany($orders_data);
+            $orders = $client->orders()->createMany($orders_data);
 
-        return $this->showMessage('api.success');
+            foreach ($orders as $order) {
+                $shop = $order->shop;
+                $merchant = $shop->user;
+                Notification::send($merchant, new NewOrderNotification($order));
+            }
+
+            return $this->showMessage('api.success');
+
+        });
     }
 
     /**
