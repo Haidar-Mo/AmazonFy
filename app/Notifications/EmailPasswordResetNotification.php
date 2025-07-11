@@ -12,46 +12,33 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(public User $user,public string $verificationCode)
-    {
+    public function __construct(
+        public User $user,
+        public string $verificationCode
+    ) {}
 
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
+        $locale = method_exists($notifiable, 'preferredLocale')
+            ? $notifiable->preferredLocale()
+            : config('app.locale');
+
         return (new MailMessage)
             ->mailer('smtp')
-            ->subject('Reset password Code')
-            ->greeting('Hello ' . $this->user->first_name )
-            ->line('Here is your reset password code: ' . $this->verificationCode)
-            ->line('Please use this code to complete your operation.');
+            ->locale($locale)
+            ->subject(trans('notifications.email_password_reset.subject', [], $locale))
+            ->greeting(trans('notifications.email_password_reset.greeting', ['name' => $this->user->first_name], $locale))
+            ->line(trans('notifications.email_password_reset.line_1', ['code' => $this->verificationCode], $locale))
+            ->line(trans('notifications.email_password_reset.line_2', [], $locale));
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
+    public function toArray($notifiable): array
     {
-        return [
-            //
-        ];
+        return []; // Optional if you don't log this notification
     }
 }

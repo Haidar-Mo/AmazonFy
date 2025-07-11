@@ -6,40 +6,36 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class VerificationCodeNotification extends Notification
+class VerificationCodeNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
-
     public function __construct(public User $user, public string $verificationCode)
     {
+        $this->notType = 'email_verification_code';
 
+        $this->body = [
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+            ],
+            'verification_code' => $this->verificationCode,
+        ];
     }
 
-    public function via(object $notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Verification Code')
-            ->greeting("Hello {$this->user->name}")
-            ->line("Here is your verification code: {$this->verificationCode}")
-            ->line('Please use this code to complete your operation.');
-    }
-
-
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
+            ->subject(__('notifications.email_verification_code.title'))
+            ->greeting(__('notifications.email_verification_code.greeting', ['name' => $this->user->name]))
+            ->line(__('notifications.email_verification_code.line_1', ['code' => $this->verificationCode]))
+            ->line(__('notifications.email_verification_code.line_2'));
     }
 }

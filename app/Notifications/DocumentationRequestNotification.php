@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DocumentationRequestNotification extends Notification implements ShouldQueue
+class DocumentationRequestNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,7 +17,16 @@ class DocumentationRequestNotification extends Notification implements ShouldQue
      */
     public function __construct(public User $user)
     {
-        //
+        $this->notType = 'documentation_request';
+
+        $this->body = [
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+                'shop' => $this->user->shop?->only(['id', 'name']),
+            ]
+        ];
     }
 
     /**
@@ -28,28 +37,5 @@ class DocumentationRequestNotification extends Notification implements ShouldQue
     public function via(object $notifiable): array
     {
         return ['database'];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'user' => $this->user->load('shop'),
-        ];
     }
 }

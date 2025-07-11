@@ -5,54 +5,31 @@ namespace App\Notifications;
 use App\Models\ShopOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class NewOrderNotification extends Notification
+class NewOrderNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct(public ShopOrder $order)
     {
-        //
-    }
+        $this->notType = 'new_invoice_request';
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
-    {
-        return ['database'];
-    }
+        $this->order->load(['shop', 'client', 'product']);
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'order' => $this->order->load(['shop', 'client', 'product']),
-            'type' => 'new_invoice_request',
-            'status' => 'pending',
+        $this->body = [
+            'order' => [
+                'id' => $this->order->id,
+                'status' => 'pending',
+                'shop' => $this->order->shop?->only(['id', 'name']),
+                'client' => $this->order->client?->only(['id', 'name']),
+                'product' => $this->order->product?->only(['id', 'name']),
+            ],
             'icon' => 'green_check'
         ];
+    }
+
+    public function via($notifiable): array
+    {
+        return ['database'];
     }
 }

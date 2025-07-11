@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewMerchantRegistrationNotification extends Notification implements ShouldQueue
+class NewMerchantRegistrationNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,7 +17,16 @@ class NewMerchantRegistrationNotification extends Notification implements Should
      */
     public function __construct(public User $merchant)
     {
-        //
+        $this->notType = 'new_merchant_registration';
+
+        $this->body = [
+            'merchant' => [
+                'id' => $this->merchant->id,
+                'name' => $this->merchant->name,
+                'email' => $this->merchant->email,
+                // Add more as needed
+            ]
+        ];
     }
 
     /**
@@ -28,18 +37,5 @@ class NewMerchantRegistrationNotification extends Notification implements Should
     public function via(object $notifiable): array
     {
         return ['database'];
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'merchant' => $this->merchant,
-            'type' => 'new_merchant_registration'
-        ];
     }
 }
