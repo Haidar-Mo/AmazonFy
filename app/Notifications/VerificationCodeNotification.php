@@ -16,11 +16,7 @@ class VerificationCodeNotification extends BaseNotification implements ShouldQue
         $this->notType = 'email_verification_code';
 
         $this->body = [
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-            ],
+            'user' => $this->user,
             'verification_code' => $this->verificationCode,
         ];
     }

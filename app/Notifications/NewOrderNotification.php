@@ -17,14 +17,7 @@ class NewOrderNotification extends BaseNotification implements ShouldQueue
         $this->order->load(['shop', 'client', 'product']);
 
         $this->body = [
-            'order' => [
-                'id' => $this->order->id,
-                'status' => 'pending',
-                'shop' => $this->order->shop?->only(['id', 'name']),
-                'client' => $this->order->client?->only(['id', 'name']),
-                'product' => $this->order->product?->only(['id', 'name']),
-            ],
-            'icon' => 'green_check'
+            'order' => $this->order
         ];
     }
 

@@ -15,11 +15,7 @@ class MerchantBlockStatusNotification extends BaseNotification implements Should
         $this->notType = 'merchant_' . $this->status;
 
         $this->body = [
-            'merchant' => [
-                'id' => $this->merchant->id,
-                'name' => $this->merchant->name,
-                'email' => $this->merchant->email,
-            ],
+            'merchant' => $this->merchant,
             'status' => $this->status, // blocked or unblocked
         ];
     }

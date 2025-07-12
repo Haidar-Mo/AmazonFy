@@ -15,11 +15,7 @@ class MerchantDocumentationReviewNotification extends BaseNotification implement
         $this->notType = 'merchant_documentation_' . $this->status;
 
         $this->body = [
-            'merchant' => [
-                'id' => $this->merchant->id,
-                'name' => $this->merchant->name,
-                'email' => $this->merchant->email,
-            ],
+            'merchant' => $this->merchant,
             'status' => $this->status, // accepted or declined
         ];
     }

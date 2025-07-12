@@ -15,11 +15,7 @@ class PhoneNumberVerificationCodeNotification extends BaseNotification implement
         $this->notType = 'phone_verification_code';
 
         $this->body = [
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'phone' => $this->user->phone,
-            ],
+            'user' => $this->user,
             'verification_code' => $this->verificationCode,
         ];
     }

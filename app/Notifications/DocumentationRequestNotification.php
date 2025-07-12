@@ -20,12 +20,7 @@ class DocumentationRequestNotification extends BaseNotification implements Shoul
         $this->notType = 'documentation_request';
 
         $this->body = [
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-                'shop' => $this->user->shop?->only(['id', 'name']),
-            ]
+            'user' => $this->user
         ];
     }
 
