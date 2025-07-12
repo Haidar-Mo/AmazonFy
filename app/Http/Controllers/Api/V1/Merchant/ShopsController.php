@@ -107,9 +107,7 @@ class ShopsController extends Controller
 
     public function getStatistics()
     {
-        $shop = Auth::user()->shop;
-
-        $data = $shop->where('user_id', Auth::user()->id)
+        $shop = Shop::where('user_id', Auth::id())
             ->withCount([
                 'products',
                 'shopOrders',
@@ -126,29 +124,45 @@ class ShopsController extends Controller
                     $query->where('status', 'delivered');
                 }
             ], 'selling_price')
-            // ->withSum([
-            //     'shopOrders as daily_whole_sales' => function ($query) {
-            //         $query->whereDate('created_at', today())
-            //             ->where('status', 'delivered');
-            //     },
-            //     'shopOrders as total_whole_sales' => function ($query) {
-            //         $query->where('status', 'delivered');
-            //     }
-            // ], 'wholesale_price')
             ->withSum([
-                'shopOrders as daily_profit' => function ($query) {
+                'shopOrders as daily_wholesale' => function ($query) {
                     $query->whereDate('created_at', today())
                         ->where('status', 'delivered');
                 },
-                'shopOrders as total_profit' => function ($query) {
+                'shopOrders as total_wholesale' => function ($query) {
                     $query->where('status', 'delivered');
                 }
-            ], DB::raw('selling_price - wholesale_price')) // Calculate profit per order
-            ->get()
-            ->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']);
-        return $this->showResponse($data, 'messages.statistics.success');
-    }
+            ], 'wholesale_price')
+            ->first();
 
+        if ($shop) {
+            // Convert null sums to 0
+            $sumAttributes = [
+                'daily_sales',
+                'total_sales',
+                'daily_wholesale',
+                'total_wholesale'
+            ];
+
+            foreach ($sumAttributes as $attribute) {
+                $shop->{$attribute} = $shop->{$attribute} ?? 0;
+            }
+
+            // Calculate profits
+            $shop->daily_profit = $shop->daily_sales - $shop->daily_wholesale;
+            $shop->total_profit = $shop->total_sales - $shop->total_wholesale;
+
+            // Append accessors
+            $shop->append([
+                'logo_full_path',
+                'identity_front_face_full_path',
+                'identity_back_face_full_path',
+                'type_name'
+            ]);
+        }
+
+        return $this->showResponse($shop, 'messages.statistics.success');
+    }
     /**
      * Show the form for editing the specified resource.
      */
