@@ -25,37 +25,20 @@ class ShopTypesController extends Controller
     {
         return DB::transaction(function () use ($request) {
             try {
-                $request->validate([
-                    'name' => ['required', 'string']
+                $data = $request->validate([
+                    'name_en' => 'required_without:name_ar|string',
+                    'name_ar' => 'required_without:name_en|string'
                 ]);
+                $type = ShopType::create();
 
-                $type = ShopType::create([
-                    'name' => $request->name
-                ]);
+                if (isset($data['name_ar'])) {
+                    $type->translateOrNew('ar')->name = $data['name_ar'];
+                }
+                if (isset($data['name_en'])) {
+                    $type->translateOrNew('en')->name = $data['name_en'];
+                }
 
                 return $this->showResponse($type, 'shop_type.store_success');
-            } catch (\Exception $e) {
-                return $this->showError($e, 'shop_type.errors.store_error');
-            }
-        });
-    }
-
-    public function localeStore(Request $request)
-    {
-        return DB::transaction(function () use ($request) {
-            try {
-                $request->validate([
-                    'types' => 'required|array',
-                    'types.*.locale' => ['required', 'string'],
-                    'types.*.name' => ['required', 'string']
-                ]);
-                foreach ($request->types as $type) {
-                    $types[] = ShopType::create([
-                        'locale' => $type['locale'],
-                        'name' => $type['name']
-                    ]);
-                }
-                return $this->showResponse($types, 'shop_type.store_success');
             } catch (\Exception $e) {
                 return $this->showError($e, 'shop_type.errors.store_error');
             }

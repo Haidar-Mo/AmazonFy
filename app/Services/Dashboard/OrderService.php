@@ -5,9 +5,13 @@ namespace App\Services\Dashboard;
 use App\Models\Client;
 use App\Models\ShopOrder;
 use App\Models\Wallet;
+use App\Notifications\OrderCanceledNotification;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatusEnum;
+use Illuminate\Support\Facades\Notification;
+
+
 /**
  * Class OrderService.
  */
@@ -16,8 +20,8 @@ class OrderService
     public function index()
     {
         $orders = ShopOrder::with(['shop', 'product'])
-            ->where('status', '!=', 'pending')
-            ->orderByDesc('created_at')
+            ->whereNotIn('status', [OrderStatusEnum::PENDING->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::CANCELED->value])
+            ->latest()
             ->get()
             ->append([
                 'shop_name',
@@ -84,17 +88,23 @@ class OrderService
         if (in_array($order->status, ['pending', 'delivered', 'canceled']))
             throw new \Exception('can not cancel this order', 400);
 
-        $merchant_wallet = $order->shop()->first()
-            ->user()->first()
-            ->wallet()->first();
+        $user = $order->shop()->first()
+            ->user()->first();
 
-        return $this->makeCancel($order, $merchant_wallet);
+        $merchant_wallet = $user->wallet()->first();
+
+        $order = $this->makeCancel($order, $merchant_wallet);
+        Notification::send($user, new OrderCanceledNotification($order));
+        return $order;
     }
 
 
     public function updateStatus(string $id)
     {
         $order = ShopOrder::findOrFail($id);
+
+        if (in_array($order->status, ['pending', 'delivered', 'canceled']))
+            throw new \Exception('can not process this order', 400);
 
         $merchant_wallet = $order->shop()->first()
             ->user()->first()
@@ -125,7 +135,6 @@ class OrderService
                 'available_balance' => $wallet->available_balance + ($order->selling_price * $order->count),
                 'total_balance' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
             ]);
-
             return $order;
         });
     }
@@ -138,6 +147,8 @@ class OrderService
                 'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
                 'available_balance' => $wallet->available_balance + $order->wholesale_price * $order->count,
             ]);
+
+
             return $order;
         });
     }
