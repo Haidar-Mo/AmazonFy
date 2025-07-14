@@ -12,6 +12,7 @@ use App\Models\Chat;
 use App\Models\Code;
 use App\Models\Wallet;
 use App\Notifications\EmailPasswordResetNotification;
+use App\Notifications\NewMerchantRegistrationNotification;
 use App\Notifications\PasswordResetNotification;
 use App\Notifications\PhoneNumberVerificationCodeNotification;
 use App\Notifications\VerificationCodeNotification;
@@ -79,6 +80,10 @@ class RegisterController extends Controller
 
 
             $user->assignRole(Role::where('name', '=', 'merchant')->first());
+
+            $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
+            Notification::send($usersWithRoles, new NewMerchantRegistrationNotification($user));
+
             return response()->json([
                 'message' => 'User registered! Please check your email to verify your account.',
                 'user' => $user,

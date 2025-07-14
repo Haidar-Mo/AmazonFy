@@ -5,41 +5,24 @@ namespace App\Notifications;
 use App\Models\ShopOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class NewOrderNotification extends Notification
+class NewOrderNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct(public ShopOrder $order)
     {
-        //
-    }
+        $this->notType = 'new_invoice_request';
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
-    {
-        return ['database'];
-    }
+        $this->order->load(['shop', 'client', 'product']);
 
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
+        $this->body = [
             'order' => $this->order
         ];
+    }
+
+    public function via($notifiable): array
+    {
+        return ['database'];
     }
 }

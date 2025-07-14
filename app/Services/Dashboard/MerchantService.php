@@ -3,9 +3,11 @@
 namespace App\Services\Dashboard;
 
 use App\Models\User;
+use App\Notifications\MerchantBlockStatusNotification;
 use App\Traits\HasFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Notification;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -74,6 +76,7 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => true]);
+            Notification::send($merchant, new MerchantBlockStatusNotification($merchant,'blocked'));
             return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
         });
     }
@@ -83,6 +86,7 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => false]);
+            Notification::send($merchant, new MerchantBlockStatusNotification($merchant,'unblocked'));
             return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
         });
     }

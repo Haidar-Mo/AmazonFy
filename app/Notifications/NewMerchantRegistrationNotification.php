@@ -8,19 +8,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DocumentationRequestNotification extends BaseNotification implements ShouldQueue
+class NewMerchantRegistrationNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user)
+    public function __construct(public User $merchant)
     {
-        $this->notType = 'documentation_request';
+        $this->notType = 'new_merchant_registration';
 
         $this->body = [
-            'user' => $this->user
+            'merchant' => $this->merchant
         ];
     }
 
