@@ -19,7 +19,7 @@ class ShopService
     public function index()
     {
         return Shop::with('user')
-            ->whereIn('status', ['active', 'inactive'])
+            ->whereIn('status', ['active', 'pending', 'inactive'])
             ->latest()
             ->get()
             ->append(['is_blocked', 'is_blocked_text']);

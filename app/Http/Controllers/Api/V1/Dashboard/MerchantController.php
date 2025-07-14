@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\Dashboard\MerchantService;
 use App\Traits\ResponseTrait;
 
-use Illuminate\Support\Facades\App; // optional if you want to manually test locale
 
 class MerchantController extends Controller
 {
@@ -22,9 +21,12 @@ class MerchantController extends Controller
     public function index()
     {
         try {
-            $merchants = User::role('merchant')
+            $merchants = User::role('merchant', 'api')
                 ->with('shop')
-                ->whereRelation('shop', 'status', 'pending')
+                ->where(function ($query) {
+                    $query->whereRelation('shop', 'status', 'pending')
+                        ->orWhereDoesntHave('shop');
+                })
                 ->latest()
                 ->get()
                 ->makeVisible(['is_blocked'])
