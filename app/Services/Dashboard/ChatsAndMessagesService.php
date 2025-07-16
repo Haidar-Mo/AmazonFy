@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Dashboard;
+
 use App\Events\NewMessageSent;
 use App\Http\Requests\Api\V1\CreateChatRequest;
 use App\Http\Requests\Api\V1\CreateMessageRequest;
@@ -49,7 +50,7 @@ class ChatsAndMessagesService
     {
         $chat = Chat::findOrFail($id);
         DB::transaction(function () use ($chat) {
-            $chat->delete();
+            $chat->messages()->delete();
         });
     }
 
