@@ -61,7 +61,7 @@ Route::middleware([
 
             Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
-            Route::put('shop/shopOrders', [OrdersController::class, 'update']);
+            Route::put('shop/shopOrders/{shopOrder}', [OrdersController::class, 'update']);
             // Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
 
