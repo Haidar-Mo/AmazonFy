@@ -6,6 +6,7 @@ use App\Http\Requests\Api\V1\CreateChatRequest;
 use App\Http\Requests\Api\V1\CreateMessageRequest;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
+use App\Traits\ResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,12 +17,12 @@ use Illuminate\Support\Facades\Log;
  */
 class ChatsAndMessagesService
 {
-
+    use ResponseTrait;
     public function indexChats(Request $request)
     {
-        return Chat::all()->each(function ($chat) {
-            $chat->append(['merchant_name']);
-        });
+        return Chat::latest('updated_at')
+            ->get()
+            ->append(['merchant_name']);
     }
 
     public function showChat(string $id)

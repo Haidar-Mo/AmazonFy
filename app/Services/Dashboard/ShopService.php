@@ -18,7 +18,11 @@ class ShopService
 
     public function index()
     {
-        return Shop::orderByDesc('created_at')->get()->append(['is_blocked', 'is_blocked_text']);
+        return Shop::with('user')
+            ->whereIn('status', ['active', 'inactive'])
+            ->latest()
+            ->get()
+            ->append(['is_blocked', 'is_blocked_text']);
     }
 
     public function show(string $id)

@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Product extends Model 
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Translatable;
+
+    public $translatedAttributes = ['title', 'details'];
 
     protected $fillable = [
         'id',
         'type_id',
         'locale',
-        'title',
-        'details',
         'image',
         'wholesale_price',
         'selling_price',
@@ -44,6 +46,7 @@ class Product extends Model
     {
         return $this->type()->first()->name ?? __('texts.product.type.undefined');
     }
+    
     public function getFullPathImageAttribute()
     {
         return asset($this->image);

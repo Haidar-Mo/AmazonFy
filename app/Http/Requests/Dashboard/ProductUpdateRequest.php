@@ -22,13 +22,17 @@ class ProductUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|string',
-            'details' => 'sometimes|string',
             'type_id' => 'sometimes|exists:product_types,id',
             'wholesale_price' => 'sometimes|numeric',
             'selling_price' => 'sometimes|numeric',
             'is_available' => 'sometimes|boolean',
-            'image' => 'sometimes|image'
+            'image' => 'sometimes|image',
+
+            // Validate translations
+            'title_ar' => 'sometimes|string|max:255',
+            'details_ar' => 'sometimes|string',
+            'title_en' => 'sometimes|string|max:255',
+            'details_en' => 'sometimes|string',
         ];
     }
 }

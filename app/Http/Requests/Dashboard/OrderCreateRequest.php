@@ -29,8 +29,6 @@ class OrderCreateRequest extends FormRequest
             'phone_number' => ['required_if:email,null', 'string'],
             'address' => ['sometimes', 'string'],
 
-
-
             'orders' => ['required', 'array'],
             'orders.*.shop_id' => ['required', 'exists:shops,id'],
             'orders.*.product_id' => [

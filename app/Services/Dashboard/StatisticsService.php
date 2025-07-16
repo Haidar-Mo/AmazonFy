@@ -103,9 +103,8 @@ class StatisticsService
             ->whereBetween('shop_orders.created_at', [$date_1, $date_2])
             ->select([
                 DB::raw("$groupByFormat(shop_orders.created_at) as period"),
-                DB::raw("count(*) as count"),
-                'product_types.name as type'
-            ])->groupBy(['period', 'type'])
+                DB::raw("count(*) as count")
+            ])->groupBy(['period'])
             ->limit(3)
             ->get();
 
