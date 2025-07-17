@@ -4,6 +4,7 @@ namespace App\Filters;
 
 
 use App\Filters\BaseFilter;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -18,8 +19,8 @@ class ProductsFilters extends BaseFilter
 
     public function search(Builder $query): Builder
     {
-        if ($this->request->filled('search'))
-            return $query->where('title', 'like', '%' . $this->request->input('search') . '%');
+         if ($this->request->filled('search'))
+            return $query->whereTranslationLike('title', '%' . $this->request->input('search') . '%'); 
         return $query;
     }
 }

@@ -134,11 +134,14 @@ return [
     'wallet' => [
         'show_success' => 'تم عرض تفاصيل المحفظة بنجاح',
 
-        'charge_create' => 'تم إنشاء طلب الشحن بنجاح',
-        'withdraw_create' => 'تم إنشاء طلب السحب بنجاح',
+        'charge_create' => 'تم استلام طلبك و سيتم معالجة الطلب بغضون 24 ساعة',
+        'withdraw_create' => 'تم استلام طلبك و سيتم معالجة الطلب بغضون 24 ساعة',
 
         'errors' => [
+            'show_error' => 'حدث خطأ ما أثناء عرض تفاصيل المحفظة',
             'insufficient_funds' => 'ليس لديك رصيد كافي',
+            'wrong_wallet_password' => 'كلمة مرور المحفظة غير صحيحة',
+            'wrong_wallet_password_not_found' => 'لم يتم تعيين كلمة مرور للمحفظة',
         ]
     ],
 

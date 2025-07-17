@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
+use App\Traits\FirebaseNotificationTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -28,29 +30,11 @@ abstract class BaseNotification extends Notification
         ];
     }
 
-    public function toFirebase()
-    {
-        return [
-            'notification' => [
-                'title' => $this->title,
-                'body' => $this->generateFirebaseBody($this->body),
-            ],
-            'data' => $this->toArray(null),
-        ];
-    }
-
     public function toPusher()
     {
         return $this->toArray(null);
     }
 
-
-
-    protected function generateFirebaseBody(array $body): string
-    {
-        // You can customize how to flatten the body array for Firebase
-        return $this->title;
-    }
 
     protected function translate(string $key, string $locale): string
     {

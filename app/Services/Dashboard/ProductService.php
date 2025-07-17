@@ -21,6 +21,13 @@ class ProductService
         return Product::all()->append(['type_name', 'full_path_image']);
     }
 
+    public function indexPaginate()
+    {
+        return Product::paginate()->through(function ($product) {
+            return $product->append(['type_name', 'full_path_image']);
+        });
+    }
+
     public function show(string $id)
     {
 

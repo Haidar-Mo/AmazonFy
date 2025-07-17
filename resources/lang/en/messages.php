@@ -138,11 +138,14 @@ return [
         'show_success' => 'Wallet retrieved successfully',
 
 
-        'charge_create' => 'Charge request sended',
-        'withdraw_create' => 'Withdraw request sended',
+        'charge_create' => 'Your request has been received and will be processed within 24 hours',
+        'withdraw_create' => 'Your request has been received and will be processed within 24 hours',
 
         'errors' => [
+            'show_error' => 'Error occurred while retrieving wallet',
             'insufficient_funds' => 'You do not have enough balance',
+            'wrong_wallet_password' => 'The wallet password is incorrect',
+            'wrong_wallet_password_not_found' => 'No wallet password has been set',
         ]
     ],
 
