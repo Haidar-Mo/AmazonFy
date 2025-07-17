@@ -50,6 +50,7 @@ Route::middleware([
         Route::middleware(['merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
             Route::get('shop', [ShopsController::class, 'show']);
             Route::get('shop/statistics', [ShopsController::class, 'getStatistics']);
+            Route::get('shop/shopOrders', [OrdersController::class, 'index']);
         });
 
         Route::middleware(['user_must_not_be_blocked', 'merchant_must_be_documented', 'merchant_must_be_active'])->group(function () {
@@ -60,7 +61,8 @@ Route::middleware([
 
             Route::apiResource('shops/products', ProductsController::class)->only(['store', 'destroy']);
 
-            Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
+            Route::put('shop/shopOrders/{shopOrder}', [OrdersController::class, 'update']);
+            // Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
 
         //? isolated API To check id the user has documented shop or not
