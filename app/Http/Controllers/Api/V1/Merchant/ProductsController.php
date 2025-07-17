@@ -51,9 +51,46 @@ class ProductsController extends Controller
         return $this->showResponse($products, 'product.index_success');
     }
 
+    public function indexPaginate()
+    {
+        $user = Auth::user();
+        $shop = $user->shop;
+
+
+        $products = $this->productsFilters
+            ->applyFilters(Product::query())
+            ->paginate()
+            ->through(function ($product) {
+                return $product->append('full_path_image');
+            });
+
+        // Get product IDs associated with the user's shop
+        $shopProductIds = $shop->products()->pluck('products.id')->toArray();
+
+        // Add shop_has_product attribute to each product in paginated result
+        $products->getCollection()->transform(function ($product) use ($shopProductIds) {
+            $product->shop_has_product = in_array($product->id, $shopProductIds);
+            return $product;
+        });
+
+        return $this->showResponse($products, 'product.index_success');
+    }
+
+
     public function getProductsForGuest()
     {
         $products = $this->productsFilters->applyFilters(Product::query())->get()->append('full_path_image');
+        return $this->showResponse($products, 'product.index_success');
+    }
+
+    public function getProductsForGuestPaginate()
+    {
+        $products = $this->productsFilters
+            ->applyFilters(Product::query())
+            ->paginate()
+            ->through(function ($product) {
+                return $product->append('full_path_image');
+            });
         return $this->showResponse($products, 'product.index_success');
 
     }

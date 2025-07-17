@@ -94,7 +94,7 @@ class OrderService
         $merchant_wallet = $user->wallet()->first();
 
         $order = $this->makeCancel($order, $merchant_wallet);
-        Notification::send($user, new OrderCanceledNotification($order));
+        Notification::send($user, notification: new OrderCanceledNotification($order));
         return $order;
     }
 

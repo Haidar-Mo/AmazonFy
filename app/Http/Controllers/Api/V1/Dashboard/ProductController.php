@@ -26,6 +26,16 @@ class ProductController extends Controller
         }
     }
 
+    public function indexPaginate()
+    {
+        try {
+            $products = $this->service->indexPaginate();
+            return $this->showResponse($products, 'product.index_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'product.errors.index_error');
+        }
+    }
+
     public function show(string $id)
     {
         try {

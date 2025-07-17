@@ -23,7 +23,8 @@ Route::middleware([
     ->group(function () {
 
         Route::get('products/index', [ProductsController::class, 'index']);
-
+        Route::get('products/index/p', [ProductsController::class, 'indexPaginate']); // paginate: replace this with the upper one and do not forget to delete the function 
+    
         Route::resource('shops', ShopsController::class)->only(['store'])->middleware('user_must_not_be_blocked');
 
         Route::get('chat', [ChatsController::class, 'show']);
@@ -74,6 +75,7 @@ Route::middleware([
 
 //: This is guest user index products
 Route::get('products', [ProductsController::class, 'getProductsForGuest']);
+Route::get('products/p', [ProductsController::class, 'getProductsForGuestPaginate']); // paginate: replace this with the upper one
 
 Route::apiResource('shopTypes', ShopTypesController::class)->only('index');
 Route::apiResource('productTypes', ProductTypesController::class)->only('index');

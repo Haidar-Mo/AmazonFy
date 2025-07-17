@@ -4,19 +4,22 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class ToMerchantNotification extends Notification implements ShouldQueue
+class ToMerchantNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public $title, public $content)
+    public function __construct(public string $message)
     {
-        //
+        $this->notType = "custom_notification";
+        $this->body = [
+            'message' => $this->message
+        ];
     }
 
     /**
@@ -29,17 +32,6 @@ class ToMerchantNotification extends Notification implements ShouldQueue
         return ['database'];
     }
 
+    
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'title' => $this->title,
-            'content' => $this->content
-        ];
-    }
 }

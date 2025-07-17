@@ -15,6 +15,8 @@ Route::prefix('products')
 
         Route::get('index', [ProductController::class, 'index'])
             ->middleware('hasAnyPermission:read-product|all');
+        Route::get('index/p', [ProductController::class, 'indexPaginate'])
+            ->middleware('hasAnyPermission:read-product|all');
 
         Route::get('show/{id}', [ProductController::class, 'show'])
             ->middleware('hasAnyPermission:read-product|all');

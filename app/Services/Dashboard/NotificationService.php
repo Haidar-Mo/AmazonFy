@@ -4,18 +4,17 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Notifications\ToMerchantNotification;
-use Hamcrest\Core\IsInstanceOf;
+use App\Traits\FirebaseNotificationTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Notification;
-use function PHPUnit\Framework\isInstanceOf;
 
 /**
  * Class NotificationService.
  */
 class NotificationService
 {
-
+    use FirebaseNotificationTrait;
 
     public function indexSended()
     {
@@ -54,7 +53,10 @@ class NotificationService
     {
         $data = $request->validated();
         $user = User::findOrFail($id);
-        Notification::send($user, new ToMerchantNotification($data['title'], $data['content']));
+        Notification::send($user, new ToMerchantNotification($data['content']));
+        if ($user->device_token) {
+            $this->unicast($request, $user->device_token);
+        }
     }
 
     public function destroy(string $id)
