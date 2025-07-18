@@ -86,7 +86,7 @@ class OrdersController extends Controller
             }
             if ($request->accepted) {
                 $wallet = Auth::user()->wallet;
-                if ($wallet->available_balance < ($shopOrder->selling_price * $shopOrder->count)) {
+                if ($wallet->available_balance < ($shopOrder->wholesale_price * $shopOrder->count)) {
                     return $this->showMessage('wallet.errors.insufficient_funds', [], 400, false);
                 }
                 $wallet->available_balance -= ($shopOrder->wholesale_price * $shopOrder->count);
