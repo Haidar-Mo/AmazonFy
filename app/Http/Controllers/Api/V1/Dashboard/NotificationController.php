@@ -47,7 +47,7 @@ class NotificationController extends Controller
     public function store(NotificationRequest $request, string $id)
     {
         try {
-            $this->service->store($request, $id);
+             $this->service->store($request, $id);
             return $this->showMessage('notification.create_success', [], 200);
         } catch (\Exception $e) {
             return $this->showError($e, 'notification.errors.create_error');
@@ -67,7 +67,7 @@ class NotificationController extends Controller
     public function countNotification()
     {
         $user = auth()->user();
-        $notification_count = $user->notifications->count();
+        $notification_count = $user->unreadNotifications()->count();
         return $this->showResponse($notification_count, 'notification.count_success');
     }
 }

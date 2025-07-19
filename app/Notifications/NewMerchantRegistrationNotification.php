@@ -17,11 +17,8 @@ class NewMerchantRegistrationNotification extends BaseNotification implements Sh
      */
     public function __construct(public User $merchant)
     {
-        $this->notType = 'new_merchant_registration';
-
-        $this->body = [
-            'merchant' => $this->merchant
-        ];
+        $this->notType = 'user';
+        $this->model = $merchant;
     }
 
     /**

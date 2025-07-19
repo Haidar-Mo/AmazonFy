@@ -16,7 +16,7 @@ class LoginController extends Controller
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
-        $user = User::role(['admin', 'supervisor'])->where('phone_number', '=', $data['phone_number'])->first();
+        $user = User::role(['admin', 'supervisor'],'api')->where('phone_number', '=', $data['phone_number'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);

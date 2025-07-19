@@ -22,8 +22,10 @@ class NotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string',
-            'content' => 'required|string'
+            'ar_title' => 'required|string',
+            'en_title' => 'required|string',
+            'ar_body' => 'required|string',
+            'en_body' => 'required|string'
         ];
     }
 }

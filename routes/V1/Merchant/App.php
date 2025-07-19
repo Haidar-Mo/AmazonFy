@@ -4,6 +4,7 @@ use App\Enums\TokenAbility;
 use App\Events\ExampleEvent;
 use App\Http\Controllers\Api\V1\Merchant\ChatsController;
 use App\Http\Controllers\Api\V1\Merchant\MessagesController;
+use App\Http\Controllers\Api\V1\Merchant\NotificationController;
 use App\Http\Controllers\Api\V1\Merchant\OrdersController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
@@ -65,6 +66,13 @@ Route::middleware([
             Route::put('shop/shopOrders/{shopOrder}', [OrdersController::class, 'update']);
             // Route::apiResource('shop/shopOrders', OrdersController::class)->only(['index', 'update']);
         });
+
+        Route::prefix('notifications')->middleware(['merchant_must_be_documented', 'merchant_must_be_active'])
+            ->group(
+                function () {
+                    Route::get('index', [NotificationController::class, 'index']);
+                }
+            );
 
         //? isolated API To check id the user has documented shop or not
         Route::get('is-documented', function () {

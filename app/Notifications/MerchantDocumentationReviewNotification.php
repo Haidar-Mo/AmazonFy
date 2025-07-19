@@ -12,12 +12,8 @@ class MerchantDocumentationReviewNotification extends BaseNotification implement
 
     public function __construct(public User $merchant, public string $status)
     {
-        $this->notType = 'merchant_documentation_' . $this->status;
-
-        $this->body = [
-            'merchant' => $this->merchant,
-            'status' => $this->status, // accepted or declined
-        ];
+        $this->notType = 'user';
+        $this->model = $merchant;
     }
 
     public function via($notifiable): array
