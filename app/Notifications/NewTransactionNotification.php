@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
+use App\Models\TransactionHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -10,11 +10,12 @@ class NewTransactionNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public User $user)
+    public function __construct(public TransactionHistory $user)
     {
-        $this->notType = 'new_transaction';
+        $this->notType = 'transaction';
+        $this->model = $user;
 
-        $this->user->load('wallet.transactionHistories');
+        /*$this->user->load('wallet.transactionHistories');
 
         $this->body = [
             'user' => $this->user,
@@ -36,6 +37,7 @@ class NewTransactionNotification extends BaseNotification implements ShouldQueue
                 ]);
             }),
         ];
+ */
     }
 
     public function via($notifiable): array

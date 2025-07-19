@@ -6,23 +6,20 @@ use App\Models\ShopOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewOrderNotification extends BaseNotification implements ShouldQueue
+class NewOrderNotification extends BaseNotification
 {
     use Queueable;
 
     public function __construct(public ShopOrder $order)
     {
-        $this->notType = 'new_invoice_request';
+        $this->notType = 'order';
+        $this->model = $order;
 
-        $this->order->load(['shop', 'client', 'product']);
-
-        $this->body = [
-            'order' => $this->order
-        ];
     }
 
     public function via($notifiable): array
     {
         return ['database'];
     }
+
 }

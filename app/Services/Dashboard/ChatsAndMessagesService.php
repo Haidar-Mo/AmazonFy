@@ -50,7 +50,7 @@ class ChatsAndMessagesService
     {
         $chat = Chat::findOrFail($id);
         DB::transaction(function () use ($chat) {
-            $chat->messages()->delete();
+            $chat->message()->delete();
         });
     }
 

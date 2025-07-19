@@ -15,7 +15,8 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
     public function __construct(
         public User $user,
         public string $verificationCode
-    ) {}
+    ) {
+    }
 
     public function via($notifiable): array
     {
@@ -30,7 +31,7 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->mailer('smtp')
-            ->locale($locale)
+            // ->locale($locale)
             ->subject(trans('notifications.email_password_reset.subject', [], $locale))
             ->greeting(trans('notifications.email_password_reset.greeting', ['name' => $this->user->first_name], $locale))
             ->line(trans('notifications.email_password_reset.line_1', ['code' => $this->verificationCode], $locale))

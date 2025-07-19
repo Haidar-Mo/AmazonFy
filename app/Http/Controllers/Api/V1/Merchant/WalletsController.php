@@ -73,7 +73,6 @@ class WalletsController extends Controller
             $wallet = Auth::user()->wallet;
             // return response()->json($request->wallet_password);
             $wallet->update(['wallet_password' => $request->wallet_password]);
-            $wallet->save();
             return $this->showResponse($wallet);
         });
     }
@@ -99,7 +98,7 @@ class WalletsController extends Controller
             $wallet = Auth::user()->wallet;
             $image_path = $this->saveFile($request->image, 'Transactions/Charges');
 
-            $wallet->transactionHistories()->create(
+            $transaction = $wallet->transactionHistories()->create(
                 array_merge(
                     $request->validated(),
                     [
@@ -110,7 +109,7 @@ class WalletsController extends Controller
             );
 
             $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
-            Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
+            Notification::send($usersWithRoles, new NewTransactionNotification($transaction));
 
 
             return $this->showMessage('wallet.charge_create');
@@ -123,16 +122,16 @@ class WalletsController extends Controller
         $wallet_password = $request->wallet_password;
         $hashedPassword = Auth::user()->wallet->wallet_password;
 
-        if(!$hashedPassword) {
-            return $this->showMessage('wrong_wallet_password_not_found',[],400);
+        if (!$hashedPassword) {
+            return $this->showMessage('wrong_wallet_password_not_found', [], 400);
         }
         if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
-            return $this->showMessage('wrong_wallet_password',[],422);
+            return $this->showMessage('wrong_wallet_password', [], 422);
         }
 
         return DB::transaction(function () use ($request) {
             $wallet = Auth::user()->wallet;
-            $wallet->transactionHistories()->create(array_merge(
+            $transaction = $wallet->transactionHistories()->create(array_merge(
                 $request->validated(),
                 [
                     'transaction_type' => 'withdraw',
@@ -140,7 +139,7 @@ class WalletsController extends Controller
             ));
 
             $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
-            Notification::send($usersWithRoles, new NewTransactionNotification($request->user()));
+            Notification::send($usersWithRoles, new NewTransactionNotification($transaction));
 
             return $this->showMessage('wallet.withdraw_create');
         });

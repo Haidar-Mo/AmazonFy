@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderCanceledNotification extends Notification
+class OrderCanceledNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,7 +17,8 @@ class OrderCanceledNotification extends Notification
      */
     public function __construct(public ShopOrder $order)
     {
-        //
+        $this->notType = "order";
+        $this->model = $order;
     }
 
     /**
@@ -30,16 +31,4 @@ class OrderCanceledNotification extends Notification
         return ['database'];
     }
 
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'order' => $this->order
-        ];
-    }
 }

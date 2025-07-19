@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\User;
 use App\Notifications\ToMerchantNotification;
 use App\Traits\FirebaseNotificationTrait;
@@ -33,7 +34,10 @@ class NotificationService
     {
         $user = request()->user();
         $user->unreadNotifications->markAsRead();
-        return $user->notifications;
+        return NotificationResource::collection(
+            auth()->user()->notifications
+        );
+
     }
 
     public function show(string $id)
@@ -53,10 +57,11 @@ class NotificationService
     {
         $data = $request->validated();
         $user = User::findOrFail($id);
-        Notification::send($user, new ToMerchantNotification($data['content']));
-        if ($user->device_token) {
+        $user->notify(new ToMerchantNotification($data['ar_title'], $data['en_title'], $data['ar_body'], $data['en_body'], $user));
+        /* if ($user->device_token) {
             $this->unicast($request, $user->device_token);
-        }
+        } */
+        return $user->notifications;
     }
 
     public function destroy(string $id)

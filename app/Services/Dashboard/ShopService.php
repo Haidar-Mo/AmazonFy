@@ -4,6 +4,7 @@ namespace App\Services\Dashboard;
 
 use App\Models\Shop;
 use App\Models\User;
+use App\Notifications\MerchantDocumentationReviewNotification;
 use App\Traits\HasFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
@@ -123,7 +124,7 @@ class ShopService
         $user = $shop->user;
         return DB::transaction(function () use ($shop, $user) {
             $shop->update(['status' => 'active']);
-            return $shop->append([
+            $shop->append([
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
@@ -131,15 +132,17 @@ class ShopService
                 'is_blocked',
                 'is_blocked_text'
             ]);
-            ;
+            $user->notify(new MerchantDocumentationReviewNotification($user, 'activate'));
+            return $shop;
         });
     }
     public function deactivateShop(string $id)
     {
         $shop = Shop::findOrFail($id);
-        return DB::transaction(function () use ($shop) {
+        $user = $shop->user;
+        return DB::transaction(function () use ($shop, $user) {
             $shop->update(['status' => 'inactive']);
-            return $shop->append([
+            $shop->append([
                 'logo_full_path',
                 'identity_front_face_full_path',
                 'identity_back_face_full_path',
@@ -147,7 +150,9 @@ class ShopService
                 'is_blocked',
                 'is_blocked_text'
             ]);
-            ;
+            $user->notify(new MerchantDocumentationReviewNotification($user, 'deactivate'));
+            return $shop;
+
         });
     }
 }

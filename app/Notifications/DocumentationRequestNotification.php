@@ -17,11 +17,9 @@ class DocumentationRequestNotification extends BaseNotification implements Shoul
      */
     public function __construct(public User $user)
     {
-        $this->notType = 'documentation_request';
+        $this->notType = 'user';
+        $this->model = $user;
 
-        $this->body = [
-            'user' => $this->user
-        ];
     }
 
     /**

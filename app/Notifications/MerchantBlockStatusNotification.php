@@ -12,12 +12,8 @@ class MerchantBlockStatusNotification extends BaseNotification implements Should
 
     public function __construct(public User $merchant, public string $status)
     {
-        $this->notType = 'merchant_' . $this->status;
-
-        $this->body = [
-            'merchant' => $this->merchant,
-            'status' => $this->status, // blocked or unblocked
-        ];
+        $this->notType = 'user' ;
+        $this->model = $merchant;
     }
 
     public function via($notifiable): array
