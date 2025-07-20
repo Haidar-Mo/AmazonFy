@@ -13,8 +13,10 @@ class PhoneNumberVerificationCodeNotification extends BaseNotification implement
     public function __construct(public User $user, public string $verificationCode)
     {
         $this->notType = 'phone_verification_code';
-        $this->body = trans('notifications.phone_verification_code.body') . $verificationCode;
+        $this->body = trans('notifications.phone_verification_code.body', ['code' => $this->verificationCode]);
         $this->model = $user;
+        $this->notification_name = "phone_verification_code";
+
     }
 
     public function via($notifiable): array

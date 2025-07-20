@@ -29,7 +29,7 @@ return [
     ],
     'phone_verification_code' => [
         'title' => 'Your phone verification code',
-        'body' => 'Your phone verification code is:',
+        'body' => 'Your phone verification code is: :code',
     ],
     'email_verification_code' => [
         'title' => 'Email verification code',

@@ -14,30 +14,7 @@ class NewTransactionNotification extends BaseNotification implements ShouldQueue
     {
         $this->notType = 'transaction';
         $this->model = $user;
-
-        /*$this->user->load('wallet.transactionHistories');
-
-        $this->body = [
-            'user' => $this->user,
-            'wallet' => $this->user->wallet?->only([
-                'id',
-                'available_balance',
-                'marginal_balance',
-                'total_balance',
-            ]),
-            'transactions' => $this->user->wallet?->transactionHistories->map(function ($txn) {
-                return $txn->only([
-                    'id',
-                    'amount',
-                    'transaction_type',
-                    'target',
-                    'charge_network',
-                    'coin_type',
-                    'status',
-                ]);
-            }),
-        ];
- */
+        $this->notification_name = "new_transaction";
     }
 
     public function via($notifiable): array

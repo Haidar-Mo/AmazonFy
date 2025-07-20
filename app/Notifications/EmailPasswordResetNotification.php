@@ -12,10 +12,9 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        public User $user,
-        public string $verificationCode
-    ) {
+    public function __construct(public User $user, public string $verificationCode)
+    {
+        $this->notification_name = 'email_password_reset';
     }
 
     public function via($notifiable): array
