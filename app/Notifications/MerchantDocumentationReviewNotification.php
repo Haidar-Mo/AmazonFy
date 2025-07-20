@@ -14,6 +14,7 @@ class MerchantDocumentationReviewNotification extends BaseNotification implement
     {
         $this->notType = 'user';
         $this->model = $merchant;
+        $this->notification_name = "merchant_documentation_$status";
     }
 
     public function via($notifiable): array

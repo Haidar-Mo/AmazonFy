@@ -2,11 +2,8 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+
 
 class ToMerchantNotification extends BaseNotification
 {
@@ -16,7 +13,7 @@ class ToMerchantNotification extends BaseNotification
      */
     public function __construct(public string $ar_title, public string $en_title, public string $ar_body, public string $en_body, public Model $model)
     {
-
+        
     }
 
     /**

@@ -19,6 +19,7 @@ class OrderCanceledNotification extends BaseNotification implements ShouldQueue
     {
         $this->notType = "order";
         $this->model = $order;
+        $this->notification_name = "order_canceled";
     }
 
     /**

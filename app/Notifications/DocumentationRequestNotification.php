@@ -2,11 +2,10 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
+use App\Models\Shop;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+
 
 class DocumentationRequestNotification extends BaseNotification implements ShouldQueue
 {
@@ -15,11 +14,11 @@ class DocumentationRequestNotification extends BaseNotification implements Shoul
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $user)
+    public function __construct(public Shop $shop)
     {
-        $this->notType = 'user';
-        $this->model = $user;
-
+        $this->notType = 'shop';
+        $this->model = $shop;
+        $this->notification_name = 'documentation_request';
     }
 
     /**

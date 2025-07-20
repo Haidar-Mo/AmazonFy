@@ -14,6 +14,8 @@ class NewOrderNotification extends BaseNotification
     {
         $this->notType = 'order';
         $this->model = $order;
+        $this->notification_name = "new_invoice_request";
+
 
     }
 
