@@ -58,4 +58,7 @@ return [
         'body' => 'Your order has been successfully canceled. If you have any questions, please contact support.',
     ],
 
+    'new_message' => [
+        'title' => 'You have a new message'
+    ],
 ];

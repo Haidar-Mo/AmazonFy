@@ -63,7 +63,7 @@ class ShopsController extends Controller
                 'representative_code' => $request->representative_code
             ]);
 
-            $admin = User::role('admin', 'api')->first(); //! set the proper admin id
+            $admin = User::role('admin', 'api')->first();
             Notification::send($admin, new DocumentationRequestNotification($shop));
 
             return $this->showResponse($shop->append(['logo_full_path', 'identity_front_face_full_path', 'identity_back_face_full_path', 'type_name']), __('messages.shop.store_success'), status: 201);

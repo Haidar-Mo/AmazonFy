@@ -2,25 +2,26 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
+use App\Models\Chat;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewMerchantRegistrationNotification extends BaseNotification implements ShouldQueue
+class NewMessageNotification extends BaseNotification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $merchant)
+    public function __construct(public Chat $chat, public string $message)
     {
-        $this->notType = 'user';
-        $this->model = $merchant;
-        $this->notification_name = "new_merchant_registration";
+        $this->notType = 'chat_message';
+        $this->model = $chat;
+        $this->notification_name = "new_message";
 
+        $this->body = $message;
     }
 
     /**
@@ -32,4 +33,6 @@ class NewMerchantRegistrationNotification extends BaseNotification implements Sh
     {
         return ['database'];
     }
+
+
 }

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Events\NewMessageSent;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Notifications\NewMessageNotification;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class MessagesController extends Controller
 {
@@ -30,6 +33,11 @@ class MessagesController extends Controller
             ]);
             event(new NewMessageSent($message));
             Log::info('Message sent and broadcasted: ', ['message' => $message]);
+
+
+            $admins = User::role('admin', 'api')->get();
+            Notification::send($admins, new NewMessageNotification($chat, $request->content));
+
             DB::commit();
             return $this->showMessage('chat.message_sent');
         } catch (\Exception $e) {

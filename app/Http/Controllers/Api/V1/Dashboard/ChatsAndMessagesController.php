@@ -24,7 +24,7 @@ class ChatsAndMessagesController extends Controller
     public function indexChats(Request $request)
     {
         try {
-            $chats = Chat::all()->each(function ($chat) {
+            $chats = Chat::latest('updated_at')->get()->each(function ($chat) {
                 $chat->append(['merchant_name']);
             });
 

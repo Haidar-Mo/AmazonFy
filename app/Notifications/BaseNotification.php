@@ -14,7 +14,7 @@ abstract class BaseNotification extends Notification
 {
     use Queueable;
 
-    protected string $notType; //:[ user, shop, order, transaction, custom_notification ]
+    protected string $notType; //:[ user, shop, order, transaction, custom_notification , chat_message ]
     protected string $title;
     protected string $body;
     protected Model $model;

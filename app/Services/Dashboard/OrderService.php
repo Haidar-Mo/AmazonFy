@@ -8,7 +8,7 @@ use App\Models\Wallet;
 use App\Notifications\OrderCanceledNotification;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
-use App\Enums\OrderStatusEnum;
+use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Notification;
 
 
@@ -20,7 +20,7 @@ class OrderService
     public function index()
     {
         $orders = ShopOrder::with(['shop', 'product'])
-            ->whereNotIn('status', [OrderStatusEnum::PENDING->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::CANCELED->value])
+            ->whereNotIn('status', [OrderStatus::PENDING->value, OrderStatus::DELIVERED->value, OrderStatus::CANCELED->value])
             ->latest()
             ->get()
             ->append([
@@ -120,7 +120,7 @@ class OrderService
     private function makePreparing(ShopOrder $order)
     {
         return DB::transaction(function () use ($order) {
-            $order->update(['status' => OrderStatusEnum::PREPARING]);
+            $order->update(['status' => OrderStatus::PREPARING]);
             return $order;
 
         });
@@ -129,7 +129,7 @@ class OrderService
     private function makeDelivered(ShopOrder $order, Wallet $wallet)
     {
         return DB::transaction(function () use ($order, $wallet) {
-            $order->update(['status' => OrderStatusEnum::DELIVERED]);
+            $order->update(['status' => OrderStatus::DELIVERED]);
             $wallet->update([
                 'marginal_balance' => $wallet->marginal_balance - ($order->wholesale_price * $order->count),
                 'available_balance' => $wallet->available_balance + ($order->selling_price * $order->count),
@@ -142,7 +142,7 @@ class OrderService
     private function makeCancel(ShopOrder $order, Wallet $wallet)
     {
         return DB::transaction(function () use ($order, $wallet) {
-            $order->update(['status' => OrderStatusEnum::CANCELED]);
+            $order->update(['status' => OrderStatus::CANCELED]);
             $wallet->update([
                 'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
                 'available_balance' => $wallet->available_balance + $order->wholesale_price * $order->count,
