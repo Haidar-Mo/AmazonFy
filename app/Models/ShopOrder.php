@@ -83,7 +83,8 @@ class ShopOrder extends Model
     {
         $locale = app()->getLocale();
         $diff = $this->created_at->timezone('Asia/Riyadh')->locale($locale)->diffForHumans();
-        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
+        // return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
+        return $diff;
     }
 
     public function getTotalProfitAttribute()
