@@ -14,6 +14,7 @@ use App\Models\Wallet;
 use App\Notifications\EmailPasswordResetNotification;
 use App\Notifications\NewMerchantRegistrationNotification;
 use App\Notifications\PasswordResetNotification;
+use App\Notifications\PhoneNumberPasswordResetNotification;
 use App\Notifications\PhoneNumberVerificationCodeNotification;
 use App\Notifications\VerificationCodeNotification;
 use App\Services\CodeService;
@@ -141,7 +142,7 @@ class RegisterController extends Controller
             $code = $this->codeService->getOrCreateVerificationCode($user->id);
 
             $usersWithRoles = User::role(['admin', 'supervisor'], 'api')->get();
-            Notification::send($usersWithRoles, new PhoneNumberVerificationCodeNotification($user, $code->verification_code));
+            Notification::send($usersWithRoles, new PhoneNumberPasswordResetNotification($user, $code->verification_code));
 
         } else {
             $user = User::where('email', $request->email)->firstOrFail();
