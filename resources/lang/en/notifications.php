@@ -11,8 +11,8 @@ return [
     ],
     'email_password_reset' => [
         'subject' => 'Reset Password Code',
-        'greeting' => 'Hello :name',
-        'line_1' => 'Here is your reset password code: :code',
+        'greeting' => 'Hello ',
+        'line_1' => 'Here is your reset password code: ',
         'line_2' => 'Please use this code to complete your operation.',
     ],
     'new_invoice_request' => [
@@ -23,18 +23,18 @@ return [
         'title' => 'You have a new wallet transaction',
         'body' => 'A new transaction has been added to your wallet. Please check your balance for more details.',
     ],
-    'phone_password_reset' => [
+    'phone_number_password_reset' => [
         'title' => 'Password reset code sent to your phone number',
         'body' => 'A reset code has been sent to your phone via SMS. Please use it to reset your password.',
     ],
     'phone_verification_code' => [
         'title' => 'Your phone verification code',
-        'body' => 'Your phone verification code is: :code',
+        'body' => 'Your phone verification code is: ',
     ],
     'email_verification_code' => [
         'title' => 'Email verification code',
-        'greeting' => 'Hello :name',
-        'line_1' => 'Here is your verification code: :code',
+        'greeting' => 'Hello ',
+        'line_1' => 'Here is your verification code:',
         'line_2' => 'Please use this code to complete your operation.',
     ],
     'merchant_documentation_accepted' => [

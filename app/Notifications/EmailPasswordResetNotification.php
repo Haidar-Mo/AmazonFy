@@ -32,8 +32,8 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
             ->mailer('smtp')
             // ->locale($locale)
             ->subject(trans('notifications.email_password_reset.subject', [], $locale))
-            ->greeting(trans('notifications.email_password_reset.greeting', ['name' => $this->user->first_name], $locale))
-            ->line(trans('notifications.email_password_reset.line_1', ['code' => $this->verificationCode], $locale))
+            ->greeting(trans('notifications.email_password_reset.greeting', $locale) . $this->user->name)
+            ->line(trans('notifications.email_password_reset.line_1', [], $locale) . $this->verificationCode)
             ->line(trans('notifications.email_password_reset.line_2', [], $locale));
     }
 

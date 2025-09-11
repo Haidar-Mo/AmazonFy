@@ -35,7 +35,7 @@ class MessagesController extends Controller
             Log::info('Message sent and broadcasted: ', ['message' => $message]);
 
 
-            $admins = User::role('admin', 'api')->get();
+            $admins = User::role(['admin','supervisor'], 'api')->get();
             Notification::send($admins, new NewMessageNotification($chat, $request->content));
 
             DB::commit();

@@ -26,7 +26,7 @@ class TransactionHistoriesController extends Controller
         $wallet = $user->wallet;
         $data = $this->transactionsFilters->applyFilters(TransactionHistory::query())
             ->where('wallet_id', $wallet->id)
-            ->get()->append('image_full_path');
+            ->latest()->get()->append('image_full_path');
 
         return $this->showResponse($data, 'messages.transactions.index_success');
     }
