@@ -137,13 +137,16 @@ return [
     'wallet' => [
         'show_success' => 'Wallet retrieved successfully',
 
-
         'charge_create' => 'Your request has been received and will be processed within 24 hours',
         'withdraw_create' => 'Your request has been received and will be processed within 24 hours',
 
         'errors' => [
             'show_error' => 'Error occurred while retrieving wallet',
+
+            'cancel_deny' => 'Unable to cancel this order',
+            'update_deny' => 'Unable to update this order status',
             'insufficient_funds' => 'You do not have enough balance',
+            'margin_insufficient_funds' => 'You do not have enough margin balance',
             'wrong_wallet_password' => 'The wallet password is incorrect',
             'wrong_wallet_password_not_found' => 'No wallet password has been set',
         ]
@@ -287,6 +290,8 @@ return [
             'index_error' => 'An error occurred while retrieving transactions',
             'handle_error' => 'An error occurred while handling the transaction',
             'create_error' => 'An error occurred while completing the transaction',
+
+            'update_deny' => 'Unable to process this transaction',
         ],
     ],
 

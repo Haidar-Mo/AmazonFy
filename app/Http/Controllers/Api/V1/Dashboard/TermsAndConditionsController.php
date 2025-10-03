@@ -41,6 +41,7 @@ class TermsAndConditionsController extends Controller
                 if (isset($data['content_en'])) {
                     $terms->translateOrNew('en')->content = $data['content_en'];
                 }
+                $terms->save();
             } else {
                 $terms = TermsAndConditions::create();
                 $terms->translations()->createMany([
@@ -53,6 +54,8 @@ class TermsAndConditionsController extends Controller
                         'content' => $data['content_ar']
                     ]
                 ]);
+                $terms->save();
+
             }
 
             return $this->showResponse($terms, 'terms.update_success');

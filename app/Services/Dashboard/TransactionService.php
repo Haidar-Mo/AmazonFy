@@ -6,6 +6,7 @@ use App\Models\TransactionHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class TransactionService.
@@ -34,8 +35,10 @@ class TransactionService
         ]);
         $transaction = TransactionHistory::findOrFail($id);
 
-        if ($transaction->status != 'pending')
-            throw new \Exception('هذه العاملة قد تمت معالجتها بالفعل', 400);
+        if ($transaction->status != 'pending') {
+            $message = Lang::get('messages.transactions.errors.update_deny');
+            throw new \Exception($message, 400);
+        }
         $wallet = $transaction->wallet()->first();
 
         return DB::transaction(function () use ($data, $wallet, $transaction) {
@@ -46,6 +49,10 @@ class TransactionService
                             $wallet->available_balance += $data['point'];
                             $wallet->save();
                         } elseif ($transaction->transaction_type === 'withdraw') {
+                            if ($wallet->available_balance < $data['point']) {
+                                $message = Lang::get('wallet.errors.insufficient_funds');
+                                throw new \Exception($message, 400);
+                            }
                             $wallet->total_balance -= $data['point'];
                             $wallet->available_balance -= $data['point'];
                             $wallet->save();

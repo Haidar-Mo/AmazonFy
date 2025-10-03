@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Notification;
+use Lang;
 
 
 /**
@@ -73,7 +74,7 @@ class OrderService
 
             $orders_data = $request->orders;
 
-            foreach ($orders_data as &$order) {
+            foreach ($orders_data as $order) {
                 $order['total_price'] = $order['selling_price'] * $order['count'];
             }
             unset($order);
@@ -85,8 +86,10 @@ class OrderService
     public function cancel(string $id)
     {
         $order = ShopOrder::findOrFail($id);
-        if (in_array($order->status, ['pending', 'delivered', 'canceled']))
-            throw new \Exception('can not cancel this order', 400);
+        if ($order->status != OrderStatus::CHECKING) {
+            $message = Lang::get('messages.wallet.errors.cancel_deny');
+            throw new \Exception($message, 400);
+        }
 
         $user = $order->shop()->first()
             ->user()->first();
@@ -103,9 +106,10 @@ class OrderService
     {
         $order = ShopOrder::findOrFail($id);
 
-        if (in_array($order->status, ['pending', 'delivered', 'canceled']))
-            throw new \Exception('can not process this order', 400);
-
+        if (in_array($order->status, [OrderStatus::PENDING, OrderStatus::DELIVERED, OrderStatus::CANCELED])) {
+            $message = Lang::get('messages.wallet.errors.update_deny');
+            throw new \Exception($message, 400);
+        }
         $merchant_wallet = $order->shop()->first()
             ->user()->first()
             ->wallet()->first();
@@ -129,11 +133,19 @@ class OrderService
     private function makeDelivered(ShopOrder $order, Wallet $wallet)
     {
         return DB::transaction(function () use ($order, $wallet) {
+            $cost = $order->wholesale_price * $order->count;
+            $revenue = $order->selling_price * $order->count;
+
+            if ($wallet->marginal_balance < $cost) {
+                $message = Lang::get('wallet.errors.margin_insufficient_funds');
+                throw new \Exception($message, 400);
+            }
+
             $order->update(['status' => OrderStatus::DELIVERED]);
             $wallet->update([
-                'marginal_balance' => $wallet->marginal_balance - ($order->wholesale_price * $order->count),
-                'available_balance' => $wallet->available_balance + ($order->selling_price * $order->count),
-                'total_balance' => $wallet->total_balance + ($order->selling_price * $order->count) - ($order->wholesale_price * $order->count),
+                'marginal_balance' => $wallet->marginal_balance - $cost,
+                'available_balance' => $wallet->available_balance + $revenue,
+                'total_balance' => $wallet->total_balance + $revenue - $cost,
             ]);
             return $order;
         });
@@ -142,12 +154,18 @@ class OrderService
     private function makeCancel(ShopOrder $order, Wallet $wallet)
     {
         return DB::transaction(function () use ($order, $wallet) {
+            $cost = $order->wholesale_price * $order->count;
+
+            if ($wallet->marginal_balance < $cost) {
+                $message = Lang::get('wallet.errors.margin_insufficient_funds');
+                throw new \Exception($message, 400);
+            }
+
             $order->update(['status' => OrderStatus::CANCELED]);
             $wallet->update([
-                'marginal_balance' => $wallet->marginal_balance - $order->wholesale_price * $order->count,
-                'available_balance' => $wallet->available_balance + $order->wholesale_price * $order->count,
+                'marginal_balance' => $wallet->marginal_balance - $cost,
+                'available_balance' => $wallet->available_balance + $cost,
             ]);
-
 
             return $order;
         });
