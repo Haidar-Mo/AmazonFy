@@ -30,6 +30,10 @@ class Wallet extends Model
         ];
     }
 
+    protected $appends = [
+        'shop_name'
+    ];
+
 
     public function user()
     {
@@ -43,5 +47,12 @@ class Wallet extends Model
     public function walletAddress(): HasMany
     {
         return $this->hasMany(WalletAddress::class);
+    }
+
+    //! Accessors
+    public function getShopNameAttribute()
+    {
+        return $this->user()->first()
+            ->shop()->first()->name;
     }
 }

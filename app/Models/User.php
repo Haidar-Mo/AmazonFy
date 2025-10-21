@@ -26,7 +26,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'password',
         'is_blocked',
-        'email_verified_at'
+        'email_verified_at',
+        'level'
     ];
 
     /**
@@ -54,7 +55,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-
 
     public function shop(): HasOne
     {

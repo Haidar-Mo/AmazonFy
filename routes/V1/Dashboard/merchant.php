@@ -36,6 +36,12 @@ route::prefix('merchants')
                 ->middleware('hasAnyPermission:update-merchant|all');
         });
 
+
+        Route::prefix('level')->group(function () {
+            Route::post('change/{id}/{decision}', [MerchantController::class, 'changeMerchantLevel'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+        });
+
         Route::prefix('shops')->group(function () {
 
             Route::get('index', [ShopController::class, 'index'])

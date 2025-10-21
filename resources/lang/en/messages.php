@@ -116,6 +116,7 @@ return [
             'delete_error' => 'An error occurred while deleting the merchant',
             'block_error' => 'An error occurred while blocking the user',
             'unblock_error' => 'An error occurred while unblocking the user',
+            'level_change' => 'An error occurred while changing the merchant level',
         ],
     ],
 

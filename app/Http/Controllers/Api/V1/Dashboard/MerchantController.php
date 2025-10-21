@@ -98,4 +98,14 @@ class MerchantController extends Controller
         }
     }
 
+    public function changeMerchantLevel(string $id, string $decision)
+    {
+        try {
+            $merchant = $this->service->changeMerchantLevel($id, $decision);
+            return $this->showResponse($merchant, 'merchants.level_changed');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'merchants.errors.level_change');
+        }
+    }
+
 }

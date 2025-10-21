@@ -76,10 +76,10 @@ class OrderService
 
             foreach ($orders_data as $order) {
                 $order['total_price'] = $order['selling_price'] * $order['count'];
+                $client->orders()->create($order);
             }
             unset($order);
 
-            $client->orders()->createMany($orders_data);
         });
     }
 

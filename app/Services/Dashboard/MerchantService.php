@@ -76,7 +76,7 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => true]);
-            Notification::send($merchant, new MerchantBlockStatusNotification($merchant,'blocked'));
+            Notification::send($merchant, new MerchantBlockStatusNotification($merchant, 'blocked'));
             return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
         });
     }
@@ -86,8 +86,32 @@ class MerchantService
         $merchant = User::role('merchant', 'api')->findOrFail($id);
         return DB::transaction(function () use ($merchant) {
             $merchant->update(['is_blocked' => false]);
-            Notification::send($merchant, new MerchantBlockStatusNotification($merchant,'unblocked'));
+            Notification::send($merchant, new MerchantBlockStatusNotification($merchant, 'unblocked'));
             return $merchant->makeVisible(['is_blocked'])->append(['is_blocked_text']);
+        });
+    }
+
+    public function changeMerchantLevel(string $id, string $decision)
+    {
+        $merchant = User::role('merchant', 'api')->findOrFail($id)
+            ->makeVisible(['is_blocked'])
+            ->append(['verification_code', 'shop_status', 'is_blocked_text']);
+
+        return DB::transaction(function () use ($merchant, $decision) {
+            $decision = strtolower($decision);
+            in_array($decision, ['increase', 'decrease']) ?: throw new \InvalidArgumentException('Invalid decision. Use "increase" or "decrease".');
+
+            /*             if ($merchant->level >= 5 && $decision === 'increase') {
+                            throw new \InvalidArgumentException('The user is already at the maximum level.');
+                        } */
+            if ($merchant->level <= 1 && $decision === 'decrease') {
+                throw new \InvalidArgumentException('The user is already at the minimum level.');
+            }
+
+            $decision === 'increase' ? $x = $merchant->level + 1 : $x = $merchant->level - 1;
+
+            $merchant->update(['level' => $x]);
+            return $merchant;
         });
     }
 }

@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Dashboard\ShopTypesController;
+use App\Http\Controllers\Api\V1\Dashboard\TermsAndConditionsController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1/')->group(function () {
+
+    Route::get('terms-and-conditions-show', [TermsAndConditionsController::class, 'show']);
 
     Route::prefix('dashboard')->group(function () {
         include __DIR__ . "/V1/Dashboard/auth.php";
