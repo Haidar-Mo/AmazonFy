@@ -31,6 +31,7 @@ class Wallet extends Model
     }
 
     protected $appends = [
+        'shop_id',
         'shop_name'
     ];
 
@@ -50,6 +51,11 @@ class Wallet extends Model
     }
 
     //! Accessors
+    public function getShopIdAttribute()
+    {
+        return $this->user()->first()
+            ->shop()->first()->id;
+    }
     public function getShopNameAttribute()
     {
         return $this->user()->first()

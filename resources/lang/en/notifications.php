@@ -61,4 +61,14 @@ return [
     'new_message' => [
         'title' => 'You have a new message'
     ],
+
+    'level_increase' => [
+        'title' => 'Congratulations! Your user level has been increased.',
+        'body' => 'You have been promoted to a higher user level. Enjoy the new benefits and features that come with it!',
+    ],
+
+    'level_decrease' => [
+        'title' => 'Sorry! Your user level has been decreased.',
+        'body' => 'You have been demoted to a lower user level. Please review your performance and improve it.',
+    ],
 ];

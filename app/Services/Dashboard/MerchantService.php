@@ -4,6 +4,7 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Notifications\MerchantBlockStatusNotification;
+use App\Notifications\UserLevelChangeNotification;
 use App\Traits\HasFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
@@ -108,7 +109,13 @@ class MerchantService
                 throw new \InvalidArgumentException('The user is already at the minimum level.');
             }
 
-            $decision === 'increase' ? $x = $merchant->level + 1 : $x = $merchant->level - 1;
+            if ($decision === 'increase') {
+                $x = $merchant->level + 1;
+                Notification::send($merchant, new UserLevelChangeNotification($merchant, 'increase'));
+            } else {
+                $x = $merchant->level - 1;
+                Notification::send($merchant, new UserLevelChangeNotification($merchant, 'decrease'));
+            }
 
             $merchant->update(['level' => $x]);
             return $merchant;

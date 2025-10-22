@@ -2,19 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
-use App\Traits\FirebaseNotificationTrait;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 abstract class BaseNotification extends Notification
 {
     use Queueable;
 
-    protected string $notType; //:[ user, shop, order, transaction, custom_notification , chat_message ]
+    protected string $notType; //:[ user, shop, order, transaction, custom_notification , chat_message , level_increase , level_decrease ]
     protected string $title;
     protected string $body;
     protected Model $model;

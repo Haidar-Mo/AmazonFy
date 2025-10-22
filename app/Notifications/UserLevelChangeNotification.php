@@ -6,19 +6,18 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewMerchantRegistrationNotification extends BaseNotification implements ShouldQueue
+class UserLevelChangeNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $merchant)
+    public function __construct(public User $merchant, public string $direction)
     {
-        $this->notType = 'user';
-        $this->model = $merchant;
-        $this->notification_name = "new_merchant_registration";
-
+        $this->notType = 'level_change';
+        $this->merchant = $merchant;
+        $this->notification_name = 'level_' . $direction;
     }
 
     /**
@@ -30,4 +29,5 @@ class NewMerchantRegistrationNotification extends BaseNotification implements Sh
     {
         return ['database'];
     }
+
 }
