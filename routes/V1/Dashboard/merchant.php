@@ -65,4 +65,11 @@ route::prefix('merchants')
             Route::post('deactivate/{id}', [ShopController::class, 'deactivateShop'])
                 ->middleware('hasAnyPermission:update-shop|all');
         });
+
+         Route::prefix('eligibility')->group(function () {
+            Route::post('visa/{id}', [MerchantController::class, 'toggleVisaEligibility'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+            Route::post('ticket/{id}', [MerchantController::class, 'toggleTicketEligibility'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+        }); 
     });

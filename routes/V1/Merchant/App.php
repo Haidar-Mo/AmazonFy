@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\V1\Merchant\OrdersController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 use App\Http\Controllers\Api\V1\Merchant\TransactionHistoriesController;
+use App\Http\Controllers\Api\V1\Merchant\VisaController;
+use App\Http\Controllers\Api\V1\Merchant\VisaRequestController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
 use App\Http\Controllers\Api\V1\ProductTypesController;
@@ -79,6 +81,10 @@ Route::middleware([
             return (auth()->user()->shop?->status == 'active') ? (object) ['is_documented' => true] : (object) ['is_documented' => false];
         });
 
+        Route::prefix('travel')->group(function () {
+            Route::apiResource('visas', VisaController::class);
+            Route::apiResource('visa-requests', VisaRequestController::class);
+        });
     });
 
 //: This is guest user index products

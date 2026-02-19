@@ -121,4 +121,33 @@ class MerchantService
             return $merchant;
         });
     }
+
+    public function toggleVisaEligibility(string $id)
+    {
+        $merchant = User::role('merchant', 'api')->findOrFail($id);
+
+        return DB::transaction(function () use ($merchant) {
+            if ($merchant->can_apply_visa) {
+                $merchant->update(['can_apply_visa' => 0]);
+            } else {
+                $merchant->update(['can_apply_visa' => 1]);
+            }
+
+            return $merchant;
+        });
+    }
+
+    public function toggleTicketEligibility(string $id)
+    {
+        $merchant = User::role('merchant', 'api')->findOrFail($id);
+        return DB::transaction(function () use ($merchant) {
+            if ($merchant->can_hold_ticket) {
+                $merchant->update(['can_hold_ticket' => 0]);
+            } else {
+                $merchant->update(['can_hold_ticket' => 1]);
+            }
+
+            return $merchant;
+        });
+    }
 }
