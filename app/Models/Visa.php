@@ -13,8 +13,6 @@ class Visa extends Model
 
 
     protected $fillable = [
-        'name',
-        'description',
         'duration',
         'price',
     ];
@@ -31,7 +29,6 @@ class Visa extends Model
     {
         return $this->hasMany(VisaRequest::class);
     }
-
 
 
 }

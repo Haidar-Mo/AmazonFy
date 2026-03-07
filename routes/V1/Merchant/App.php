@@ -2,12 +2,14 @@
 
 use App\Enums\TokenAbility;
 use App\Events\ExampleEvent;
+use App\Http\Controllers\Api\V1\Merchant\AirLineController;
 use App\Http\Controllers\Api\V1\Merchant\ChatsController;
 use App\Http\Controllers\Api\V1\Merchant\MessagesController;
 use App\Http\Controllers\Api\V1\Merchant\NotificationController;
 use App\Http\Controllers\Api\V1\Merchant\OrdersController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
+use App\Http\Controllers\Api\V1\Merchant\TicketController;
 use App\Http\Controllers\Api\V1\Merchant\TransactionHistoriesController;
 use App\Http\Controllers\Api\V1\Merchant\VisaController;
 use App\Http\Controllers\Api\V1\Merchant\VisaRequestController;
@@ -84,6 +86,9 @@ Route::middleware([
         Route::prefix('travel')->group(function () {
             Route::apiResource('visas', VisaController::class);
             Route::apiResource('visa-requests', VisaRequestController::class);
+
+            Route::apiResource('air-lines', AirLineController::class)->only(['index', 'show']);
+            Route::apiResource('tickets', TicketController::class);
         });
     });
 

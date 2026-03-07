@@ -4,7 +4,7 @@ namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVisaRequest extends FormRequest
+class VisaStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

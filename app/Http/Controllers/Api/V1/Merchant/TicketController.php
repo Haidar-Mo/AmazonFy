@@ -3,45 +3,45 @@
 namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Merchant\VisaRequestStoreRequest;
-use App\Http\Resources\VisaRequestResource;
-use App\Models\Visa;
-use App\Models\VisaRequest;
+use App\Http\Requests\Api\V1\Merchant\TicketReservationStoreRequest;
+use App\Http\Resources\TicketReservationResource;
+use App\Models\AirLine;
+use App\Models\TicketReservation;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use DB;
 use Illuminate\Http\Request;
 
-class VisaRequestController extends Controller
+class TicketController extends Controller
 {
     use ResponseTrait, HasFiles;
 
     public function index()
     {
-        $visas_requests = auth()->user()->visaRequest;
-        return $this->showResponse($visas_requests);
+        $ticket_reservations = auth()->user()->ticketReservations;
+        return $this->showResponse($ticket_reservations);
     }
 
     /**
      * Store the newly created resource in storage.
      */
-    public function store(VisaRequestStoreRequest $request)
+    public function store(TicketReservationStoreRequest $request)
     {
         $data = $request->validated();
         try {
             $response_data = DB::transaction(function () use ($data) {
 
-                $visa = Visa::with(['requiredFields'])
-                    ->findOrFail($data['visa_id']);
+                $airLine = AirLine::with(['requiredFields'])
+                    ->findOrFail($data['air_line_id']);
 
-                $request = VisaRequest::create([
-                    'visa_id' => $visa->id,
+                $reservation = TicketReservation::create([
+                    'air_line_id' => $airLine->id,
                     'user_id' => auth()->id(),
                     'status' => 'pending',
                 ]);
 
-                $required_field = $visa->requiredFields->where('is_file', false)->all();
-                $required_documents = $visa->requiredFields->where('is_file', true)->all();
+                $required_field = $airLine->requiredFields->where('is_file', false)->all();
+                $required_documents = $airLine->requiredFields->where('is_file', true)->all();
 
                 //: Validate Required Fields
                 foreach ($required_field as $field) {
@@ -54,8 +54,8 @@ class VisaRequestController extends Controller
                     }
 
                     if ($submitted) {
-                        $request->fields()->create([
-                            'visa_required_field_id' => $field->id,
+                        $reservation->fields()->create([
+                            'air_line_required_field_id' => $field->id,
                             'value' => $submitted['value'],
                         ]);
                     }
@@ -72,21 +72,20 @@ class VisaRequestController extends Controller
                     }
                     $path = null;
                     if ($submitted['file'] instanceof \Illuminate\Http\UploadedFile) {
-                        $path = $this->saveFile($submitted['file'], 'visa-documents');
+                        $path = $this->saveFile($submitted['file'], 'ticket-documents');
                     }
-                    $request->fields()->create([
-                        'visa_required_field_id' => $document->id,
+                    $reservation->fields()->create([
+                        'air_line_required_field_id' => $document->id,
                         'value' => $path,
                     ]);
                 }
 
-                return $request->load(['fields']);
+                return $reservation->load(['fields']);
             });
 
-            return $this->showResponse(new VisaRequestResource($response_data), 'visa.request.submission_success');
-            // return $this->showResponse($response_data, 'visa.request.submission_success');
+            return $this->showResponse(new TicketReservationResource($response_data), 'ticket.reservation.submission_success');
         } catch (\Exception $e) {
-            return $this->showError($e, 'visa.request.errors.submission_error');
+            return $this->showError($e, 'ticket.reservation.errors.submission_error');
         }
     }
 
@@ -96,28 +95,13 @@ class VisaRequestController extends Controller
     public function show(string $id)
     {
         try {
-            $visa_request = auth()->user()->visaRequest()
+            $ticket_reservation = auth()->user()->ticketReservations()
                 ->with(['fields'])
                 ->findOrFail($id);
-            return $this->showResponse(new VisaRequestResource($visa_request));
+            return $this->showResponse(new TicketReservationResource($ticket_reservation));
         } catch (\Exception $e) {
             return $this->showError($e);
         }
     }
 
-    //DO:?  create a postman API  => How to return mony to the merchant ??
-
-    /* public function destroy(string $id)
-    {
-        try {
-            $visa_request = auth()->user()->visaRequest()
-                ->where('status', 'pending')
-                ->where('id', $id)
-                ->firstOrFail();
-            $visa_request->delete();
-            return $this->showMessage('visa.request.delete_success');
-        } catch (\Exception $e) {
-            return $this->showError($e, 'visa.request.errors.delete_error');
-        }
-    } */
 }

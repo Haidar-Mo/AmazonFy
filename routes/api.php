@@ -12,6 +12,7 @@ Route::prefix('v1/')->group(function () {
     Route::prefix('dashboard')->group(function () {
         include __DIR__ . "/V1/Dashboard/address.php";
         include __DIR__ . "/V1/Dashboard/administration.php";
+        include __DIR__ . "/V1/Dashboard/air_line.php";
         include __DIR__ . "/V1/Dashboard/auth.php";
         include __DIR__ . "/V1/Dashboard/chat.php";
         include __DIR__ . "/V1/Dashboard/code.php";

@@ -49,8 +49,7 @@ class VisaService
         return DB::transaction(function () use ($visa, $data) {
 
             $visa->update([
-                /*   'name' => $data['name'] ?? $visa->name,
-                  'description' => $data['description'] ?? $visa->description, */
+
                 'price' => $data['price'] ?? $visa->price,
                 'duration' => $data['duration'] ?? $visa->duration
             ]);

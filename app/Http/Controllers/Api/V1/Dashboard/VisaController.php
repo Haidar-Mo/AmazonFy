@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\StoreVisaRequest;
-use App\Http\Requests\Dashboard\UpdateVisaRequest;
+use App\Http\Requests\Dashboard\VisaStoreRequest;
+use App\Http\Requests\Dashboard\VisaUpdateRequest;
 use App\Http\Resources\VisaResource;
 use App\Models\Visa;
 use App\Services\Dashboard\VisaService;
@@ -30,7 +30,7 @@ class VisaController extends Controller
     }
 
 
-    public function store(StoreVisaRequest $request)
+    public function store(VisaStoreRequest $request)
     {
         $visa = $this->visaService->create($request->validated());
 
@@ -46,7 +46,7 @@ class VisaController extends Controller
     }
 
 
-    public function update(UpdateVisaRequest $request, Visa $visa)
+    public function update(VisaUpdateRequest $request, Visa $visa)
     {
         $visa = $this->visaService->update($visa, $request->validated());
 

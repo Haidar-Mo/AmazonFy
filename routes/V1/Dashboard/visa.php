@@ -18,6 +18,13 @@ Route::apiResource('visa-requests', VisaRequestController::class)->except(['upda
         'ability:' . TokenAbility::ACCESS_API->value,
         'role:admin|supervisor',
     ]);
+
+Route::middleware([
+    'auth:sanctum',
+    'ability:' . TokenAbility::ACCESS_API->value,
+    'role:admin|supervisor',
+])->get('index-visa-requests', [VisaRequestController::class, 'index']);
+
 Route::middleware([
     'auth:sanctum',
     'ability:' . TokenAbility::ACCESS_API->value,
