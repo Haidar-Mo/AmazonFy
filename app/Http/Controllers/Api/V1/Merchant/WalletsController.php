@@ -123,10 +123,10 @@ class WalletsController extends Controller
         $hashedPassword = Auth::user()->wallet->wallet_password;
 
         if (!$hashedPassword) {
-            return $this->showMessage('wrong_wallet_password_not_found', [], 400);
+            return $this->showMessage('wrong_wallet_password_not_found', [], 400,false);
         }
         if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
-            return $this->showMessage('wrong_wallet_password', [], 422);
+            return $this->showMessage('wrong_wallet_password', [], 422,false);
         }
 
         return DB::transaction(function () use ($request) {

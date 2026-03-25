@@ -26,6 +26,8 @@ class VisaStoreRequest extends FormRequest
             'name_ar' => 'required|string|max:255',
             'description_en' => 'nullable|string',
             'description_ar' => 'nullable|string',
+            'destination_en' => 'required|string|max:255',
+            'destination_ar' => 'required|string|max:255',
             'duration' => 'required|numeric',
             'price' => 'required|numeric|min:0',
 

@@ -11,6 +11,7 @@ class VisaTranslation extends Model
         'locale',
         'name',
         'description',
+        'destination',
     ];
 
     public $timestamps = false;

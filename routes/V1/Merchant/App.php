@@ -89,6 +89,10 @@ Route::middleware([
 
             Route::apiResource('air-lines', AirLineController::class)->only(['index', 'show']);
             Route::apiResource('tickets', TicketController::class);
+
+            Route::get('new/tickets/index', [TicketController::class, 'index']);
+            Route::get('new/tickets/show/{id}', [TicketController::class, 'show']);
+            Route::post('new/tickets/create', [TicketController::class, 'store']);
         });
     });
 

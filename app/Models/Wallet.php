@@ -54,11 +54,11 @@ class Wallet extends Model
     public function getShopIdAttribute()
     {
         return $this->user()->first()
-            ->shop()->first()->id;
+            ->shop?->id;
     }
     public function getShopNameAttribute()
     {
         return $this->user()->first()
-            ->shop()->first()->name;
+            ->shop?->name;
     }
 }

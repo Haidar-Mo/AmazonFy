@@ -18,6 +18,7 @@ class VisaResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'destination' => $this->destination,
             'duration' => $this->duration,
             'price' => $this->price,
             'fields' => $this->requiredFields ?

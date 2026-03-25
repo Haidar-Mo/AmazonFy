@@ -102,9 +102,9 @@ class MerchantService
             $decision = strtolower($decision);
             in_array($decision, ['increase', 'decrease']) ?: throw new \InvalidArgumentException('Invalid decision. Use "increase" or "decrease".');
 
-            /*             if ($merchant->level >= 5 && $decision === 'increase') {
-                            throw new \InvalidArgumentException('The user is already at the maximum level.');
-                        } */
+            if ($merchant->level >= 7 && $decision === 'increase') {
+                throw new \InvalidArgumentException('The user is already at the maximum level.');
+            }
             if ($merchant->level <= 1 && $decision === 'decrease') {
                 throw new \InvalidArgumentException('The user is already at the minimum level.');
             }

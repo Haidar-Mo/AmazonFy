@@ -17,7 +17,7 @@ class Visa extends Model
         'price',
     ];
 
-    public $translatedAttributes = ['name', 'description'];
+    public $translatedAttributes = ['name', 'description','destination'];
 
 
     public function requiredFields()

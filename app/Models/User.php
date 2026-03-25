@@ -46,6 +46,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // protected $guard_name = 'api';
 
+    protected $appends = [
+        'level_text',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -114,5 +118,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getVerificationCodeAttribute()
     {
         return $this->verificationCode()->first()?->verification_code;
+    }
+
+    public function getLevelTextAttribute()
+    {
+        return match ($this->level) {
+            1 => __('texts.user.level.one'),
+            2 => __('texts.user.level.two'),
+            3 => __('texts.user.level.three'),
+            4 => __('texts.user.level.vip1'),
+            5 => __('texts.user.level.vip2'),
+            6 => __('texts.user.level.vip3'),
+            7 => __('texts.user.level.ultimate'),
+            default => null,
+        };
     }
 }

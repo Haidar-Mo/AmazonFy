@@ -19,6 +19,8 @@ class VisaRequest extends Model
 
     protected $appends = [
         'visa_name',
+        'visa_price',
+        'visa_duration',
         'user_name',
     ];
 
@@ -47,6 +49,16 @@ class VisaRequest extends Model
     public function getVisaNameAttribute()
     {
         return $this->visa?->name;
+    }
+   
+    public function getVisaPriceAttribute()
+    {
+        return $this->visa?->price;
+    }
+   
+    public function getVisaDurationAttribute()
+    {
+        return $this->visa?->duration;
     }
 
     public function getUserNameAttribute()

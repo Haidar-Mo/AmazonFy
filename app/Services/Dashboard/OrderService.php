@@ -86,8 +86,8 @@ class OrderService
     public function cancel(string $id)
     {
         $order = ShopOrder::findOrFail($id);
-        if ($order->status != OrderStatus::CHECKING) {
-            $message = Lang::get('messages.wallet.errors.cancel_deny');
+        if ($order->status != OrderStatus::CHECKING->value) {
+            $message = __('messages.wallet.errors.cancel_deny');
             throw new \Exception($message, 400);
         }
 
@@ -96,7 +96,7 @@ class OrderService
 
         $merchant_wallet = $user->wallet()->first();
 
-        $order = $this->makeCancel($order, $merchant_wallet);
+        $order = $this->makeCancel($order, wallet: $merchant_wallet);
         Notification::send($user, notification: new OrderCanceledNotification($order));
         return $order;
     }
@@ -106,8 +106,8 @@ class OrderService
     {
         $order = ShopOrder::findOrFail($id);
 
-        if (in_array($order->status, [OrderStatus::PENDING, OrderStatus::DELIVERED, OrderStatus::CANCELED])) {
-            $message = Lang::get('messages.wallet.errors.update_deny');
+        if (in_array($order->status, [OrderStatus::PENDING->value, OrderStatus::DELIVERED->value, OrderStatus::CANCELED->value])) {
+            $message = __('messages.wallet.errors.update_deny');
             throw new \Exception($message, 400);
         }
         $merchant_wallet = $order->shop()->first()
@@ -124,7 +124,7 @@ class OrderService
     private function makePreparing(ShopOrder $order)
     {
         return DB::transaction(function () use ($order) {
-            $order->update(['status' => OrderStatus::PREPARING]);
+            $order->update(['status' => OrderStatus::PREPARING->value]);
             return $order;
 
         });
@@ -137,11 +137,11 @@ class OrderService
             $revenue = $order->selling_price * $order->count;
 
             if ($wallet->marginal_balance < $cost) {
-                $message = Lang::get('wallet.errors.margin_insufficient_funds');
+                $message =__('wallet.errors.margin_insufficient_funds');
                 throw new \Exception($message, 400);
             }
 
-            $order->update(['status' => OrderStatus::DELIVERED]);
+            $order->update(['status' => OrderStatus::DELIVERED->value]);
             $wallet->update([
                 'marginal_balance' => $wallet->marginal_balance - $cost,
                 'available_balance' => $wallet->available_balance + $revenue,
@@ -157,11 +157,11 @@ class OrderService
             $cost = $order->wholesale_price * $order->count;
 
             if ($wallet->marginal_balance < $cost) {
-                $message = Lang::get('wallet.errors.margin_insufficient_funds');
+                $message = __('wallet.errors.margin_insufficient_funds');
                 throw new \Exception($message, 400);
             }
 
-            $order->update(['status' => OrderStatus::CANCELED]);
+            $order->update(['status' => OrderStatus::CANCELED->value]);
             $wallet->update([
                 'marginal_balance' => $wallet->marginal_balance - $cost,
                 'available_balance' => $wallet->available_balance + $cost,
