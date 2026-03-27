@@ -11,13 +11,7 @@ class Visa extends Model
     /** @use HasFactory<\Database\Factories\VisaFactory> */
     use HasFactory, Translatable;
 
-
-    protected $fillable = [
-        'duration',
-        'price',
-    ];
-
-    public $translatedAttributes = ['name', 'description','destination'];
+    public $translatedAttributes = ['name', 'description'];
 
 
     public function requiredFields()

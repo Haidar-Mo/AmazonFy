@@ -14,7 +14,6 @@ class VisaRequiredField extends Model
         'visa_id',
         'key',
         'type',
-        'is_file',
         'is_required',
     ];
 

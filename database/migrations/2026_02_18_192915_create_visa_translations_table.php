@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->string('locale');
             $table->string('name');
             $table->text('description');
-            $table->string('destination');
             
             $table->timestamps();
         });

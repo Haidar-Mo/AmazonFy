@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->foreignId('visa_id')->constrained('visas')->cascadeOnDelete();
             $table->string('key');
             $table->string('type');
-            $table->boolean('is_file')->default(0);
             $table->boolean('is_required')->default(1);
             $table->timestamps();
         });

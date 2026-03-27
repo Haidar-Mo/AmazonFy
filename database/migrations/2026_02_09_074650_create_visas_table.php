@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('visas', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 8, 2);
-            $table->integer('duration'); //: Duration in months
             $table->timestamps();
         });
     }

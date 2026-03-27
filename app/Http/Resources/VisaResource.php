@@ -18,19 +18,16 @@ class VisaResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'destination' => $this->destination,
-            'duration' => $this->duration,
-            'price' => $this->price,
-            'fields' => $this->requiredFields ?
-                collect($this->requiredFields)
-                    ->where('is_file', false)
-                    ->all() : null,
-            'documents' => $this->requiredFields ?
-                collect($this->requiredFields)
-                    ->where('is_file', true)
-                    ->all()
-                : null,
-
+            'fields' => VisaRequiredFieldResource::collection(
+                $this->whenLoaded('requiredFields', function ($field) {
+                    return $field->where('type', '!=', 'file');
+                })
+            ),
+            'documents' => VisaRequiredFieldResource::collection(
+                $this->whenLoaded('requiredFields', function ($field) {
+                    return $field->where('type', 'file');
+                })
+            ),
             'created_at' => $this->created_at,
         ];
     }
