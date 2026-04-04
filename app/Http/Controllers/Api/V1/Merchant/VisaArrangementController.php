@@ -3,29 +3,33 @@
 namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Merchant\VisaRequestStoreRequest;
-use App\Http\Resources\VisaRequestResource;
+use App\Http\Requests\Api\V1\Merchant\VisaArrangementStoreRequest;
+use App\Http\Resources\VisaArrangementResource;
 use App\Models\Visa;
-use App\Models\VisaRequest;
+use App\Models\VisaArrangement;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use DB;
 use Illuminate\Http\Request;
 
-class VisaRequestController extends Controller
+class VisaArrangementController extends Controller
 {
-    use ResponseTrait, HasFiles;
+    use ResponseTrait;
+    use HasFiles;
+
 
     public function index()
     {
-        $visas_requests = auth()->user()->visaRequest;
+        $visas_requests = auth()->user()->visaArrangements;
         return $this->showResponse($visas_requests);
     }
 
     /**
-     * Store the newly created resource in storage.
+     * Send an Visa Arrangement Request for a specific Visa Request.
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(VisaRequestStoreRequest $request)
+    public function store(VisaArrangementStoreRequest $request)
     {
         $data = $request->validated();
         try {
@@ -34,7 +38,7 @@ class VisaRequestController extends Controller
                 $visa = Visa::with(['requiredFields'])
                     ->findOrFail($data['visa_id']);
 
-                $request = VisaRequest::create([
+                $request = VisaArrangement::create([
                     'visa_id' => $visa->id,
                     'user_id' => auth()->id(),
                     'status' => 'pending',
@@ -72,7 +76,7 @@ class VisaRequestController extends Controller
                     }
                     $path = null;
                     if ($submitted['file'] instanceof \Illuminate\Http\UploadedFile) {
-                        $path = $this->saveFile($submitted['file'], 'visa-documents');
+                        $path = $this->saveFile($submitted['file'], 'visa-arrangement');
                     }
                     $request->fields()->create([
                         'visa_required_field_id' => $document->id,
@@ -83,41 +87,23 @@ class VisaRequestController extends Controller
                 return $request->load(['fields']);
             });
 
-            return $this->showResponse(new VisaRequestResource($response_data), 'visa.request.submission_success');
-            // return $this->showResponse($response_data, 'visa.request.submission_success');
+            return $this->showResponse(new VisaArrangementResource($response_data));
         } catch (\Exception $e) {
             return $this->showError($e, 'visa.request.errors.submission_error');
         }
     }
 
-    /**
-     * Display the resource.
-     */
+
     public function show(string $id)
     {
         try {
-            $visa_request = auth()->user()->visaRequest()
+            $visa_request = auth()->user()->visaArrangements()
                 ->with(['fields'])
                 ->findOrFail($id);
-            return $this->showResponse(new VisaRequestResource($visa_request));
+            return $this->showResponse(new VisaArrangementResource($visa_request));
         } catch (\Exception $e) {
             return $this->showError($e);
         }
     }
 
-    //DO:?  create a postman API  => How to return mony to the merchant ??
-
-    /* public function destroy(string $id)
-    {
-        try {
-            $visa_request = auth()->user()->visaRequest()
-                ->where('status', 'pending')
-                ->where('id', $id)
-                ->firstOrFail();
-            $visa_request->delete();
-            return $this->showMessage('visa.request.delete_success');
-        } catch (\Exception $e) {
-            return $this->showError($e, 'visa.request.errors.delete_error');
-        }
-    } */
 }

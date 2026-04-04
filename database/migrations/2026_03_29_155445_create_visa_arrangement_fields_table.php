@@ -10,10 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('visas', function (Blueprint $table) {
+        Schema::create('visa_arrangement_fields', function (Blueprint $table) {
             $table->id();
-            $table->integer('duration');
-            $table->decimal('price');
+            $table->foreignId('visa_arrangement_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('visa_required_field_id')->constrained()->cascadeOnDelete();
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('visas');
+        Schema::dropIfExists('visa_arrangement_fields');
     }
 };

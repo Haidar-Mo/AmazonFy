@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Services\Dashboard\VisaRequestService;
+use App\Services\Dashboard\VisaArrangementService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 
-class VisaRequestController extends Controller
+class VisaArrangementController extends Controller
 {
+
     use ResponseTrait;
 
-    public function __construct(protected VisaRequestService $service)
+    public function __construct(protected VisaArrangementService $service)
     {
     }
 
@@ -35,28 +36,24 @@ class VisaRequestController extends Controller
         }
     }
 
-    public function delete(string $id)
+
+    public function accept(string $id)
     {
         try {
-            $this->service->delete($id);
-            return $this->showMessage('visa.request.delete-success');
+            $data = $this->service->accept($id);
+            return $this->showResponse($data);
         } catch (\Exception $e) {
-            return $this->showError($e, 'visa.request.delete-error');
+            return $this->showError($e);
         }
+
     }
-
-    public function updateStatus(string $id, Request $request)
+    public function reject(string $id)
     {
-
         try {
-            $request->validate([
-                'status' => 'required|string|in:accepted,rejected',
-            ]);
-
-            $data = $this->service->changeStatus($id, $request);
-            return $this->showResponse($data, 'visa.request.status-success');
+            $data = $this->service->reject($id);
+            return $this->showResponse($data);
         } catch (\Exception $e) {
-            return $this->showError($e, 'visa.request.status-error');
+            return $this->showError($e);
         }
     }
 }

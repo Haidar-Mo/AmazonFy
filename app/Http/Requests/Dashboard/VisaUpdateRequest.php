@@ -26,6 +26,11 @@ class VisaUpdateRequest extends FormRequest
             'name_ar' => 'sometimes|string|max:255',
             'description_en' => 'nullable|string',
             'description_ar' => 'nullable|string',
+            'destination_en' => 'nullable|string',
+            'destination_ar' => 'nullable|string',
+            
+            'price' => 'sometimes|numeric|min:0',
+            'duration' => 'sometimes|integer|min:1',
 
             'required_fields' => 'array',
             'required_fields.*.id' => 'sometimes|exists:visa_required_fields,id',

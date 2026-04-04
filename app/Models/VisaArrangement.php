@@ -2,29 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VisaRequest extends Model
+class VisaArrangement extends Model
 {
-    /** @use HasFactory<\Database\Factories\VisaRequestFactory> */
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'visa_id',
         'status',
-        'notes',
+        'cover_letter',
+        'pdf_path'
     ];
 
     protected $appends = [
         'visa_name',
         'user_name',
-    ];
-
-    protected $hidden = [
-        'visa',
-        'user',
     ];
 
     public function user()
@@ -39,7 +31,7 @@ class VisaRequest extends Model
 
     public function fields()
     {
-        return $this->hasMany(VisaRequestField::class);
+        return $this->hasMany(VisaArrangementField::class);
     }
 
     //!Accessors
@@ -54,8 +46,15 @@ class VisaRequest extends Model
         return $this->user?->name;
     }
 
+    public function getCoverLetterContentAttribute()
+    {
+        return $this->coverLetter?->content;
+    }
+
     public function getShopNameAttribute()
     {
         return $this->user->shop?->name;
     }
+
+
 }

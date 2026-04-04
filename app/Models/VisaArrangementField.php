@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VisaRequestField extends Model
+class VisaArrangementField extends Model
 {
-    /** @use HasFactory<\Database\Factories\VisaRequestFieldFactory> */
-    use HasFactory;
-
     protected $fillable = [
-        'visa_request_id',
+        'visa_arrangement_id',
         'visa_required_field_id',
         'value',
     ];
@@ -26,9 +22,9 @@ class VisaRequestField extends Model
         'visaRequiredField',
     ];
 
-    public function visaRequest()
+    public function visaArrangement()
     {
-        return $this->belongsTo(VisaRequest::class);
+        return $this->belongsTo(VisaArrangement::class);
     }
 
     public function visaRequiredField()

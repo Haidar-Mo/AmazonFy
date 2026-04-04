@@ -6,8 +6,8 @@ if (php_sapi_name() !== 'cli' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
     die('Access denied');
 }
 
-require __DIR__.'/vendor/autoload.php';
-$app = require_once __DIR__.'/bootstrap/app.php';
+require __DIR__ . '/vendor/autoload.php';
+$app = require_once __DIR__ . '/bootstrap/app.php';
 
 // CORRECTED KERNEL CLASS
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
@@ -17,19 +17,25 @@ $endTime = time() + $maxTime;
 
 while (time() < $endTime) {
     // Process one job
-    $kernel->call('queue:work', [
+    $exitCode = $kernel->call('queue:work', [
         '--once' => true,
         '--queue' => 'default',
         '--tries' => 3,
         '--timeout' => 30,
     ]);
 
+    //: Log if the command itself failed
+    if ($exitCode !== 0) {
+        file_put_contents(__DIR__ . '/queue-processor.log', "Job failed at " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
+    }
+
     // Exit early if queue is empty
-    if (app('queue')->size('default') === 0) break;
+    if (app('queue')->size('default') === 0)
+        break;
 
     sleep(1); // Reduce CPU load
 }
 
 // Optional logging
-$duration = time() - ($endTime - $maxTime);
-file_put_contents(__DIR__.'/queue-processor.log', "Processed for {$duration}s\n", FILE_APPEND);
+/* $duration = time() - ($endTime - $maxTime);
+file_put_contents(__DIR__ . '/queue-processor.log', "Processed for {$duration}s\n", FILE_APPEND); */

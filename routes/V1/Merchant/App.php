@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
 use App\Http\Controllers\Api\V1\Merchant\TicketController;
 use App\Http\Controllers\Api\V1\Merchant\TransactionHistoriesController;
+use App\Http\Controllers\Api\V1\Merchant\VisaArrangementController;
 use App\Http\Controllers\Api\V1\Merchant\VisaController;
 use App\Http\Controllers\Api\V1\Merchant\VisaRequestController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
@@ -86,6 +87,12 @@ Route::middleware([
         Route::prefix('travel')->group(function () {
             Route::apiResource('visas', VisaController::class);
             Route::apiResource('visa-requests', VisaRequestController::class);
+
+            Route::prefix('visa-arrangement')->group(function () {
+                Route::get('index', [VisaArrangementController::class, 'index']);
+                Route::get('show/{id}', [VisaArrangementController::class, 'show']);
+                Route::post('create', [VisaArrangementController::class, 'store']);
+            });
 
             Route::apiResource('air-lines', AirLineController::class)->only(['index', 'show']);
             Route::apiResource('tickets', TicketController::class);

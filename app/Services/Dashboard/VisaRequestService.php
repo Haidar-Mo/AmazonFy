@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Http\Resources\VisaRequestResource;
 use App\Models\VisaRequest;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,7 @@ class VisaRequestService
     public function list()
     {
         $list = VisaRequest::with(['user', 'visa'])
+            ->orderBy('created_at', 'desc')
             ->get()
             ->append(['shop_name']);
         return $list;
@@ -33,14 +35,15 @@ class VisaRequestService
         VisaRequest::findOrFail($id)->delete();
     }
 
-
     public function changeStatus(string $id, Request $request)
     {
         $status = $request->input('status');
-        in_array($status, ['accepted', 'rejected']) ?? throw new \Exception("Invalid status", 400);
-        $visa_request = VisaRequest::with(['user', 'visa'])
+        if (!in_array($status, ['accepted', 'rejected']))
+            throw new \Exception("Invalid inserted status", 400);
+
+        $visa_request = VisaRequest::with(['user', 'visa', 'fields'])
             ->findOrFail($id)
-            ->append(['shop_name']);
+            ->makeVisible(['user', 'visa']);
 
         $visa_request->update(['status' => $status]);
         return $visa_request;

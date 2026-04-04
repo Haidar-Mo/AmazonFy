@@ -21,18 +21,25 @@ class VisaService
     {
         return DB::transaction(function () use ($data) {
 
-            $visa = Visa::create();
+            $visa = Visa::create(
+                [
+                    'price' => $data['price'],
+                    'duration' => $data['duration'],
+                ]
+            );
 
             $visa->translations()->create([
                 'locale' => 'ar',
                 'name' => $data['name_ar'],
                 'description' => $data['description_ar'] ?? null,
+                'destination' => $data['destination_ar'] ?? null,
             ]);
 
             $visa->translations()->create([
                 'locale' => 'en',
                 'name' => $data['name_en'],
                 'description' => $data['description_en'] ?? null,
+                'destination' => $data['destination_en'] ?? null,
             ]);
 
             $this->syncRequiredFields($visa, $data['required_fields'] ?? []);
@@ -45,11 +52,17 @@ class VisaService
     {
         return DB::transaction(function () use ($visa, $data) {
 
+            $visa->update([
+                'price' => $data['price'] ?? $visa->price,
+                'duration' => $data['duration'] ?? $visa->duration,
+            ]);
             isset($data['name_en']) ?? $visa->translateOrNew('en')->name = $data['name_en'];
             isset($data['description_en']) ?? $visa->translateOrNew('en')->name = $data['description_en'];
+            isset($data['destination_en']) ?? $visa->translateOrNew('en')->name = $data['destination_en'];
 
             isset($data['name_ar']) ?? $visa->translateOrNew('ar')->name = $data['name_ar'];
             isset($data['description_ar']) ?? $visa->translateOrNew('ar')->name = $data['description_ar'];
+            isset($data['destination_ar']) ?? $visa->translateOrNew('ar')->name = $data['destination_ar'];
 
             if (isset($data['required_fields'])) {
                 $this->syncRequiredFields($visa, $data['required_fields']);

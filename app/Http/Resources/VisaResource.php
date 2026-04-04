@@ -17,6 +17,8 @@ class VisaResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'price' => $this->price,
+            'destination' => $this->destination,
             'description' => $this->description,
             'fields' => VisaRequiredFieldResource::collection(
                 $this->whenLoaded('requiredFields', function ($field) {

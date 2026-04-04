@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class VisaRequestResource extends JsonResource
+class VisaArrangementResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,6 +20,8 @@ class VisaRequestResource extends JsonResource
             'visa_id' => $this->visa_id,
             'user_id' => $this->user_id,
             'status' => $this->status,
+            'cover_letter' => $this->cover_letter,
+            'pdf_path' => $this->pdf_path,
             "visa_name" => $this->visa_name,
             "user_name" => $this->user_name,
             "fields" => $this->fields ?
