@@ -23,13 +23,15 @@ abstract class BaseNotification extends Notification
                 'notification_type' => $this->notType,
                 'title' => $this->title ?? $this->translate('title', 'en'),
                 'body' => $this->body ?? $this->translate('body', 'en'),
-                'model_id' => $this->model->id ?? null
+                'model_id' => $this->model->id ?? null,
+                'model_type' => class_basename($this->model)
             ],
             'ar' => [
                 'notification_type' => $this->notType,
                 'title' => $this->title ?? $this->translate('title', 'ar'),
                 'body' => $this->body ?? $this->translate('body', 'ar'),
-                'model_id' => $this->model->id ?? null
+                'model_id' => $this->model->id ?? null,
+                'model_type' => class_basename($this->model)
             ]
         ];
     }

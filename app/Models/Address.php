@@ -13,7 +13,8 @@ class Address extends Model
     public $fillable = [
         'network_name',
         'target',
-        'qr_image'
+        'qr_image',
+        'type', //: store - visa
     ];
 
     protected $appends = [

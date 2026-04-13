@@ -19,7 +19,7 @@ class TransactionService
         return TransactionHistory::where('status', '=', 'pending')
             ->latest()
             ->get()
-            ->append(['user_name', 'user_phone_number', 'image_full_path']);
+            ->append(['shop_id', 'user_id', 'user_name', 'user_phone_number', 'image_full_path']);
     }
 
     public function show(string $id)

@@ -24,7 +24,7 @@ return [
         'body' => 'A new transaction has been added to your wallet. Please check your balance for more details.',
     ],
     'phone_number_password_reset' => [
-        'title' => 'Password reset code sent to your phone number',
+        'title' => 'Password reset code sent to your phone number for user: ',
         'body' => 'A reset code has been sent to your phone via SMS. Please use it to reset your password.',
     ],
     'phone_verification_code' => [
