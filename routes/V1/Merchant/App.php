@@ -39,7 +39,8 @@ Route::middleware([
 
         Route::get('wallet', [WalletsController::class, 'show']);
         Route::get('wallet/transactionHistory', [TransactionHistoriesController::class, 'index']);
-        Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllAdminAddresses']);
+        Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllStoreAddresses']);
+        Route::get('wallet/admin/addresses-visa', [WalletsController::class, 'indexAllVisaAddresses']);
         Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
 
         Route::middleware('user_must_not_be_blocked')->group(function () {

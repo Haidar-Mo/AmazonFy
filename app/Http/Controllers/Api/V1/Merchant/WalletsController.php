@@ -154,4 +154,20 @@ class WalletsController extends Controller
             return $this->showError($e, 'address.index_error');
         }
     }
+    public function indexAllStoreAddresses()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'store')->get());
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error');
+        }
+    }
+    public function indexAllVisaAddresses()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'visa')->get());
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error');
+        }
+    }
 }
