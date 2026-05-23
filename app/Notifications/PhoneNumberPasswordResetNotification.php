@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PhoneNumberPasswordResetNotification extends BaseNotification
+class PhoneNumberPasswordResetNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 

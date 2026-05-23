@@ -8,8 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NewMerchantRegistrationNotification extends BaseNotification implements ShouldQueue
 {
-    //Do: I removed the "implements ShouldQueue" because I want to send this notification immediately without queuing it
-    //: This is because there is a problem in queueing the email.
+
     use Queueable;
 
     /**

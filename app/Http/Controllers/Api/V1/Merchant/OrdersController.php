@@ -83,8 +83,9 @@ class OrdersController extends Controller
             if ($shop->user_id != $request->user()->id || $shopOrder->shop_id != $shop->id || $shopOrder->status != 'pending') {
                 throw new AuthorizationException();
             }
+
             if ($request->accepted) {
-                $wallet = Auth::user()->wallet;
+                $wallet = Auth::user()->wallet()->lockForUpdate()->first();
                 $cost = $shopOrder->wholesale_price * $shopOrder->count;
 
                 if ($wallet->available_balance < $cost) {
@@ -93,7 +94,9 @@ class OrdersController extends Controller
                 $wallet->available_balance -= $cost;
                 $wallet->marginal_balance += $cost;
                 $wallet->save();
+
                 $shopOrder->update(['status' => 'checking']);
+
                 $notifiable = User::role(['admin', 'supervisor'], 'api')->get();
                 Notification::send($notifiable, new NewOrderNotification($shopOrder));
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Dashboard\ShopTypesController;
 use App\Http\Controllers\Api\V1\Dashboard\TermsAndConditionsController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 
@@ -39,4 +40,17 @@ Route::prefix('v1/')->group(function () {
     Route::prefix('clients')->group(function () {
         include __DIR__ . '/V1/Client/App.php';
     });
+
+
+    Route::post('xx', function () {
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->update([
+                'email' => str_replace('@', '#', $user->email)
+
+            ]);
+        }
+        return 'All done';
+    });
+
 });

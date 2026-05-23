@@ -45,3 +45,14 @@ Route::middleware([
         Route::post('accept/{id}', [VisaArrangementController::class, 'accept']);
         Route::post('reject/{id}', [VisaArrangementController::class, 'reject']);
     });
+
+Route::middleware([
+    'auth:sanctum',
+    'ability:' . TokenAbility::ACCESS_API->value,
+    'role:admin|supervisor',
+])->prefix('cover-letters')
+    ->group(function () {
+        Route::get('index', function () {
+           return App\Models\CoverLetter::with('visa')->get();
+        });
+    });

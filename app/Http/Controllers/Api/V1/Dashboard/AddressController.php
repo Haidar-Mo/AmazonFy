@@ -8,6 +8,7 @@ use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends Controller
@@ -44,7 +45,13 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'network_name' => 'string|required|unique:addresses,network_name',
+            'network_name' => [
+                'required',
+                'string',
+                Rule::unique('addresses')->where(function ($query) use ($request) {
+                    return $query->where('type', $request->type);
+                })
+            ],
             'target' => 'required|string',
             'qr_image' => 'required|image',
             'type' => 'required|string'
@@ -69,7 +76,12 @@ class AddressController extends Controller
             $address = Address::findOrFail($id);
 
             $data = $request->validate([
-                'network_name' => "sometimes|unique:addresses,network_name,$address->id",
+                'network_name' => [
+                    "sometimes",
+                    Rule::unique('addresses')->where(function ($query) use ($request) {
+                        return $query->where('type', $request->type);
+                    })->ignore($address->id, 'id')
+                ],
                 'target' => 'sometimes|string',
                 'qr_image' => 'sometimes|image',
                 'type' => 'sometimes|string'

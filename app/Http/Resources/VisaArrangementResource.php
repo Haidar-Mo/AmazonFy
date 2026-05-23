@@ -38,7 +38,7 @@ class VisaArrangementResource extends JsonResource
                     ->where('visaRequiredField.type', '=', 'file')
                     ->mapWithKeys(function ($dp) {
                         return [
-                            data_get($dp, 'key') => data_get($dp, 'value'),
+                            data_get($dp, 'key') => asset(data_get($dp, 'value')),
                         ];
                     })->all()
                 : [],

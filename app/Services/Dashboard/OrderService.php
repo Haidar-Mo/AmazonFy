@@ -10,7 +10,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Notification;
-use Lang;
 
 
 /**
@@ -85,89 +84,102 @@ class OrderService
 
     public function cancel(string $id)
     {
-        $order = ShopOrder::findOrFail($id);
-        if ($order->status != OrderStatus::CHECKING->value) {
-            $message = __('messages.wallet.errors.cancel_deny');
-            throw new \Exception($message, 400);
-        }
+        return DB::transaction(function () use ($id) {
+            $order = ShopOrder::findOrFail($id);
+            if ($order->status != OrderStatus::CHECKING->value) {
+                throw new \Exception(__('messages.wallet.errors.cancel_deny'), 400);
+            }
 
-        $user = $order->shop()->first()
-            ->user()->first();
+            $user = $order->shop->user;
 
-        $merchant_wallet = $user->wallet()->first();
+            $merchant_wallet = $user->wallet()->lockForUpdate()->first();
 
-        $order = $this->makeCancel($order, wallet: $merchant_wallet);
-        Notification::send($user, notification: new OrderCanceledNotification($order));
-        return $order;
+            $order = $this->makeCancel($order, $merchant_wallet);
+            Notification::send($user, new OrderCanceledNotification($order));
+            return $order;
+        });
     }
 
 
     public function updateStatus(string $id)
     {
-        $order = ShopOrder::findOrFail($id);
+        return DB::transaction(function () use ($id) {
+            $order = ShopOrder::findOrFail($id);
 
-        if (in_array($order->status, [OrderStatus::PENDING->value, OrderStatus::DELIVERED->value, OrderStatus::CANCELED->value])) {
-            $message = __('messages.wallet.errors.update_deny');
-            throw new \Exception($message, 400);
-        }
-        $merchant_wallet = $order->shop()->first()
-            ->user()->first()
-            ->wallet()->first();
+            if (in_array($order->status, [OrderStatus::PENDING->value, OrderStatus::DELIVERED->value, OrderStatus::CANCELED->value])) {
+                throw new \Exception(__('messages.wallet.errors.update_deny'), 400);
+            }
+            $merchant_wallet = $order->shop->user->wallet()->lockForUpdate()->first();
 
-        return match ($order->status) {
-            'checking' => $this->makePreparing($order),
-            'preparing' => $this->makeDelivered($order, $merchant_wallet),
-        };
+            return match ($order->status) {
+                'checking' => $this->makePreparing($order),
+                'preparing' => $this->makeDelivered($order, $merchant_wallet),
+            };
+        });
+    }
+
+    public function updateManyStatuses(array $ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            $updatedOrders = [];
+
+            foreach ($ids as $id) {
+                $order = ShopOrder::findOrFail($id);
+
+                if (in_array($order->status, [OrderStatus::PENDING->value, OrderStatus::DELIVERED->value, OrderStatus::CANCELED->value])) {
+                    throw new \Exception(__('messages.wallet.errors.update_deny') . " (ID: {$id})", 400);
+                }
+
+                $merchant_wallet = $order->shop?->user->wallet()->lockForUpdate()->first();
+
+                $updatedOrders[] = match ($order->status) {
+                    'checking' => $this->makePreparing($order),
+                    'preparing' => $this->makeDelivered($order, $merchant_wallet),
+                };
+            }
+
+            return $updatedOrders;
+        });
     }
 
     //! Helper functions
     private function makePreparing(ShopOrder $order)
     {
-        return DB::transaction(function () use ($order) {
-            $order->update(['status' => OrderStatus::PREPARING->value]);
-            return $order;
-
-        });
+        $order->update(['status' => OrderStatus::PREPARING->value]);
+        return $order;
     }
 
     private function makeDelivered(ShopOrder $order, Wallet $wallet)
     {
-        return DB::transaction(function () use ($order, $wallet) {
-            $cost = $order->wholesale_price * $order->count;
-            $revenue = $order->selling_price * $order->count;
+        $cost = $order->wholesale_price * $order->count;
+        $revenue = $order->selling_price * $order->count;
 
-            if ($wallet->marginal_balance < $cost) {
-                $message =__('wallet.errors.margin_insufficient_funds');
-                throw new \Exception($message, 400);
-            }
+        if ($wallet->marginal_balance < $cost) {
+            throw new \Exception(__('wallet.errors.margin_insufficient_funds'), 400);
+        }
 
-            $order->update(['status' => OrderStatus::DELIVERED->value]);
-            $wallet->update([
-                'marginal_balance' => $wallet->marginal_balance - $cost,
-                'available_balance' => $wallet->available_balance + $revenue,
-                'total_balance' => $wallet->total_balance + $revenue - $cost,
-            ]);
-            return $order;
-        });
+        $order->update(['status' => OrderStatus::DELIVERED->value]);
+        $wallet->update([
+            'marginal_balance' => $wallet->marginal_balance - $cost,
+            'available_balance' => $wallet->available_balance + $revenue,
+            'total_balance' => $wallet->total_balance + ($revenue - $cost),
+        ]);
+        return $order;
     }
 
     private function makeCancel(ShopOrder $order, Wallet $wallet)
     {
-        return DB::transaction(function () use ($order, $wallet) {
-            $cost = $order->wholesale_price * $order->count;
+        $cost = $order->wholesale_price * $order->count;
 
-            if ($wallet->marginal_balance < $cost) {
-                $message = __('wallet.errors.margin_insufficient_funds');
-                throw new \Exception($message, 400);
-            }
+        if ($wallet->marginal_balance < $cost) {
+            throw new \Exception(__('wallet.errors.margin_insufficient_funds'), 400);
+        }
 
-            $order->update(['status' => OrderStatus::CANCELED->value]);
-            $wallet->update([
-                'marginal_balance' => $wallet->marginal_balance - $cost,
-                'available_balance' => $wallet->available_balance + $cost,
-            ]);
-
-            return $order;
-        });
+        $order->update(['status' => OrderStatus::CANCELED->value]);
+        $wallet->update([
+            'marginal_balance' => $wallet->marginal_balance - $cost,
+            'available_balance' => $wallet->available_balance + $cost,
+        ]);
+        return $order;
     }
 }

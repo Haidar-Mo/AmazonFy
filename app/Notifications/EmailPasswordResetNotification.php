@@ -6,9 +6,8 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class EmailPasswordResetNotification extends Notification implements ShouldQueue
+class EmailPasswordResetNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -32,7 +31,7 @@ class EmailPasswordResetNotification extends Notification implements ShouldQueue
             ->mailer('smtp')
             // ->locale($locale)
             ->subject(trans('notifications.email_password_reset.subject', [], $locale))
-            ->greeting(trans('notifications.email_password_reset.greeting', $locale) . $this->user->name)
+            ->greeting(trans('notifications.email_password_reset.greeting',[], $locale) . $this->user->name)
             ->line(trans('notifications.email_password_reset.line_1', [], $locale) . $this->verificationCode)
             ->line(trans('notifications.email_password_reset.line_2', [], $locale));
     }
