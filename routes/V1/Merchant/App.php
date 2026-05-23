@@ -2,13 +2,18 @@
 
 use App\Enums\TokenAbility;
 use App\Events\ExampleEvent;
+use App\Http\Controllers\Api\V1\Merchant\AirLineController;
 use App\Http\Controllers\Api\V1\Merchant\ChatsController;
 use App\Http\Controllers\Api\V1\Merchant\MessagesController;
 use App\Http\Controllers\Api\V1\Merchant\NotificationController;
 use App\Http\Controllers\Api\V1\Merchant\OrdersController;
 use App\Http\Controllers\Api\V1\Merchant\ProductsController;
 use App\Http\Controllers\Api\V1\Merchant\ShopsController;
+use App\Http\Controllers\Api\V1\Merchant\TicketController;
 use App\Http\Controllers\Api\V1\Merchant\TransactionHistoriesController;
+use App\Http\Controllers\Api\V1\Merchant\VisaArrangementController;
+use App\Http\Controllers\Api\V1\Merchant\VisaController;
+use App\Http\Controllers\Api\V1\Merchant\VisaRequestController;
 use App\Http\Controllers\Api\V1\Merchant\WalletAddressesController;
 use App\Http\Controllers\Api\V1\Merchant\WalletsController;
 use App\Http\Controllers\Api\V1\ProductTypesController;
@@ -34,7 +39,8 @@ Route::middleware([
 
         Route::get('wallet', [WalletsController::class, 'show']);
         Route::get('wallet/transactionHistory', [TransactionHistoriesController::class, 'index']);
-        Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllAdminAddresses']);
+        Route::get('wallet/admin/addresses', [WalletsController::class, 'indexAllStoreAddresses']);
+        Route::get('wallet/admin/addresses-visa', [WalletsController::class, 'indexAllVisaAddresses']);
         Route::post('wallet/charge', [WalletsController::class, 'chargeBalance']);
 
         Route::middleware('user_must_not_be_blocked')->group(function () {
@@ -79,6 +85,23 @@ Route::middleware([
             return (auth()->user()->shop?->status == 'active') ? (object) ['is_documented' => true] : (object) ['is_documented' => false];
         });
 
+        Route::prefix('travel')->group(function () {
+            Route::apiResource('visas', VisaController::class);
+            Route::apiResource('visa-requests', VisaRequestController::class);
+
+            Route::prefix('visa-arrangement')->group(function () {
+                Route::get('index', [VisaArrangementController::class, 'index']);
+                Route::get('show/{id}', [VisaArrangementController::class, 'show']);
+                Route::post('create', [VisaArrangementController::class, 'store']);
+            });
+
+            Route::apiResource('air-lines', AirLineController::class)->only(['index', 'show']);
+            Route::apiResource('tickets', TicketController::class);
+
+            Route::get('new/tickets/index', [TicketController::class, 'index']);
+            Route::get('new/tickets/show/{id}', [TicketController::class, 'show']);
+            Route::post('new/tickets/create', [TicketController::class, 'store']);
+        });
     });
 
 //: This is guest user index products

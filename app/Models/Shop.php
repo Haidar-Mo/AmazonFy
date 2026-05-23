@@ -26,6 +26,9 @@ class Shop extends Model
         'rate',
     ];
 
+    protected $appends = [
+        'level'
+    ];
 
     public function user()
     {
@@ -57,7 +60,7 @@ class Shop extends Model
 
 
     //! Accessories
-    //: logo_full_path, identity_front_face_full_path,  identity_back_face_full_path,   type_name,  is_blocked, is_blocked_text
+    //: logo_full_path, identity_front_face_full_path,  identity_back_face_full_path,   type_name,  is_blocked, is_blocked_text, level
 
     public function getLogoFullPathAttribute()
     {
@@ -85,5 +88,10 @@ class Shop extends Model
     public function getIsBlockedTextAttribute()
     {
         return $this->user()->first()->is_blocked ? __('texts.user.status.blocked') : __('texts.user.status.unblocked');
+    }
+
+    public function getLevelAttribute()
+    {
+        return $this->user->level_text;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,7 +27,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'password',
         'is_blocked',
-        'email_verified_at'
+        'email_verified_at',
+        'level',
+        'can_apply_visa',
+        'can_hold_ticket',
     ];
 
     /**
@@ -42,6 +46,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // protected $guard_name = 'api';
 
+    protected $appends = [
+        'level_text',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -54,7 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-
 
     public function shop(): HasOne
     {
@@ -73,6 +80,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function verificationCode(): HasOne
     {
         return $this->hasOne(Code::class);
+    }
+
+    public function visaRequest(): HasMany
+    {
+        return $this->hasMany(VisaRequest::class);
+    }
+
+    public function visaArrangements(): HasMany
+    {
+        return $this->hasMany(VisaArrangement::class);
+    }
+
+    public function ticketReservations(): HasMany
+    {
+        return $this->hasMany(TicketReservation::class);
     }
 
 
@@ -101,5 +123,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getVerificationCodeAttribute()
     {
         return $this->verificationCode()->first()?->verification_code;
+    }
+
+    public function getLevelTextAttribute()
+    {
+        return match ($this->level) {
+            1 => __('texts.user.level.one'),
+            2 => __('texts.user.level.two'),
+            3 => __('texts.user.level.three'),
+            4 => __('texts.user.level.vip1'),
+            5 => __('texts.user.level.vip2'),
+            6 => __('texts.user.level.vip3'),
+            7 => __('texts.user.level.ultimate'),
+            default => null,
+        };
     }
 }

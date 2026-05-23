@@ -36,6 +36,12 @@ route::prefix('merchants')
                 ->middleware('hasAnyPermission:update-merchant|all');
         });
 
+
+        Route::prefix('level')->group(function () {
+            Route::post('change/{id}/{decision}', [MerchantController::class, 'changeMerchantLevel'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+        });
+
         Route::prefix('shops')->group(function () {
 
             Route::get('index', [ShopController::class, 'index'])
@@ -59,4 +65,11 @@ route::prefix('merchants')
             Route::post('deactivate/{id}', [ShopController::class, 'deactivateShop'])
                 ->middleware('hasAnyPermission:update-shop|all');
         });
+
+         Route::prefix('eligibility')->group(function () {
+            Route::post('visa/{id}', [MerchantController::class, 'toggleVisaEligibility'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+            Route::post('ticket/{id}', [MerchantController::class, 'toggleTicketEligibility'])
+                ->middleware('hasAnyPermission:update-merchant|all');
+        }); 
     });

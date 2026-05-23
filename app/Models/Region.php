@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Region extends Model
 {
     use HasFactory, Translatable;
+
+    protected $fillable = ['parent_id'];
+    
     public $translatedAttributes = ['name'];
 
     public function parent()

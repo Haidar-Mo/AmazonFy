@@ -6,7 +6,7 @@ use App\Models\ShopOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewOrderNotification extends BaseNotification
+class NewOrderNotification extends BaseNotification implements ShouldQueue
 {
     use Queueable;
 

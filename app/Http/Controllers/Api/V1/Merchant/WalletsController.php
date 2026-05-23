@@ -123,10 +123,10 @@ class WalletsController extends Controller
         $hashedPassword = Auth::user()->wallet->wallet_password;
 
         if (!$hashedPassword) {
-            return $this->showMessage('wrong_wallet_password_not_found', [], 400);
+            return $this->showMessage('wrong_wallet_password_not_found', [], 400,false);
         }
         if (!$hashedPassword == '' && !Hash::check($wallet_password, $hashedPassword)) {
-            return $this->showMessage('wrong_wallet_password', [], 422);
+            return $this->showMessage('wrong_wallet_password', [], 422,false);
         }
 
         return DB::transaction(function () use ($request) {
@@ -150,6 +150,22 @@ class WalletsController extends Controller
     {
         try {
             return $this->showResponse(Address::all());
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error');
+        }
+    }
+    public function indexAllStoreAddresses()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'store')->get());
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error');
+        }
+    }
+    public function indexAllVisaAddresses()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'visa')->get());
         } catch (\Exception $e) {
             return $this->showError($e, 'address.index_error');
         }

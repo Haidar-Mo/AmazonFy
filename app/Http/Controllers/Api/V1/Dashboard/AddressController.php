@@ -8,6 +8,7 @@ use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends Controller
@@ -17,25 +18,43 @@ class AddressController extends Controller
     public function index()
     {
         try {
-            return $this->showResponse(
-                Address::all(),
-                'address.index_success'
-            );
+            return $this->showResponse(Address::all(), 'address.index_success');
         } catch (\Exception $e) {
-            return $this->showError(
-                $e,
-                'address.index_error',
-                []
-            );
+            return $this->showError($e, 'address.index_error', []);
         }
     }
+    public function indexTypeIsStore()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'store')->get(), 'address.index_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error', []);
+        }
+    }
+    public function indexTypeIsVisa()
+    {
+        try {
+            return $this->showResponse(Address::where('type', 'visa')->get(), 'address.index_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'address.index_error', []);
+        }
+    }
+
+
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'network_name' => 'string|required|unique:addresses,network_name',
+            'network_name' => [
+                'required',
+                'string',
+                Rule::unique('addresses')->where(function ($query) use ($request) {
+                    return $query->where('type', $request->type);
+                })
+            ],
             'target' => 'required|string',
-            'qr_image' => 'required|image'
+            'qr_image' => 'required|image',
+            'type' => 'required|string'
         ], __('messages.address.validation'));
 
         try {
@@ -45,16 +64,9 @@ class AddressController extends Controller
                 return Address::create($data);
             });
 
-            return $this->showResponse(
-                $address,
-                'address.store_success'
-            );
+            return $this->showResponse($address, 'address.store_success');
         } catch (\Exception $e) {
-            return $this->showError(
-                $e,
-                'address.store_error',
-                []
-            );
+            return $this->showError($e, 'address.store_error', []);
         }
     }
 
@@ -64,9 +76,15 @@ class AddressController extends Controller
             $address = Address::findOrFail($id);
 
             $data = $request->validate([
-                'network_name' => "sometimes|unique:addresses,network_name,$address->id",
+                'network_name' => [
+                    "sometimes",
+                    Rule::unique('addresses')->where(function ($query) use ($request) {
+                        return $query->where('type', $request->type);
+                    })->ignore($address->id, 'id')
+                ],
                 'target' => 'sometimes|string',
-                'qr_image' => 'sometimes|image'
+                'qr_image' => 'sometimes|image',
+                'type' => 'sometimes|string'
             ], __('messages.address.validation'));
 
             if ($request->hasFile('qr_image')) {
@@ -78,16 +96,9 @@ class AddressController extends Controller
                 $address->update($data);
             });
 
-            return $this->showResponse(
-                $address,
-                'address.update_success'
-            );
+            return $this->showResponse($address, 'address.update_success');
         } catch (\Exception $e) {
-            return $this->showError(
-                $e,
-                'address.update_error',
-                []
-            );
+            return $this->showError($e, 'address.update_error', []);
         }
     }
 
@@ -100,15 +111,9 @@ class AddressController extends Controller
                 $address->delete();
             });
 
-            return $this->showMessage(
-                'address.delete_success'
-            );
+            return $this->showMessage('address.delete_success');
         } catch (\Exception $e) {
-            return $this->showError(
-                $e,
-                'address.delete_error',
-                []
-            );
+            return $this->showError($e, 'address.delete_error', []);
         }
     }
 }

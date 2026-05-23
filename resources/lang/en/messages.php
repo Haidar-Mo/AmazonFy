@@ -108,6 +108,9 @@ return [
         'deleted' => 'Merchant deleted successfully',
         'blocked' => 'User blocked successfully',
         'unblocked' => 'User unblocked successfully',
+        'level_change' => 'Merchant level changed successfully',
+        'visa_eligibility_toggled' => 'User visa eligibility toggled successfully',
+        'ticket_eligibility_toggled' => 'User ticket eligibility toggled successfully',
         'errors' => [
             'fetch_error' => 'An error occurred while fetching merchants',
             'details_error' => 'An error occurred while showing merchant details',
@@ -116,6 +119,9 @@ return [
             'delete_error' => 'An error occurred while deleting the merchant',
             'block_error' => 'An error occurred while blocking the user',
             'unblock_error' => 'An error occurred while unblocking the user',
+            'level_change' => 'An error occurred while changing the merchant level',
+            'visa_eligibility_toggle' => 'An error occurred while toggling user visa eligibility',
+            'ticket_eligibility_toggled' => 'An error occurred while toggling user ticket eligibility',
         ],
     ],
 
@@ -137,13 +143,16 @@ return [
     'wallet' => [
         'show_success' => 'Wallet retrieved successfully',
 
-
         'charge_create' => 'Your request has been received and will be processed within 24 hours',
         'withdraw_create' => 'Your request has been received and will be processed within 24 hours',
 
         'errors' => [
             'show_error' => 'Error occurred while retrieving wallet',
+
+            'cancel_deny' => 'Unable to cancel this order',
+            'update_deny' => 'Unable to update this order status',
             'insufficient_funds' => 'You do not have enough balance',
+            'margin_insufficient_funds' => 'You do not have enough margin balance',
             'wrong_wallet_password' => 'The wallet password is incorrect',
             'wrong_wallet_password_not_found' => 'No wallet password has been set',
         ]
@@ -287,6 +296,8 @@ return [
             'index_error' => 'An error occurred while retrieving transactions',
             'handle_error' => 'An error occurred while handling the transaction',
             'create_error' => 'An error occurred while completing the transaction',
+
+            'update_deny' => 'Unable to process this transaction',
         ],
     ],
 
@@ -296,5 +307,31 @@ return [
             'failed' => 'An error occurred while retrieving statistics',
         ],
     ],
+
+    'visa' => [
+        'index_success' => 'Visas retrieved successfully',
+        'create_success' => 'Visa created successfully',
+        'update_success' => 'Visa updated successfully',
+        'delete_success' => 'Visa deleted successfully',
+        'errors' => [
+            'index_error' => 'Error retrieving visas',
+            'create_error' => 'Error creating visa',
+            'update_error' => 'Error updating visa',
+            'delete_error' => 'Error deleting visa',
+        ],
+
+        'request' => [
+            'submission_success' => 'Visa request submitted successfully',
+            'delete-success' => 'Visa request deleted successfully',
+            'status-success' => 'Visa request status changed successfully',
+
+            'errors' => [
+                'submission_error' => 'Error submitting visa request',
+                'delete_error' => 'Error deleting visa request',
+                'status_error' => 'Error changing visa request status',
+
+            ],
+        ],
+    ]
 
 ];

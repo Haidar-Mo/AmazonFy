@@ -98,4 +98,33 @@ class MerchantController extends Controller
         }
     }
 
+    public function changeMerchantLevel(string $id, string $decision)
+    {
+        try {
+            $merchant = $this->service->changeMerchantLevel($id, $decision);
+            return $this->showResponse($merchant, 'merchants.level_changed');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'merchants.errors.level_change');
+        }
+    }
+
+    public function toggleVisaEligibility(string $id)
+    {
+        try {
+            $merchant = $this->service->toggleVisaEligibility($id);
+            return $this->showResponse($merchant, 'merchants.visa_eligibility_toggled');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'merchants.errors.visa_eligibility_toggle');
+        }
+    }
+
+    public function toggleTicketEligibility(string $id)
+    {
+        try {
+            $merchant = $this->service->toggleTicketEligibility($id);
+            return $this->showResponse($merchant, 'merchants.ticket_eligibility_toggled');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'merchants.errors.ticket_eligibility_toggle');
+        }
+    }
 }

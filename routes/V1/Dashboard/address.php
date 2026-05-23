@@ -14,6 +14,12 @@ Route::prefix('addresses')
         Route::get('index', [AddressController::class, 'index'])
             ->middleware('hasAnyPermission:read-address|all');
 
+        Route::get('index-store', [AddressController::class, 'indexTypeIsStore'])
+            ->middleware('hasAnyPermission:read-address|all');
+
+        Route::get('index-visa', [AddressController::class, 'indexTypeIsVisa'])
+            ->middleware('hasAnyPermission:read-address|all');
+
         Route::post('create', [AddressController::class, 'store'])
             ->middleware('hasAnyPermission:create-address|all');
 

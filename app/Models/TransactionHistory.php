@@ -42,10 +42,22 @@ class TransactionHistory extends Model
 
     //! Accessories
 
+    public function getUserIdAttribute()
+    {
+        return $this->wallet->user->id;
+    }
+
+    public function getShopIdAttribute()
+    {
+        return $this->wallet->user->shop->id;
+    }
+
+
     public function getUserNameAttribute()
     {
         return $this->wallet()->first()->user()->first()->name;
     }
+
     public function getUserPhoneNumberAttribute()
     {
         return $this->wallet()->first()->user()->first()->phone_number;

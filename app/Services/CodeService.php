@@ -16,7 +16,7 @@ class CodeService
     public function getOrCreateVerificationCode($user_id)
     {
         $currentCode = Code::where('user_id', $user_id)
-            ->first();
+            ->latest()->first();
 
         if ($currentCode && $currentCode->created_at > now()->subMinutes(60)) {
             return $currentCode;

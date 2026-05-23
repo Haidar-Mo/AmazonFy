@@ -2,10 +2,11 @@
 
 namespace App\Notifications;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 
 
-class ToMerchantNotification extends BaseNotification
+class ToMerchantNotification extends BaseNotification implements ShouldQueue
 {
 
     /**

@@ -24,6 +24,9 @@ Route::prefix('orders')
         Route::post('update/{id}', [OrderController::class, 'update'])
             ->middleware('hasAnyPermission:update-order|all');
 
+        Route::post('update-many/', [OrderController::class, 'updateMany'])
+            ->middleware('hasAnyPermission:update-order|all');
+
         Route::post('cancel/{id}', [OrderController::class, 'cancel'])
             ->middleware('hasAnyPermission:update-order|all');
     });

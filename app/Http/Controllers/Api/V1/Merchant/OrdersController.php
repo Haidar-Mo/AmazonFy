@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Merchant;
 
 use App\Filters\OrdersFilters;
 use App\Http\Controllers\Controller;
-use App\Models\Shop;
 use App\Models\ShopOrder;
 use App\Models\User;
 use App\Notifications\NewOrderNotification;
@@ -84,16 +83,21 @@ class OrdersController extends Controller
             if ($shop->user_id != $request->user()->id || $shopOrder->shop_id != $shop->id || $shopOrder->status != 'pending') {
                 throw new AuthorizationException();
             }
+
             if ($request->accepted) {
-                $wallet = Auth::user()->wallet;
-                if ($wallet->available_balance < ($shopOrder->wholesale_price * $shopOrder->count)) {
+                $wallet = Auth::user()->wallet()->lockForUpdate()->first();
+                $cost = $shopOrder->wholesale_price * $shopOrder->count;
+
+                if ($wallet->available_balance < $cost) {
                     return $this->showMessage('wallet.errors.insufficient_funds', [], 400, false);
                 }
-                $wallet->available_balance -= ($shopOrder->wholesale_price * $shopOrder->count);
-                $wallet->marginal_balance += ($shopOrder->wholesale_price * $shopOrder->count);
+                $wallet->available_balance -= $cost;
+                $wallet->marginal_balance += $cost;
                 $wallet->save();
+
                 $shopOrder->update(['status' => 'checking']);
-                $notifiable = User::role(['admin', 'supervisor'],'api')->get();
+
+                $notifiable = User::role(['admin', 'supervisor'], 'api')->get();
                 Notification::send($notifiable, new NewOrderNotification($shopOrder));
 
             } else {

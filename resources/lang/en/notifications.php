@@ -11,8 +11,8 @@ return [
     ],
     'email_password_reset' => [
         'subject' => 'Reset Password Code',
-        'greeting' => 'Hello :name',
-        'line_1' => 'Here is your reset password code: :code',
+        'greeting' => 'Hello ',
+        'line_1' => 'Here is your reset password code: ',
         'line_2' => 'Please use this code to complete your operation.',
     ],
     'new_invoice_request' => [
@@ -23,18 +23,18 @@ return [
         'title' => 'You have a new wallet transaction',
         'body' => 'A new transaction has been added to your wallet. Please check your balance for more details.',
     ],
-    'phone_password_reset' => [
-        'title' => 'Password reset code sent to your phone number',
+    'phone_number_password_reset' => [
+        'title' => 'Password reset code sent to your phone number for user: ',
         'body' => 'A reset code has been sent to your phone via SMS. Please use it to reset your password.',
     ],
     'phone_verification_code' => [
         'title' => 'Your phone verification code',
-        'body' => 'Your phone verification code is: :code',
+        'body' => 'Your phone verification code is: ',
     ],
     'email_verification_code' => [
         'title' => 'Email verification code',
-        'greeting' => 'Hello :name',
-        'line_1' => 'Here is your verification code: :code',
+        'greeting' => 'Hello ',
+        'line_1' => 'Here is your verification code:',
         'line_2' => 'Please use this code to complete your operation.',
     ],
     'merchant_documentation_accepted' => [
@@ -58,4 +58,17 @@ return [
         'body' => 'Your order has been successfully canceled. If you have any questions, please contact support.',
     ],
 
+    'new_message' => [
+        'title' => 'You have a new message'
+    ],
+
+    'level_increase' => [
+        'title' => 'Congratulations! Your user level has been increased.',
+        'body' => 'You have been promoted to a higher user level. Enjoy the new benefits and features that come with it!',
+    ],
+
+    'level_decrease' => [
+        'title' => 'Sorry! Your user level has been decreased.',
+        'body' => 'You have been demoted to a lower user level. Please review your performance and improve it.',
+    ],
 ];

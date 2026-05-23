@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\OrderCreateRequest;
 use App\Services\Dashboard\OrderService;
 use App\Traits\ResponseTrait;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -50,6 +51,20 @@ class OrderController extends Controller
         try {
             $order = $this->service->updateStatus($id);
             return $this->showResponse($order, 'order.update_success');
+        } catch (\Exception $e) {
+            return $this->showError($e, 'order.errors.update_error');
+        }
+    }
+
+    public function updateMany(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|string',
+        ]);
+        try {
+            $orders = $this->service->updateManyStatuses($request->input('ids'));
+            return $this->showResponse($orders, 'order.update_success');
         } catch (\Exception $e) {
             return $this->showError($e, 'order.errors.update_error');
         }

@@ -27,8 +27,8 @@ class VerificationCodeNotification extends BaseNotification implements ShouldQue
     {
         return (new MailMessage)
             ->subject(__('notifications.email_verification_code.title'))
-            ->greeting(__('notifications.email_verification_code.greeting', ['name' => $this->user->name]))
-            ->line(__('notifications.email_verification_code.line_1', ['code' => $this->verificationCode]))
+            ->greeting(__('notifications.email_verification_code.greeting') . $this->user->name)
+            ->line(__('notifications.email_verification_code.line_1') . $this->verificationCode)
             ->line(__('notifications.email_verification_code.line_2'));
     }
 }

@@ -12,9 +12,12 @@ return new class extends Migration {
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('network_name')->unique();
+            $table->string('network_name');
             $table->string('target');
             $table->string('qr_image');
+            $table->string('type');
+
+            $table->unique(['network_name', 'type']);
             $table->timestamps();
         });
     }
